@@ -276,7 +276,32 @@ border-radius:10px;
 
 z-index:9999;
 }
+@media(max-width:900px){
 
+.main{
+
+grid-template-columns:
+1fr;
+
+height:auto;
+
+overflow:auto;
+
+}
+
+body{
+
+overflow:auto;
+
+}
+
+.panel{
+
+min-height:350px;
+
+}
+
+}
 </style>
 
 </head>
@@ -296,6 +321,13 @@ PICKUP RETURN SYSTEM
 <div class="panel">
 
 <div class="panel-header">
+  <button
+class="btn btn-camera"
+onclick="bulkUpdate()">
+
+Bulk Update
+
+</button>
 
 Dashboard
 
@@ -429,7 +461,13 @@ onclick="searchOrder()">
 Search
 
 </button>
+<button
+class="btn btn-save"
+onclick="updateSingleAWB('${row.awb}')">
 
+Update Sheet
+
+</button>
 <div
 id="searchResult"
 class="search-result">
@@ -987,8 +1025,808 @@ function toast(msg){
   );
 
 }
+/* ===================================
+SAVE ENTRY
+=================================== */
 
+async function saveEntry(){
+
+  if(!currentType){
+
+    toast(
+      "Select Pickup / Return"
+    );
+
+    return;
+
+  }
+
+  const awb =
+
+    document
+      .getElementById(
+        "awbInput"
+      )
+      .value
+      .trim();
+
+  if(!awb){
+
+    toast(
+      "AWB Missing"
+    );
+
+    return;
+
+  }
+
+  const payload = {
+
+    type:
+      currentType,
+
+    awb:
+      awb,
+
+    orderId:
+      document
+        .getElementById(
+          "orderInput"
+        )
+        .value
+        .trim(),
+
+    courier:
+      currentTracking
+      ?.courier || "",
+
+    status:
+      currentTracking
+      ?.status || "",
+
+    customerName:
+      currentTracking
+      ?.customerName || "",
+
+    city:
+      currentTracking
+      ?.city || "",
+
+    state:
+      currentTracking
+      ?.state || "",
+
+    destination:
+      currentTracking
+      ?.destination || "",
+
+    pickupDate:
+      currentTracking
+      ?.pickupDate || "",
+
+    deliveredDate:
+      currentTracking
+      ?.deliveredDate || "",
+
+    expectedDate:
+
+      currentTracking
+      ?.expectedDate ||
+
+      currentTracking
+      ?.estimatedDate ||
+
+      "",
+
+    isRTO:
+      currentTracking
+      ?.isRTO || false
+
+  };
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL,
+
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+            "application/json"
+          },
+
+          body:
+            JSON.stringify({
+
+              action:
+                "saveEntry",
+
+              payload:
+                payload
+
+            })
+
+        }
+
+      );
+
+    const result =
+      await response.json();
+
+    if(result.duplicate){
+
+      toast(
+        "Duplicate AWB"
+      );
+
+      document
+        .getElementById(
+          "awbInput"
+        )
+        .select();
+
+      return;
+
+    }
+
+    if(result.success){
+
+      playSuccessSound();
+
+      toast(
+        "Saved"
+      );
+
+      clearForm();
+
+      document
+        .getElementById(
+          "awbInput"
+        )
+        .focus();
+
+      loadDashboard();
+
+      loadRecentRecords();
+
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+    toast(
+      "Save Failed"
+    );
+
+  }
+
+}
+
+/* ===================================
+SUCCESS SOUND
+=================================== */
+
+function playSuccessSound(){
+
+  try{
+
+    beep.currentTime = 0;
+
+    beep.play();
+
+  }catch(err){}
+
+}
+setTimeout(()=>{
+
+  document
+  .getElementById(
+    "awbInput"
+  )
+  .focus();
+
+},200);
+/* ===================================
+LOAD DASHBOARD
+=================================== */
+
+async function loadDashboard(){
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=getDashboardCounts"
+
+      );
+
+    const data =
+      await response.json();
+
+    renderDashboard(
+      data
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* ===================================
+RENDER DASHBOARD
+=================================== */
+
+function renderDashboard(data){
+
+  document
+  .getElementById(
+    "dashboardArea"
+  )
+  .innerHTML = `
+
+  <div class="card">
+
+    <b>Today Pickup</b>
+
+    <h2>
+    ${data.todayPickup || 0}
+    </h2>
+
+  </div>
+
+  <div class="card">
+
+    <b>Today Return</b>
+
+    <h2>
+    ${data.todayReturn || 0}
+    </h2>
+
+  </div>
+
+  <div class="card">
+
+    <b>Total Pickup</b>
+
+    <h2>
+    ${data.totalPickup || 0}
+    </h2>
+
+  </div>
+
+  <div class="card">
+
+    <b>Total Return</b>
+
+    <h2>
+    ${data.totalReturn || 0}
+    </h2>
+
+  </div>
+
+  <div id="recentArea"></div>
+
+  `;
+
+}
+
+/* ===================================
+LOAD RECENT RECORDS
+=================================== */
+
+async function loadRecentRecords(){
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=getRecentRecords"
+
+      );
+
+    const data =
+      await response.json();
+
+    renderRecent(
+      data.rows || []
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* ===================================
+RENDER RECENT
+=================================== */
+
+function renderRecent(rows){
+
+  const box =
+    document
+      .getElementById(
+        "recentArea"
+      );
+
+  if(!box){
+    return;
+  }
+
+  let html =
+
+    `<div class="card">
+      <b>Recent Scans</b>
+    </div>`;
+
+  rows.forEach(r=>{
+
+    html += `
+
+      <div class="card">
+
+        <b>
+        ${r.awb}
+        </b>
+
+        <br>
+
+        ${r.type}
+
+        <br>
+
+        ${r.status || ""}
+
+        <br>
+
+        ${r.date}
+
+      </div>
+
+    `;
+
+  });
+
+  box.innerHTML =
+    html;
+
+}
+
+/* ===================================
+SEARCH ORDER
+=================================== */
+
+async function searchOrder(){
+
+  const keyword =
+
+    document
+      .getElementById(
+        "searchInput"
+      )
+      .value
+      .trim();
+
+  if(!keyword){
+
+    toast(
+      "Enter AWB / Order ID"
+    );
+
+    return;
+
+  }
+
+  const resultBox =
+    document
+      .getElementById(
+        "searchResult"
+      );
+
+  resultBox.innerHTML =
+    "Searching...";
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=searchOrder" +
+
+        "&keyword=" +
+
+        encodeURIComponent(
+          keyword
+        )
+
+      );
+
+    const data =
+      await response.json();
+
+    if(
+      !data.success
+    ){
+
+      resultBox.innerHTML =
+        "No Record Found";
+
+      return;
+
+    }
+
+    renderSearchResult(
+      data
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+    resultBox.innerHTML =
+      "Error";
+
+  }
+
+}
+
+/* ===================================
+RENDER SEARCH
+=================================== */
+
+function renderSearchResult(
+  data
+){
+
+  const row =
+    data.record;
+
+  document
+    .getElementById(
+      "searchResult"
+    )
+    .innerHTML = `
+
+    <div class="card">
+
+      <b>AWB:</b>
+      ${row.awb}
+      <br>
+
+      <b>Order:</b>
+      ${row.orderId}
+      <br>
+
+      <b>Status:</b>
+      ${row.status}
+      <br>
+
+      <b>Type:</b>
+      ${row.type}
+      <br>
+
+      <b>Courier:</b>
+      ${row.courier}
+      <br>
+
+      <b>Customer:</b>
+      ${row.customer}
+      <br>
+
+      <button
+      class="btn btn-camera"
+      onclick="refreshCurrentStatus('${row.awb}')">
+
+      Current Status
+
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+/* ===================================
+CURRENT STATUS
+=================================== */
+
+async function refreshCurrentStatus(
+  awb
+){
+
+  const resultBox =
+    document
+      .getElementById(
+        "searchResult"
+      );
+
+  resultBox.innerHTML +=
+    "<br>Refreshing...";
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=trackShipment" +
+
+        "&awb=" +
+
+        encodeURIComponent(
+          awb
+        )
+
+      );
+
+    const data =
+      await response.json();
+
+    if(!data.success){
+
+      toast(
+        "Tracking Not Found"
+      );
+
+      return;
+
+    }
+
+    resultBox.innerHTML += `
+
+      <div
+      class="card">
+
+      <b>Latest Status</b>
+
+      <br><br>
+
+      ${data.status}
+
+      <br>
+
+      ${data.city || ""}
+
+      </div>
+
+    `;
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* ===================================
+PAGE INIT
+=================================== */
+
+window.onload = function(){
+
+  loadDashboard();
+
+  loadRecentRecords();
+
+  setInterval(
+
+    loadDashboard,
+
+    30000
+
+  );
+
+};
+
+  function showLoader(){
+
+  document
+  .getElementById(
+    "loadingOverlay"
+  )
+  .style.display = "flex";
+
+}
+
+function hideLoader(){
+
+  document
+  .getElementById(
+    "loadingOverlay"
+  )
+  .style.display = "none";
+
+}
+  async function updateSingleAWB(
+  awb
+){
+
+  showLoader();
+
+  try{
+
+    const response =
+      await fetch(
+
+      API_URL +
+
+      "?action=updateSingleAWB" +
+
+      "&awb=" +
+
+      encodeURIComponent(
+        awb
+      )
+
+    );
+
+    const result =
+      await response.json();
+
+    hideLoader();
+
+    if(result.skipped){
+
+      toast(
+        "Skipped : " +
+        result.reason
+      );
+
+      return;
+
+    }
+
+    if(result.success){
+
+      toast(
+        "Updated"
+      );
+
+      return;
+
+    }
+
+    toast(
+      result.message ||
+      "Update Failed"
+    );
+
+  }catch(err){
+
+    hideLoader();
+
+    toast(
+      "Update Failed"
+    );
+
+  }
+
+}
+  async function bulkUpdate(){
+
+  const date = prompt(
+    "Date (dd/MM/yyyy)"
+  );
+
+  if(!date) return;
+
+  const type = prompt(
+    "pickup OR return"
+  );
+
+  if(!type) return;
+
+  showLoader();
+
+  try{
+
+    const response =
+      await fetch(
+
+      API_URL +
+
+      "?action=bulkUpdateByDate" +
+
+      "&date=" +
+
+      encodeURIComponent(
+        date
+      ) +
+
+      "&type=" +
+
+      encodeURIComponent(
+        type
+      )
+
+    );
+
+    const result =
+      await response.json();
+
+    hideLoader();
+
+    toast(
+
+      "Updated : " +
+
+      result.updated +
+
+      " | Skipped : " +
+
+      result.skipped +
+
+      " | Failed : " +
+
+      result.failed
+
+    );
+
+  }catch(err){
+
+    hideLoader();
+
+    toast(
+      "Bulk Update Failed"
+    );
+
+  }
+
+}
+  document.addEventListener(
+  "keydown",
+  function(e){
+
+    if(
+      e.key === "Escape"
+    ){
+
+      stopWork();
+
+    }
+
+  }
+);
 </script>
+<div id="loadingOverlay" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+right:0;
+bottom:0;
+background:rgba(255,255,255,.85);
+z-index:99999;
+align-items:center;
+justify-content:center;
+font-size:20px;
+font-weight:700;
+">
 
+Loading...
+
+</div>
 </body>
 </html>
