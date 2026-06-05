@@ -1033,175 +1033,176 @@ async function saveEntry(){
 
   if(!currentType){
 
-    toast(
-      "Select Pickup / Return"
-    );
-
+    toast("Select Pickup / Return");
     return;
 
   }
 
   const awb =
-
     document
-      .getElementById(
-        "awbInput"
-      )
+      .getElementById("awbInput")
       .value
       .trim();
 
   if(!awb){
 
-    toast(
-      "AWB Missing"
-    );
-
+    toast("AWB Missing");
     return;
 
   }
 
   const payload = {
 
-    type:
-      currentType,
+    type: currentType,
 
-    awb:
-      awb,
+    awb: awb,
 
     orderId:
       document
-        .getElementById(
-          "orderInput"
-        )
+        .getElementById("orderInput")
         .value
         .trim(),
 
     courier:
-      currentTracking
-      ?.courier || "",
+      currentTracking?.courier || "",
 
     status:
-      currentTracking
-      ?.status || "",
+      currentTracking?.status || "",
 
     customerName:
-      currentTracking
-      ?.customerName || "",
+      currentTracking?.customerName || "",
 
     city:
-      currentTracking
-      ?.city || "",
+      currentTracking?.city || "",
 
     state:
-      currentTracking
-      ?.state || "",
+      currentTracking?.state || "",
 
     destination:
-      currentTracking
-      ?.destination || "",
+      currentTracking?.destination || "",
 
     pickupDate:
-      currentTracking
-      ?.pickupDate || "",
+      currentTracking?.pickupDate || "",
 
     deliveredDate:
-      currentTracking
-      ?.deliveredDate || "",
+      currentTracking?.deliveredDate || "",
 
     expectedDate:
-
-      currentTracking
-      ?.expectedDate ||
-
-      currentTracking
-      ?.estimatedDate ||
-
+      currentTracking?.expectedDate ||
+      currentTracking?.estimatedDate ||
       "",
 
     isRTO:
-      currentTracking
-      ?.isRTO || false
+      currentTracking?.isRTO || false
 
   };
 
   try{
 
+    showLoader();
+
     const response =
       await fetch(
-
         API_URL,
-
         {
+          method: "POST",
 
-          method:"POST",
-
-          headers:{
-            "Content-Type":
-            "application/json"
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
           },
 
-          body:
-            JSON.stringify({
+          body: JSON.stringify({
 
-              action:
-                "saveEntry",
+            action: "saveEntry",
 
-              payload:
-                payload
+            payload: payload
 
-            })
+          })
 
         }
-
       );
 
-    const result =
-      await response.json();
+    const text =
+      await response.text();
+
+    console.log(
+      "SAVE RESPONSE:",
+      text
+    );
+
+    let result = {};
+
+    try{
+
+      result =
+        JSON.parse(text);
+
+    }catch(err){
+
+      hideLoader();
+
+      toast(
+        "Invalid Server Response"
+      );
+
+      console.log(text);
+
+      return;
+
+    }
+
+    hideLoader();
 
     if(result.duplicate){
 
-      toast(
-        "Duplicate AWB"
-      );
+      toast("Duplicate AWB");
 
       document
-        .getElementById(
-          "awbInput"
-        )
+        .getElementById("awbInput")
         .select();
 
       return;
 
     }
 
-    if(result.success){
-
-      playSuccessSound();
+    if(!result.success){
 
       toast(
-        "Saved"
+        result.message ||
+        "Save Failed"
       );
 
-      clearForm();
+      console.log(result);
 
-      document
-        .getElementById(
-          "awbInput"
-        )
-        .focus();
-
-      loadDashboard();
-
-      loadRecentRecords();
+      return;
 
     }
 
+    playSuccessSound();
+
+    toast("Saved Successfully");
+
+    clearForm();
+
+    currentTracking = null;
+
+    document
+      .getElementById("awbInput")
+      .focus();
+
+    loadDashboard();
+
+    loadRecentRecords();
+
   }catch(err){
+
+    hideLoader();
 
     console.log(err);
 
     toast(
-      "Save Failed"
+      "Save Failed : " +
+      err.message
     );
 
   }
