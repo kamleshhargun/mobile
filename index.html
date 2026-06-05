@@ -196,18 +196,30 @@ gap:10px;
 }
 
 .btn{
+  border:none;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+  width:auto;
+  min-width:140px;
+}
 
-flex:1;
+.btn-camera{
+  background:#2563eb;
+  color:#fff;
+}
 
-height:45px;
+.btn-manual{
+  background:#374151;
+  color:#fff;
+}
 
-border:none;
-
-border-radius:10px;
-
-font-weight:700;
-
-cursor:pointer;
+.btn:hover{
+  transform:translateY(-1px);
+  opacity:0.95;
 }
 
 .btn-save{
@@ -301,6 +313,14 @@ min-height:350px;
 
 }
 
+}
+  .small-btn{
+  padding: 5px 10px;
+  font-size: 12px;
+  min-height: 30px;
+  width: auto;
+  display: inline-block;
+  margin: 2px;
 }
 </style>
 
@@ -455,14 +475,15 @@ class="input"
 placeholder="Search AWB / Order ID">
 
 <button
-class="btn btn-camera"
+class="btn btn-camera small-btn"
 onclick="searchOrder()">
 
 Search
 
 </button>
+
 <button
-class="btn btn-save"
+class="btn btn-save small-btn"
 onclick="updateSingleAWB('${row.awb}')">
 
 Update Sheet
