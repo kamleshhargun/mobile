@@ -743,43 +743,42 @@ USB SCANNER SUPPORT
 let scannerBuffer = "";
 
 document.addEventListener(
-  "keypress",
+  "keydown",
   function(e){
 
     if(
-      document.activeElement.id
-      !== "awbInput"
+      document.activeElement.id !== "awbInput"
     ){
       return;
     }
 
-    scannerBuffer += e.key;
+    // Enter aaya to tracking start
+    if(e.key === "Enter"){
 
-    clearTimeout(
-      window.scanTimer
-    );
+      e.preventDefault();
 
-    window.scanTimer =
-      setTimeout(()=>{
+      const awb = scannerBuffer.trim();
 
-      if(
-        scannerBuffer.length > 6
-      ){
+      if(awb.length > 5){
 
         document
-          .getElementById(
-            "awbInput"
-          )
-          .value =
-          scannerBuffer;
+          .getElementById("awbInput")
+          .value = awb;
 
         trackShipment();
-
       }
 
       scannerBuffer = "";
 
-    },250);
+      return;
+    }
+
+    // Sirf actual characters add karo
+    if(e.key.length === 1){
+
+      scannerBuffer += e.key;
+
+    }
 
   }
 );
