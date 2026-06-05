@@ -1,144 +1,280 @@
 <!DOCTYPE html>
-
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>
+Pickup Return System
+</title>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+rel="stylesheet">
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 
 *{
-  box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,sans-serif;
 }
 
 body{
-  margin:0;
-  padding:15px;
-  font-family:Arial,sans-serif;
-  background:#f4f6f9;
+background:#f5f7fb;
+height:100vh;
+overflow:hidden;
 }
 
-.container{
-  max-width:500px;
-  margin:auto;
+.header{
+height:60px;
+background:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+font-weight:700;
+color:#2563eb;
+border-bottom:1px solid #e5e7eb;
 }
 
-.card{
-  background:#fff;
-  border-radius:15px;
-  padding:15px;
-  margin-bottom:15px;
-  box-shadow:0 2px 10px rgba(0,0,0,.08);
+.main{
+height:calc(100vh - 60px);
+display:grid;
+grid-template-columns:
+300px
+1fr
+350px;
+gap:10px;
+padding:10px;
 }
 
-h2,h3{
-  margin-top:0;
-  text-align:center;
+.panel{
+background:#fff;
+border-radius:14px;
+border:1px solid #e5e7eb;
+overflow:hidden;
+display:flex;
+flex-direction:column;
 }
 
-.mode-wrap{
-  display:flex;
-  gap:10px;
+.panel-header{
+padding:12px;
+font-weight:700;
+border-bottom:1px solid #eee;
+}
+
+.left-content{
+flex:1;
+overflow:auto;
+padding:10px;
+}
+
+.center-content{
+padding:15px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.right-content{
+padding:10px;
+height:100%;
+}
+
+.mode-row{
+display:flex;
+gap:10px;
 }
 
 .mode-btn{
-  flex:1;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  font-weight:bold;
-  cursor:pointer;
-}
 
-.active{
-  background:#007bff;
-  color:white;
-}
+flex:1;
 
-.reader{
-  width:100%;
-}
+height:50px;
 
-#reader{
-  width:100%;
-}
+border-radius:12px;
 
-.btn{
-  width:100%;
-  border:none;
-  padding:12px;
-  border-radius:10px;
-  color:white;
-  font-weight:bold;
-  margin-top:8px;
-  cursor:pointer;
-}
+border:2px solid;
 
-.start{
-  background:#28a745;
-}
+font-weight:700;
 
-.stop{
-  background:#dc3545;
-}
+cursor:pointer;
 
-.save{
-  background:#007bff;
-}
-
-input{
-  width:100%;
-  padding:12px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  margin-top:10px;
-}
-
-.stats{
-  display:flex;
-  gap:10px;
-}
-
-.stat{
-  flex:1;
-  background:#f7f7f7;
-  padding:10px;
-  border-radius:10px;
-  text-align:center;
-}
-
-.stat span{
-  display:block;
-  font-size:22px;
-  font-weight:bold;
-}
-
-.history-item{
-  border-bottom:1px solid #eee;
-  padding:10px 0;
-}
-
-.badge{
-  display:inline-block;
-  padding:3px 8px;
-  border-radius:6px;
-  font-size:12px;
-  color:white;
+background:#fff;
 }
 
 .pickup{
-  background:#28a745;
+border-color:#2563eb;
+color:#2563eb;
 }
 
 .return{
-  background:#dc3545;
+border-color:#14b8a6;
+color:#14b8a6;
 }
 
-#status{
-  text-align:center;
-  margin-top:10px;
-  font-weight:bold;
+.active-pickup{
+background:#2563eb;
+color:#fff;
+}
+
+.active-return{
+background:#14b8a6;
+color:#fff;
+}
+
+.scan-panel{
+
+display:none;
+
+flex-direction:column;
+
+gap:10px;
+
+padding:12px;
+
+border:1px solid #e5e7eb;
+
+border-radius:12px;
+
+background:#fafafa;
+}
+
+.input{
+
+height:45px;
+
+border:1px solid #d1d5db;
+
+border-radius:10px;
+
+padding:0 12px;
+
+outline:none;
+}
+
+.input:focus{
+border-color:#2563eb;
+}
+
+#reader{
+
+display:none;
+
+width:100%;
+overflow:hidden;
+border-radius:10px;
+}
+
+.result-card{
+
+display:none;
+
+padding:12px;
+
+border-radius:10px;
+
+border:1px solid #e5e7eb;
+
+background:#fff;
+
+font-size:13px;
+}
+
+.action-row{
+display:flex;
+gap:10px;
+}
+
+.btn{
+
+flex:1;
+
+height:45px;
+
+border:none;
+
+border-radius:10px;
+
+font-weight:700;
+
+cursor:pointer;
+}
+
+.btn-save{
+background:#10b981;
+color:white;
+}
+
+.btn-stop{
+background:#ef4444;
+color:white;
+}
+
+.btn-camera{
+background:#2563eb;
+color:white;
+}
+
+.btn-manual{
+background:#6b7280;
+color:white;
+}
+
+.search-box{
+display:flex;
+flex-direction:column;
+gap:10px;
+height:100%;
+}
+
+.search-result{
+flex:1;
+overflow:auto;
+font-size:13px;
+}
+
+.card{
+
+padding:12px;
+
+border-radius:10px;
+
+border:1px solid #e5e7eb;
+
+background:#fff;
+
+margin-bottom:10px;
+}
+
+.toast{
+
+position:fixed;
+
+bottom:20px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+background:#111;
+
+color:#fff;
+
+padding:10px 15px;
+
+border-radius:10px;
+
+z-index:9999;
 }
 
 </style>
@@ -147,102 +283,161 @@ input{
 
 <body>
 
-<div class="container">
+<div class="header">
 
-<div class="card">
-<h2>📦 AWB Scanner</h2>
+PICKUP RETURN SYSTEM
 
-<div class="mode-wrap">
+</div>
+
+<div class="main">
+
+<!-- LEFT -->
+
+<div class="panel">
+
+<div class="panel-header">
+
+Dashboard
+
+</div>
+
+<div
+id="dashboardArea"
+class="left-content">
+
+Loading...
+
+</div>
+
+</div>
+
+<!-- CENTER -->
+
+<div class="panel">
+
+<div class="center-content">
+
+<div class="mode-row">
 
 <button
 id="pickupBtn"
-class="mode-btn active"
-onclick="setMode('Pickup')">
-Pickup </button>
+class="mode-btn pickup"
+onclick="selectType('Pickup')">
+
+Pickup
+
+</button>
 
 <button
 id="returnBtn"
-class="mode-btn"
-onclick="setMode('Return')">
-Return </button>
+class="mode-btn return"
+onclick="selectType('Return')">
+
+Return
+
+</button>
 
 </div>
 
-</div>
+<div
+id="scanPanel"
+class="scan-panel">
 
-<div class="card">
+<button
+class="btn btn-camera"
+onclick="startCamera()">
+
+📷 Camera Scan
+
+</button>
+
+<button
+class="btn btn-manual"
+onclick="focusAWB()">
+
+⌨ Manual / Scanner
+
+</button>
 
 <div id="reader"></div>
 
 <input
-type="text"
-id="awb"
-placeholder="Scanned AWB"
-readonly>
+id="awbInput"
+class="input"
+placeholder="Scan AWB">
+
+<input
+id="orderInput"
+class="input"
+placeholder="Order ID (Manual Fallback)">
+
+<div
+id="resultCard"
+class="result-card">
+
+</div>
+
+<div class="action-row">
 
 <button
-class="btn start"
-onclick="startScanner()">
-Start Scanner </button>
+class="btn btn-save"
+onclick="saveEntry()">
+
+Next
+
+</button>
 
 <button
-class="btn stop"
-onclick="stopScanner()">
-Stop Scanner </button>
+class="btn btn-stop"
+onclick="stopWork()">
+
+Stop
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div class="panel">
+
+<div class="panel-header">
+
+Find Order
+
+</div>
+
+<div class="right-content">
+
+<div class="search-box">
+
+<input
+id="searchInput"
+class="input"
+placeholder="Search AWB / Order ID">
 
 <button
-class="btn save"
-onclick="saveAWB()">
-Save AWB </button>
+class="btn btn-camera"
+onclick="searchOrder()">
 
-<div id="status">
-Ready
-</div>
+Search
 
-</div>
+</button>
 
-<div class="card">
-
-<h3>Dashboard</h3>
-
-<div class="stats">
-
-<div class="stat">
-Today Pickup
-<span id="todayPickup">0</span>
-</div>
-
-<div class="stat">
-Today Return
-<span id="todayReturn">0</span>
-</div>
-
-</div>
-
-<br>
-
-<div class="stats">
-
-<div class="stat">
-Total Pickup
-<span id="totalPickup">0</span>
-</div>
-
-<div class="stat">
-Total Return
-<span id="totalReturn">0</span>
-</div>
+<div
+id="searchResult"
+class="search-result">
 
 </div>
 
 </div>
 
-<div class="card">
-
-<h3>Last 20 Scans</h3>
-
-<div id="history">
-Loading...
 </div>
 
 </div>
@@ -251,10 +446,20 @@ Loading...
 
 <script>
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbyD1oqjBAQUGEVxki1OYeqhL0YGGegmo1TYOdzENbK_Bj3nTyLye_tti6HOm_JsZCW5/exec";
+/* ===================================
+CONFIG
+=================================== */
 
-let currentMode = "Pickup";
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyoLPsN-xHht7jAg-xL3-zN7CFVUmrYwqtjT8Drp9xb5xHsRhjitvjheoo8GiS2Dsf8/exec";
+
+/* ===================================
+GLOBAL
+=================================== */
+
+let currentType = "";
+
+let currentTracking = null;
 
 let html5QrCode = null;
 
@@ -262,230 +467,6 @@ const beep =
 new Audio(
 "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
 );
-
-function setMode(mode){
-
-  currentMode = mode;
-
-  document
-    .getElementById("pickupBtn")
-    .classList.remove("active");
-
-  document
-    .getElementById("returnBtn")
-    .classList.remove("active");
-
-  if(mode==="Pickup"){
-    document
-      .getElementById("pickupBtn")
-      .classList.add("active");
-  }else{
-    document
-      .getElementById("returnBtn")
-      .classList.add("active");
-  }
-
-}
-
-function startScanner(){
-
-  if(html5QrCode){
-    stopScanner();
-  }
-
-  html5QrCode =
-    new Html5Qrcode("reader");
-
-  html5QrCode.start(
-    {
-      facingMode:"environment"
-    },
-    {
-      fps:25,
-      qrbox:{
-        width:250,
-        height:120
-      }
-    },
-
-    function(decodedText){
-
-      document
-        .getElementById("awb")
-        .value =
-        decodedText;
-
-      beep.play();
-
-      stopScanner();
-
-      document
-        .getElementById("status")
-        .innerText =
-        "AWB Scanned";
-
-    }
-
-  ).catch(err=>{
-
-    document
-      .getElementById("status")
-      .innerText =
-      err;
-
-  });
-
-}
-
-function stopScanner(){
-
-  if(html5QrCode){
-
-    html5QrCode
-      .stop()
-      .catch(()=>{});
-
-  }
-
-}
-
-function saveAWB(){
-
-  let awb =
-    document
-      .getElementById("awb")
-      .value
-      .trim();
-
-  if(!awb){
-    alert("Scan AWB First");
-    return;
-  }
-
-  fetch(API_URL,{
-    method:"POST",
-    body:JSON.stringify({
-
-      type:currentMode,
-
-      awb:awb
-
-    })
-  })
-  .then(r=>r.json())
-  .then(()=>{
-
-    document
-      .getElementById("status")
-      .innerText =
-      "Saved Successfully";
-
-    document
-      .getElementById("awb")
-      .value = "";
-
-    loadStats();
-    loadHistory();
-
-  });
-
-}
-
-function loadStats(){
-
-  fetch(API_URL+"?type=stats")
-  .then(r=>r.json())
-  .then(d=>{
-
-    document
-      .getElementById("todayPickup")
-      .innerText =
-      d.todayPickup || 0;
-
-    document
-      .getElementById("todayReturn")
-      .innerText =
-      d.todayReturn || 0;
-
-    document
-      .getElementById("totalPickup")
-      .innerText =
-      d.totalPickup || 0;
-
-    document
-      .getElementById("totalReturn")
-      .innerText =
-      d.totalReturn || 0;
-
-  });
-
-}
-
-function loadHistory(){
-
-  fetch(API_URL+"?type=history")
-  .then(r=>r.json())
-  .then(data=>{
-
-    let html = "";
-
-    if(!data.length){
-
-      html =
-      "No Records Found";
-
-    }else{
-
-      data.forEach(row=>{
-
-        html += `
-
-        <div class="history-item">
-
-        <b>${row.awb}</b>
-
-        <br>
-
-        <span class="badge ${
-          row.type.toLowerCase()
-        }">
-
-        ${row.type}
-
-        </span>
-
-        <br>
-
-        ${row.date}
-        ${row.time}
-
-        </div>
-
-        `;
-
-      });
-
-    }
-
-    document
-      .getElementById("history")
-      .innerHTML =
-      html;
-
-  });
-
-}
-
-loadStats();
-
-loadHistory();
-
-setInterval(function(){
-
-  loadStats();
-  loadHistory();
-
-},5000);
 
 </script>
 
