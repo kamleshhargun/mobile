@@ -341,12 +341,21 @@ PICKUP RETURN SYSTEM
 <div class="panel">
 
 <div class="panel-header">
-  <button
-class="btn btn-camera"
-onclick="bulkUpdate()">
+  <input
+type="date"
+id="bulkDate">
 
-Bulk Update
+<select id="bulkType">
+  <option value="Pickup">
+    Pickup
+  </option>
+  <option value="Return">
+    Return
+  </option>
+</select>
 
+<button onclick="bulkUpdate()">
+  Bulk Update
 </button>
 
 Dashboard
@@ -1746,24 +1755,23 @@ function hideLoader(){
 }
   async function bulkUpdate(){
 
-  const date = prompt(
-    "Date (dd/MM/yyyy)"
-  );
+  const date =
+    document.getElementById("bulkDate").value;
 
-  if(!date) return;
+  const type =
+    document.getElementById("bulkType").value;
 
-  const type = prompt(
-    "pickup OR return"
-  );
+  if(!date || !type){
+    toast("Select Date & Type");
+    return;
+  }
 
-  if(!type) return;
+  const formattedDate =
+    new Date(date)
+      .toLocaleDateString("en-GB");
 
-  showLoader();
-
-  try{
-
-    const response =
-      await fetch(
+  const response =
+    await fetch(
 
       API_URL +
 
@@ -1771,64 +1779,24 @@ function hideLoader(){
 
       "&date=" +
 
-      encodeURIComponent(
-        date
-      ) +
+      encodeURIComponent(formattedDate) +
 
       "&type=" +
 
-      encodeURIComponent(
-        type
-      )
+      encodeURIComponent(type)
 
     );
 
-    const result =
-      await response.json();
+  const result =
+    await response.json();
 
-    hideLoader();
-
-    toast(
-
-      "Updated : " +
-
-      result.updated +
-
-      " | Skipped : " +
-
-      result.skipped +
-
-      " | Failed : " +
-
-      result.failed
-
-    );
-
-  }catch(err){
-
-    hideLoader();
-
-    toast(
-      "Bulk Update Failed"
-    );
-
-  }
+  toast(
+    `Updated:${result.updated}
+     Skipped:${result.skipped}
+     Failed:${result.failed}`
+  );
 
 }
-  document.addEventListener(
-  "keydown",
-  function(e){
-
-    if(
-      e.key === "Escape"
-    ){
-
-      stopWork();
-
-    }
-
-  }
-);
 </script>
 <div id="loadingOverlay" style="
 display:none;
