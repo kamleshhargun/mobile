@@ -341,34 +341,61 @@ HARSIDHI VENTURES PICKUP RETURN SYSTEM
 <div class="panel">
 
 <div class="panel-header">
+  <div class="card">
+
+  <h3>Bulk Update</h3>
+
   <input
-type="date"
-id="bulkDate">
+    type="date"
+    id="bulkDate">
 
-<select id="bulkType">
-  <option value="Pickup">
-    Pickup
-  </option>
-  <option value="Return">
-    Return
-  </option>
-</select>
+  <button
+    class="btn btn-camera"
+    onclick="loadBulkCounts()">
 
-<button onclick="bulkUpdate()">
-  Bulk Update
-</button>
+    Load Counts
 
-Dashboard
+  </button>
 
-</div>
+  <hr>
 
-<div
-id="dashboardArea"
-class="left-content">
+  <div id="bulkCounts">
 
-Loading...
+    Pickup : 0
 
-</div>
+    <br>
+
+    Return : 0
+
+  </div>
+
+  <br>
+
+  <button
+    id="pickupUpdateBtn"
+    class="btn btn-save"
+    onclick="startBulkUpdate('Pickup')">
+
+    Update Pickup
+
+  </button>
+
+  <button
+    id="returnUpdateBtn"
+    class="btn btn-save"
+    onclick="startBulkUpdate('Return')">
+
+    Update Return
+
+  </button>
+
+  <hr>
+
+  <div id="bulkProgress">
+
+    Waiting...
+
+  </div>
 
 </div>
 
@@ -519,12 +546,13 @@ CONFIG
 =================================== */
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycby10ip2rbaF9pnjjI83auTWHQMgYCppaHWe-mc_wnfirztb8VN5Y4g-UJqzq3zlQdHp/exec";
+"https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
 
 /* ===================================
 GLOBAL
 =================================== */
-
+let bulkRunning = false;
+  
 let currentType = "";
 
 let currentTracking = null;
@@ -1922,6 +1950,267 @@ function hideLoader(){
   );
 
 }
+  async function loadBulkCounts(){
+
+  const date =
+    document
+      .getElementById(
+        "bulkDate"
+      )
+      .value;
+
+  if(!date){
+
+    toast(
+      "Select Date"
+    );
+
+    return;
+
+  }
+
+  const formatted =
+    formatInputDate(
+      date
+    );
+
+  const response =
+    await fetch(
+
+      API_URL +
+
+      "?action=getBulkCounts" +
+
+      "&date=" +
+
+      encodeURIComponent(
+        formatted
+      )
+
+    );
+
+  const data =
+    await response.json();
+
+  document
+    .getElementById(
+      "bulkCounts"
+    )
+    .innerHTML =
+
+    `
+    Pickup : ${data.pickup || 0}
+    <br>
+    Return : ${data.return || 0}
+    `;
+
+}
+  async function startBulkUpdate(type){
+
+  if(bulkRunning){
+
+    toast(
+      "Another task running"
+    );
+
+    return;
+
+  }
+
+  bulkRunning = true;
+
+  document
+    .getElementById(
+      "pickupUpdateBtn"
+    )
+    .disabled = true;
+
+  document
+    .getElementById(
+      "returnUpdateBtn"
+    )
+    .disabled = true;
+
+  try{
+
+    const date =
+      document
+        .getElementById(
+          "bulkDate"
+        )
+        .value;
+
+    if(!date){
+
+      toast(
+        "Select Date"
+      );
+
+      return;
+
+    }
+
+    const formatted =
+      formatInputDate(
+        date
+      );
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=getBulkRows" +
+
+        "&date=" +
+
+        encodeURIComponent(
+          formatted
+        ) +
+
+        "&type=" +
+
+        encodeURIComponent(
+          type
+        )
+
+      );
+
+    const result =
+      await response.json();
+
+    const rows =
+      result.rows || [];
+
+    let updated = 0;
+    let failed = 0;
+
+    for(
+      let i = 0;
+      i < rows.length;
+      i++
+    ){
+
+      document
+        .getElementById(
+          "bulkProgress"
+        )
+        .innerHTML =
+
+        `
+        ${i+1}
+        /
+        ${rows.length}
+
+        Updating...
+        `;
+
+      try{
+
+        const res =
+          await fetch(
+
+            API_URL +
+
+            "?action=updateSingleAWB" +
+
+            "&awb=" +
+
+            encodeURIComponent(
+              rows[i].awb
+            )
+
+          );
+
+        const data =
+          await res.json();
+
+        if(
+          data.success
+        ){
+
+          updated++;
+
+        }else{
+
+          failed++;
+
+        }
+
+      }catch(err){
+
+        failed++;
+
+      }
+
+    }
+
+    document
+      .getElementById(
+        "bulkProgress"
+      )
+      .innerHTML =
+
+      `
+      ✅ Done
+
+      <br>
+
+      Updated :
+      ${updated}
+
+      <br>
+
+      Failed :
+      ${failed}
+
+      <br>
+
+      Total :
+      ${rows.length}
+      `;
+
+  }finally{
+
+    bulkRunning = false;
+
+    document
+      .getElementById(
+        "pickupUpdateBtn"
+      )
+      .disabled = false;
+
+    document
+      .getElementById(
+        "returnUpdateBtn"
+      )
+      .disabled = false;
+
+  }
+
+}
+  function formatInputDate(dateStr){
+
+  const d =
+    new Date(dateStr);
+
+  const dd =
+    String(
+      d.getDate()
+    ).padStart(2,"0");
+
+  const mm =
+    String(
+      d.getMonth()+1
+    ).padStart(2,"0");
+
+  const yyyy =
+    d.getFullYear();
+
+  return `${dd}/${mm}/${yyyy}`;
+
+}
+  
 </script>
 <div id="loadingOverlay" style="
 display:none;
