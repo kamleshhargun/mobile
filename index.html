@@ -1318,12 +1318,12 @@ function renderDashboard(data){
 
   <div class="card">
     <b>Yesterday Pickup</b>
-    <h2>${data.yesterdayPickup}</h2>
+    <h2>${data.yesterdayPickup || 0}</h2>
   </div>
 
   <div class="card">
     <b>Yesterday Return</b>
-    <h2>${data.yesterdayReturn}</h2>
+    <h2>${data.yesterdayReturn || 0}</h2>
   </div>
 
   <div class="card">
