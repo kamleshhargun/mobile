@@ -1737,7 +1737,7 @@ async function saveLatestStatus(){
             JSON.stringify({
 
               action:
-                "updateOne",
+                "updateSingleAWB",
 
               awb:
                 latestTrackingData.awb
@@ -1751,6 +1751,11 @@ async function saveLatestStatus(){
     const result =
       await response.json();
 
+    console.log(
+      "Update Result:",
+      result
+    );
+
     if(result.success){
 
       toast(
@@ -1761,9 +1766,22 @@ async function saveLatestStatus(){
 
     }else{
 
+      console.log(
+        result
+      );
+
+      alert(
+        JSON.stringify(
+          result
+        )
+      );
+
       toast(
+
         result.message ||
+
         "Update Failed"
+
       );
 
     }
@@ -1771,6 +1789,11 @@ async function saveLatestStatus(){
   }catch(err){
 
     console.log(err);
+
+    alert(
+      "Update Failed : " +
+      err
+    );
 
     toast(
       "Update Failed"
