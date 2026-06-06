@@ -1701,7 +1701,7 @@ async function refreshCurrentStatus(awb){
   }
 
 }
-  /* ===================================
+/* ===================================
 SAVE LATEST STATUS
 =================================== */
 
@@ -1722,29 +1722,15 @@ async function saveLatestStatus(){
     const response =
       await fetch(
 
-        API_URL,
+        API_URL +
 
-        {
+        "?action=updateSingleAWB" +
 
-          method:"POST",
+        "&awb=" +
 
-          headers:{
-            "Content-Type":
-            "application/json"
-          },
-
-          body:
-            JSON.stringify({
-
-              action:
-                "updateSingleAWB",
-
-              awb:
-                latestTrackingData.awb
-
-            })
-
-        }
+        encodeURIComponent(
+          latestTrackingData.awb
+        )
 
       );
 
@@ -1766,16 +1752,6 @@ async function saveLatestStatus(){
 
     }else{
 
-      console.log(
-        result
-      );
-
-      alert(
-        JSON.stringify(
-          result
-        )
-      );
-
       toast(
 
         result.message ||
@@ -1789,11 +1765,6 @@ async function saveLatestStatus(){
   }catch(err){
 
     console.log(err);
-
-    alert(
-      "Update Failed : " +
-      err
-    );
 
     toast(
       "Update Failed"
