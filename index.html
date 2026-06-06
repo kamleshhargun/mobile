@@ -1307,46 +1307,36 @@ function renderDashboard(data){
   .innerHTML = `
 
   <div class="card">
-
     <b>Today Pickup</b>
-
-    <h2>
-    ${data.todayPickup || 0}
-    </h2>
-
+    <h2>${data.todayPickup}</h2>
   </div>
 
   <div class="card">
-
     <b>Today Return</b>
-
-    <h2>
-    ${data.todayReturn || 0}
-    </h2>
-
+    <h2>${data.todayReturn}</h2>
   </div>
 
   <div class="card">
-
-    <b>Total Pickup</b>
-
-    <h2>
-    ${data.totalPickup || 0}
-    </h2>
-
+    <b>Yesterday Pickup</b>
+    <h2>${data.yesterdayPickup}</h2>
   </div>
 
   <div class="card">
-
-    <b>Total Return</b>
-
-    <h2>
-    ${data.totalReturn || 0}
-    </h2>
-
+    <b>Yesterday Return</b>
+    <h2>${data.yesterdayReturn}</h2>
   </div>
 
-  
+  <div class="card">
+    <b>${data.monthName} Pickup</b>
+    <h2>${data.monthPickup}</h2>
+  </div>
+
+  <div class="card">
+    <b>${data.monthName} Return</b>
+    <h2>${data.monthReturn}</h2>
+  </div>
+
+  <div id="recentArea"></div>
 
   `;
 
