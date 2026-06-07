@@ -27,6 +27,7 @@ body{background:#f3f6fb;height:100vh;overflow:hidden;color:#1f2937}
 .panel{background:#fff;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 15px rgba(0,0,0,.05)}
 .panel-header{padding:14px 16px;font-weight:700;font-size:15px;background:#fafbfc;border-bottom:1px solid #eef2f7}
 .left-content,.right-content{padding:12px;overflow:auto}
+  #dashboardArea{display:grid;gap:10px;margin-bottom:10px}
 .center-content{padding:15px;display:flex;flex-direction:column;gap:12px}
 .mode-row,.action-row{display:flex;gap:10px}
 .mode-btn{flex:1;height:50px;border-radius:12px;border:2px solid;font-weight:700;background:#fff;cursor:pointer;transition:.2s}
@@ -58,202 +59,66 @@ body{background:#f3f6fb;height:100vh;overflow:hidden;color:#1f2937}
 
 <body>
 
-  <div class="header">
-    HARSIDHI VENTURES PICKUP RETURN SYSTEM
-  </div>
+<div class="header">HARSIDHI VENTURES PICKUP RETURN SYSTEM</div>
 
-  <div class="main">
+<div class="main">
 
-    <!-- LEFT PANEL -->
-    <div class="panel">
+<div class="panel">
+<div class="panel-header">Dashboard & Bulk Update</div>
+<div class="left-content">
+<div id="dashboardArea"></div>
+<div class="card">
+<h3>Bulk Update</h3>
+<input type="date" id="bulkDate">
+<button class="btn btn-camera" onclick="loadBulkCounts()">Load Counts</button>
+<hr>
+<div id="bulkCounts">Pickup : 0<br>Return : 0</div>
+<br>
+<button id="pickupUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Pickup')">Update Pickup</button>
+<button id="returnUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Return')">Update Return</button>
+<hr>
+<div id="bulkProgress">Waiting...</div>
+</div>
+</div>
+</div>
 
-      <div class="panel-header">
-        Bulk Update
-      </div>
+<div class="panel">
+<div class="center-content">
+<div class="mode-row">
+<button id="pickupBtn" class="mode-btn pickup" onclick="selectType('Pickup')">Pickup</button>
+<button id="returnBtn" class="mode-btn return" onclick="selectType('Return')">Return</button>
+</div>
 
-      <div class="card">
+<div id="scanPanel" class="scan-panel">
+<button class="btn btn-camera" onclick="startCamera()">📷 Camera Scan</button>
+<button class="btn btn-manual" onclick="focusAWB()">⌨ Manual / Scanner</button>
+<div id="reader"></div>
+<input id="awbInput" class="input" placeholder="Scan AWB">
+<input id="orderInput" class="input" placeholder="Order ID (Manual Fallback)">
+<div id="resultCard" class="result-card"></div>
+<div class="action-row">
+<button class="btn btn-save" onclick="saveEntry()">Next</button>
+<button class="btn btn-stop" onclick="stopWork()">Stop</button>
+</div>
+</div>
+</div>
+</div>
 
-        <h3>Bulk Update</h3>
+<div class="panel">
+<div class="panel-header">Find Order</div>
+<div class="right-content">
+<div class="search-box">
+<input id="searchInput" class="input" placeholder="Search AWB / Order ID">
+<button class="btn btn-camera small-btn" onclick="searchOrder()">Search</button>
+<button id="updateSingleBtn" class="btn btn-save small-btn" style="display:none;">Update Sheet</button>
+<div id="searchResult" class="search-result"></div>
+</div>
+</div>
+</div>
 
-        <input type="date" id="bulkDate">
+</div>
 
-        <button
-          class="btn btn-camera"
-          onclick="loadBulkCounts()">
-          Load Counts
-        </button>
-
-        <hr>
-
-        <div id="bulkCounts">
-          Pickup : 0
-          <br>
-          Return : 0
-        </div>
-
-        <br>
-
-        <button
-          id="pickupUpdateBtn"
-          class="btn btn-save"
-          onclick="startBulkUpdate('Pickup')">
-          Update Pickup
-        </button>
-
-        <button
-          id="returnUpdateBtn"
-          class="btn btn-save"
-          onclick="startBulkUpdate('Return')">
-          Update Return
-        </button>
-
-        <hr>
-
-        <div id="bulkProgress">
-          Waiting...
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- CENTER PANEL -->
-    <div class="panel">
-
-      <div class="center-content">
-
-        <div class="mode-row">
-
-          <button
-            id="pickupBtn"
-            class="mode-btn pickup"
-            onclick="selectType('Pickup')">
-            Pickup
-          </button>
-
-          <button
-            id="returnBtn"
-            class="mode-btn return"
-            onclick="selectType('Return')">
-            Return
-          </button>
-
-        </div>
-
-        <div id="scanPanel" class="scan-panel">
-
-          <button
-            class="btn btn-camera"
-            onclick="startCamera()">
-            📷 Camera Scan
-          </button>
-
-          <button
-            class="btn btn-manual"
-            onclick="focusAWB()">
-            ⌨ Manual / Scanner
-          </button>
-
-          <div id="reader"></div>
-
-          <input
-            id="awbInput"
-            class="input"
-            placeholder="Scan AWB">
-
-          <input
-            id="orderInput"
-            class="input"
-            placeholder="Order ID (Manual Fallback)">
-
-          <div
-            id="resultCard"
-            class="result-card">
-          </div>
-
-          <div class="action-row">
-
-            <button
-              class="btn btn-save"
-              onclick="saveEntry()">
-              Next
-            </button>
-
-            <button
-              class="btn btn-stop"
-              onclick="stopWork()">
-              Stop
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- RIGHT PANEL -->
-    <div class="panel">
-
-      <div class="panel-header">
-        Find Order
-      </div>
-
-      <div class="right-content">
-
-        <div class="search-box">
-
-          <input
-            id="searchInput"
-            class="input"
-            placeholder="Search AWB / Order ID">
-
-          <button
-            class="btn btn-camera small-btn"
-            onclick="searchOrder()">
-            Search
-          </button>
-
-          <button
-            id="updateSingleBtn"
-            class="btn btn-save small-btn"
-            style="display:none;">
-            Update Sheet
-          </button>
-
-          <div
-            id="searchResult"
-            class="search-result">
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- LOADING OVERLAY -->
-  <div
-    id="loadingOverlay"
-    style="
-      display:none;
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      bottom:0;
-      background:rgba(255,255,255,.85);
-      z-index:99999;
-      align-items:center;
-      justify-content:center;
-      font-size:20px;
-      font-weight:700;
-    ">
-    Loading...
-  </div>
+<div id="loadingOverlay">Loading...</div>
 
 </body>
 
@@ -1046,45 +911,18 @@ RENDER DASHBOARD
 
 function renderDashboard(data){
 
-  document
-  .getElementById(
-    "dashboardArea"
-  )
-  .innerHTML = `
+document.getElementById("dashboardArea").innerHTML=`
 
-  <div class="card">
-    <b>Today Pickup</b>
-    <h2>${data.todayPickup}</h2>
-  </div>
+<div class="card"><b>Today Pickup</b><h2>${data.todayPickup||0}</h2></div>
+<div class="card"><b>Today Return</b><h2>${data.todayReturn||0}</h2></div>
+<div class="card"><b>Yesterday Pickup</b><h2>${data.yesterdayPickup||0}</h2></div>
+<div class="card"><b>Yesterday Return</b><h2>${data.yesterdayReturn||0}</h2></div>
+<div class="card"><b>${data.monthName||''} Pickup</b><h2>${data.monthPickup||0}</h2></div>
+<div class="card"><b>${data.monthName||''} Return</b><h2>${data.monthReturn||0}</h2></div>
 
-  <div class="card">
-    <b>Today Return</b>
-    <h2>${data.todayReturn}</h2>
-  </div>
+<div id="recentArea"></div>
 
-  <div class="card">
-    <b>Yesterday Pickup</b>
-    <h2>${data.yesterdayPickup || 0}</h2>
-  </div>
-
-  <div class="card">
-    <b>Yesterday Return</b>
-    <h2>${data.yesterdayReturn || 0}</h2>
-  </div>
-
-  <div class="card">
-    <b>${data.monthName} Pickup</b>
-    <h2>${data.monthPickup}</h2>
-  </div>
-
-  <div class="card">
-    <b>${data.monthName} Return</b>
-    <h2>${data.monthReturn}</h2>
-  </div>
-
-  <div id="recentArea"></div>
-
-  `;
+`;
 
 }
 
