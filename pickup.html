@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Pickup Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+
+min-height:100vh;
+
+background-color:#ecfdf5;
+
+background-image:
+url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ctext x='10' y='35' font-size='22' opacity='0.07'%3E📦%3C/text%3E%3Ctext x='70' y='90' font-size='20' opacity='0.07'%3E🚚%3C/text%3E%3C/svg%3E");
+
+}
+
+.header{
+
+height:65px;
+
+background:#16a34a;
+
+color:white;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:22px;
+
+font-weight:700;
+
+position:sticky;
+
+top:0;
+
+z-index:1000;
+
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+
+}
+
+.container{
+
+padding:15px;
+
+display:grid;
+
+grid-template-columns:
+320px
+1fr
+350px;
+
+gap:15px;
+
+}
+
+.panel{
+
+background:white;
+
+border-radius:18px;
+
+overflow:hidden;
+
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+}
+
+.panel-header{
+
+padding:14px;
+
+font-weight:700;
+
+background:#f0fdf4;
+
+border-bottom:1px solid #dcfce7;
+
+}
+
+.content{
+
+padding:15px;
+
+}
+
+.dashboard{
+
+display:grid;
+
+grid-template-columns:
+repeat(2,1fr);
+
+gap:10px;
+
+margin-bottom:15px;
+
+}
+
+.stat-card{
+
+background:#f0fdf4;
+
+padding:12px;
+
+border-radius:12px;
+
+text-align:center;
+
+}
+
+.stat-card h3{
+
+font-size:14px;
+
+color:#15803d;
+
+margin-bottom:6px;
+
+}
+
+.stat-card h2{
+
+font-size:22px;
+
+color:#166534;
+
+}
+
+.input{
+
+width:100%;
+
+height:48px;
+
+border:1px solid #d1d5db;
+
+border-radius:12px;
+
+padding:0 12px;
+
+margin-bottom:10px;
+
+}
+
+.btn{
+
+border:none;
+
+height:48px;
+
+padding:0 15px;
+
+border-radius:12px;
+
+font-weight:600;
+
+cursor:pointer;
+
+width:100%;
+
+margin-bottom:10px;
+
+}
+
+.btn-green{
+
+background:#16a34a;
+
+color:white;
+
+}
+
+.btn-blue{
+
+background:#2563eb;
+
+color:white;
+
+}
+
+.btn-red{
+
+background:#dc2626;
+
+color:white;
+
+}
+
+.btn-gray{
+
+background:#6b7280;
+
+color:white;
+
+}
+
+#reader{
+
+display:none;
+
+overflow:hidden;
+
+border-radius:15px;
+
+}
+
+.result-card{
+
+display:none;
+
+padding:15px;
+
+border-radius:12px;
+
+background:#f9fafb;
+
+border:1px solid #e5e7eb;
+
+font-size:14px;
+
+line-height:1.8;
+
+margin-top:10px;
+
+}
+
+.search-result{
+
+max-height:600px;
+
+overflow:auto;
+
+}
+
+.record{
+
+background:#f9fafb;
+
+padding:10px;
+
+border-radius:10px;
+
+margin-bottom:10px;
+
+font-size:13px;
+
+}
+
+.toast{
+
+position:fixed;
+
+bottom:20px;
+
+left:50%;
+
+transform:translateX(-50%);
+
+background:#111827;
+
+color:white;
+
+padding:12px 20px;
+
+border-radius:10px;
+
+z-index:99999;
+
+}
+
+#loadingOverlay{
+
+display:none;
+
+position:fixed;
+
+top:0;
+left:0;
+right:0;
+bottom:0;
+
+background:rgba(255,255,255,.8);
+
+justify-content:center;
+align-items:center;
+
+font-size:22px;
+font-weight:700;
+
+z-index:999999;
+
+}
+
+@media(max-width:900px){
+
+.container{
+
+grid-template-columns:1fr;
+
+}
+
+.dashboard{
+
+grid-template-columns:1fr 1fr;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+📦 PICKUP MANAGEMENT
+</div>
+
+<div class="container">
+
+<!-- LEFT -->
+
+<div class="panel">
+
+<div class="panel-header">
+Bulk Update
+</div>
+
+<div class="content">
+
+<input
+type="date"
+id="bulkDate"
+class="input">
+
+<button
+class="btn btn-blue"
+onclick="loadBulkCounts()">
+Load Counts
+</button>
+
+<div id="bulkCounts">
+Pickup : 0<br>
+Return : 0
+</div>
+
+<br>
+
+<button
+id="pickupUpdateBtn"
+class="btn btn-green"
+onclick="startBulkUpdate('Pickup')">
+Update Pickup
+</button>
+
+<div id="bulkProgress">
+Waiting...
+</div>
+
+</div>
+
+</div>
+
+<!-- CENTER -->
+
+<div class="panel">
+
+<div class="panel-header">
+Scan Pickup AWB
+</div>
+
+<div class="content">
+
+<div class="dashboard">
+
+<div class="stat-card">
+<h3>Today Pickup</h3>
+<h2 id="todayPickup">0</h2>
+</div>
+
+<div class="stat-card">
+<h3>Month Pickup</h3>
+<h2 id="monthPickup">0</h2>
+</div>
+
+</div>
+
+<button
+class="btn btn-blue"
+onclick="startCamera()">
+📷 Camera Scan
+</button>
+
+<button
+class="btn btn-gray"
+onclick="focusAWB()">
+⌨ Scanner / Manual
+</button>
+
+<div id="reader"></div>
+
+<input
+id="awbInput"
+class="input"
+placeholder="Scan AWB">
+
+<input
+id="orderInput"
+class="input"
+placeholder="Order ID">
+
+<div
+id="resultCard"
+class="result-card">
+</div>
+
+<button
+class="btn btn-green"
+onclick="saveEntry()">
+Save Pickup
+</button>
+
+<button
+class="btn btn-red"
+onclick="stopWork()">
+Stop
+</button>
+
+</div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div class="panel">
+
+<div class="panel-header">
+Search Orders
+</div>
+
+<div class="content">
+
+<input
+id="searchInput"
+class="input"
+placeholder="Search AWB / Order">
+
+<button
+class="btn btn-blue"
+onclick="searchOrder()">
+Search
+</button>
+
+<div
+id="searchResult"
+class="search-result">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="loadingOverlay">
+Loading...
+</div>
+<script>
+
+/* =========================================
+CONFIG
+========================================= */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
+
+let currentTracking = null;
+let latestTrackingData = null;
+let html5QrCode = null;
+let bulkRunning = false;
+
+const beep =
+new Audio(
+"https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
+);
+
+/* =========================================
+TOAST
+========================================= */
+
+function toast(msg){
+
+  const t =
+    document.createElement("div");
+
+  t.className = "toast";
+  t.innerText = msg;
+
+  document.body.appendChild(t);
+
+  setTimeout(()=>{
+    t.remove();
+  },2000);
+
+}
+
+/* =========================================
+LOADER
+========================================= */
+
+function showLoader(){
+
+  document
+    .getElementById("loadingOverlay")
+    .style.display = "flex";
+
+}
+
+function hideLoader(){
+
+  document
+    .getElementById("loadingOverlay")
+    .style.display = "none";
+
+}
+
+/* =========================================
+FOCUS
+========================================= */
+
+function focusAWB(){
+
+  document
+    .getElementById("awbInput")
+    .focus();
+
+}
+
+/* =========================================
+CLEAR FORM
+========================================= */
+
+function clearForm(){
+
+  currentTracking = null;
+
+  document
+    .getElementById("awbInput")
+    .value = "";
+
+  document
+    .getElementById("orderInput")
+    .value = "";
+
+  document
+    .getElementById("resultCard")
+    .style.display = "none";
+
+  document
+    .getElementById("resultCard")
+    .innerHTML = "";
+
+}
+
+/* =========================================
+CAMERA START
+========================================= */
+
+async function startCamera(){
+
+  try{
+
+    if(html5QrCode){
+
+      await stopCamera();
+
+    }
+
+    document
+      .getElementById("reader")
+      .style.display = "block";
+
+    html5QrCode =
+      new Html5Qrcode(
+        "reader"
+      );
+
+    await html5QrCode.start(
+
+      { facingMode:"environment" },
+
+      {
+        fps:20,
+        qrbox:{
+          width:280,
+          height:140
+        }
+      },
+
+      function(decodedText){
+
+        document
+          .getElementById("awbInput")
+          .value = decodedText;
+
+        beep.play();
+
+        stopCamera();
+
+        trackShipment();
+
+      }
+
+    );
+
+  }catch(err){
+
+    toast("Camera Error");
+
+  }
+
+}
+
+/* =========================================
+STOP CAMERA
+========================================= */
+
+async function stopCamera(){
+
+  try{
+
+    if(html5QrCode){
+
+      await html5QrCode.stop();
+      await html5QrCode.clear();
+
+      html5QrCode = null;
+
+    }
+
+  }catch(err){}
+
+  document
+    .getElementById("reader")
+    .style.display = "none";
+
+}
+
+/* =========================================
+AWB ENTER
+========================================= */
+
+document
+.getElementById("awbInput")
+.addEventListener(
+"keydown",
+function(e){
+
+  if(e.key==="Enter"){
+
+    trackShipment();
+
+  }
+
+}
+);
+
+/* =========================================
+TRACK SHIPMENT
+========================================= */
+
+async function trackShipment(){
+
+  const awb =
+
+    document
+      .getElementById("awbInput")
+      .value
+      .trim();
+
+  if(!awb){
+
+    toast("Scan AWB");
+    return;
+
+  }
+
+  showLoader();
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=trackShipment&awb=" +
+
+        encodeURIComponent(awb)
+
+      );
+
+    const data =
+      await response.json();
+
+    hideLoader();
+
+    if(!data.success){
+
+      toast("Tracking Not Found");
+      return;
+
+    }
+
+    currentTracking = data;
+
+    renderTracking(data);
+
+  }
+  catch(err){
+
+    hideLoader();
+
+    toast("Tracking Error");
+
+  }
+
+}
+
+/* =========================================
+RENDER TRACKING
+========================================= */
+
+function renderTracking(data){
+
+  const card =
+    document.getElementById("resultCard");
+
+  card.style.display = "block";
+
+  card.innerHTML = `
+
+    <b>AWB :</b> ${data.awb || ""}<br>
+
+    <b>Order :</b> ${data.orderId || ""}<br>
+
+    <b>Status :</b> ${data.status || ""}<br>
+
+    <b>Courier :</b> ${data.courier || ""}<br>
+
+    <b>Name :</b> ${data.customerName || ""}<br>
+
+    <b>City :</b> ${data.city || ""}
+
+  `;
+
+  document
+    .getElementById("orderInput")
+    .value =
+    data.orderId || "";
+
+}
+
+/* =========================================
+SAVE PICKUP
+========================================= */
+
+async function saveEntry(){
+
+  const awb =
+    document
+      .getElementById("awbInput")
+      .value
+      .trim();
+
+  if(!awb){
+
+    toast("AWB Missing");
+    return;
+
+  }
+
+  const payload = {
+
+    type:"Pickup",
+
+    awb:awb,
+
+    orderId:
+      document
+        .getElementById("orderInput")
+        .value
+        .trim(),
+
+    courier:
+      currentTracking?.courier || "",
+
+    status:
+      currentTracking?.status || "",
+
+    customerName:
+      currentTracking?.customerName || "",
+
+    city:
+      currentTracking?.city || "",
+
+    state:
+      currentTracking?.state || "",
+
+    destination:
+      currentTracking?.destination || "",
+
+    pickupDate:
+      currentTracking?.pickupDate || "",
+
+    deliveredDate:
+      currentTracking?.deliveredDate || "",
+
+    expectedDate:
+      currentTracking?.expectedDate || "",
+
+    isRTO:
+      currentTracking?.isRTO || false
+
+  };
+
+  showLoader();
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL,
+
+        {
+
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+            "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify({
+
+              action:"saveEntry",
+
+              payload:payload
+
+            })
+
+        }
+
+      );
+
+    const result =
+      await response.json();
+
+    hideLoader();
+
+    if(result.duplicate){
+
+      toast("Duplicate AWB");
+      return;
+
+    }
+
+    if(!result.success){
+
+      toast(result.message);
+      return;
+
+    }
+
+    beep.play();
+
+    toast("Pickup Saved");
+
+    clearForm();
+
+    loadDashboard();
+
+  }
+  catch(err){
+
+    hideLoader();
+
+    toast("Save Failed");
+
+  }
+
+}
+
+/* =========================================
+SEARCH ORDER
+========================================= */
+
+async function searchOrder(){
+
+  const keyword =
+
+    document
+      .getElementById("searchInput")
+      .value
+      .trim();
+
+  if(!keyword){
+
+    toast("Enter Search");
+    return;
+
+  }
+
+  const box =
+    document.getElementById(
+      "searchResult"
+    );
+
+  box.innerHTML =
+    "Searching...";
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=searchOrder" +
+
+        "&keyword=" +
+
+        encodeURIComponent(keyword)
+
+      );
+
+    const data =
+      await response.json();
+
+    if(!data.success){
+
+      box.innerHTML =
+      "No Record Found";
+
+      return;
+
+    }
+
+    box.innerHTML = `
+
+      <div class="record">
+
+      <b>AWB</b><br>
+      ${data.awb}<br><br>
+
+      <b>Order</b><br>
+      ${data.orderId}<br><br>
+
+      <b>Status</b><br>
+      ${data.status}<br><br>
+
+      <button
+      class="btn btn-green"
+      onclick="refreshCurrentStatus('${data.awb}')">
+
+      Current Status
+
+      </button>
+
+      </div>
+
+    `;
+
+  }
+  catch(err){
+
+    box.innerHTML = "Error";
+
+  }
+
+}
+
+/* =========================================
+CURRENT STATUS
+========================================= */
+
+async function refreshCurrentStatus(
+awb
+){
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=trackShipment" +
+
+        "&awb=" +
+
+        encodeURIComponent(awb)
+
+      );
+
+    const data =
+      await response.json();
+
+    latestTrackingData = data;
+
+    document
+      .getElementById(
+        "searchResult"
+      )
+      .innerHTML += `
+
+      <div class="record">
+
+      <b>Status</b><br>
+      ${data.status}<br><br>
+
+      <button
+      class="btn btn-blue"
+      onclick="saveLatestStatus()">
+
+      Update Sheet
+
+      </button>
+
+      </div>
+
+      `;
+
+  }
+  catch(err){
+
+    toast("Tracking Error");
+
+  }
+
+}
+
+/* =========================================
+UPDATE SHEET
+========================================= */
+
+async function saveLatestStatus(){
+
+  if(!latestTrackingData){
+
+    return;
+
+  }
+
+  const response =
+    await fetch(
+
+      API_URL +
+
+      "?action=updateSingleAWB" +
+
+      "&awb=" +
+
+      encodeURIComponent(
+        latestTrackingData.awb
+      )
+
+    );
+
+  const result =
+    await response.json();
+
+  if(result.success){
+
+    toast("Sheet Updated");
+
+  }else{
+
+    toast(
+      result.message ||
+      "Failed"
+    );
+
+  }
+
+}
+
+/* =========================================
+DASHBOARD
+========================================= */
+
+async function loadDashboard(){
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=getDashboardCounts"
+
+      );
+
+    const data =
+      await response.json();
+
+    document
+      .getElementById(
+        "todayPickup"
+      )
+      .innerText =
+      data.todayPickup || 0;
+
+    document
+      .getElementById(
+        "monthPickup"
+      )
+      .innerText =
+      data.monthPickup || 0;
+
+  }
+  catch(err){}
+
+}
+
+/* =========================================
+STOP WORK
+========================================= */
+
+function stopWork(){
+
+  stopCamera();
+
+  clearForm();
+
+}
+
+/* =========================================
+PAGE LOAD
+========================================= */
+
+window.onload = function(){
+
+  loadDashboard();
+
+  setInterval(
+    loadDashboard,
+    30000
+  );
+
+  focusAWB();
+
+};
+  /* =========================================
+RECENT RECORDS PANEL
+========================================= */
+
+async function loadRecentRecords(){
+
+  try{
+
+    const response =
+      await fetch(
+        API_URL +
+        "?action=getRecentRecords&type=Pickup"
+      );
+
+    const data =
+      await response.json();
+
+    const container =
+      document.getElementById(
+        "recentRecords"
+      );
+
+    if(!container) return;
+
+    if(
+      !data.success ||
+      !data.records ||
+      data.records.length === 0
+    ){
+
+      container.innerHTML =
+      "<div class='record'>No Records Found</div>";
+
+      return;
+
+    }
+
+    container.innerHTML = "";
+
+    data.records.forEach(record=>{
+
+      container.innerHTML += `
+
+      <div class="record">
+
+      <b>AWB:</b>
+      ${record.awb || ""}
+
+      <br>
+
+      <b>Order:</b>
+      ${record.orderId || ""}
+
+      <br>
+
+      <b>Status:</b>
+      ${record.status || ""}
+
+      <br>
+
+      <b>Date:</b>
+      ${record.createdAt || ""}
+
+      </div>
+
+      `;
+
+    });
+
+  }
+  catch(err){
+
+    console.log(err);
+
+  }
+
+}
+
+/* =========================================
+USB BARCODE SCANNER
+========================================= */
+
+let scanBuffer = "";
+
+document.addEventListener(
+"keydown",
+function(e){
+
+  if(
+    document.activeElement.id ===
+    "searchInput"
+  ){
+    return;
+  }
+
+  if(e.key === "Enter"){
+
+    if(scanBuffer.length > 5){
+
+      document
+        .getElementById("awbInput")
+        .value =
+        scanBuffer;
+
+      scanBuffer = "";
+
+      trackShipment();
+
+    }
+
+    return;
+  }
+
+  if(
+    e.key.length === 1
+  ){
+
+    scanBuffer += e.key;
+
+  }
+
+}
+);
+
+/* =========================================
+AUTO FOCUS
+========================================= */
+
+setInterval(()=>{
+
+  const awb =
+    document.getElementById(
+      "awbInput"
+    );
+
+  if(
+    document.activeElement.tagName
+    !==
+    "INPUT"
+  ){
+
+    awb.focus();
+
+  }
+
+},3000);
+
+/* =========================================
+BULK COUNTS
+========================================= */
+
+async function loadBulkCounts(){
+
+  const date =
+    document.getElementById(
+      "bulkDate"
+    ).value;
+
+  if(!date){
+
+    toast("Select Date");
+
+    return;
+
+  }
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=getBulkCounts" +
+
+        "&date=" +
+
+        encodeURIComponent(date)
+
+      );
+
+    const data =
+      await response.json();
+
+    document
+      .getElementById(
+        "bulkCounts"
+      )
+      .innerHTML =
+
+      `
+      Pickup : ${data.pickup || 0}
+      <br>
+      Return : ${data.return || 0}
+      `;
+
+  }
+  catch(err){
+
+    toast(
+      "Failed To Load"
+    );
+
+  }
+
+}
+
+/* =========================================
+BULK UPDATE
+========================================= */
+
+async function startBulkUpdate(type){
+
+  if(bulkRunning){
+
+    toast(
+      "Already Running"
+    );
+
+    return;
+
+  }
+
+  const date =
+    document.getElementById(
+      "bulkDate"
+    ).value;
+
+  if(!date){
+
+    toast("Select Date");
+
+    return;
+
+  }
+
+  bulkRunning = true;
+
+  document
+    .getElementById(
+      "bulkProgress"
+    )
+    .innerHTML =
+    "Starting...";
+
+  try{
+
+    const response =
+      await fetch(
+
+        API_URL +
+
+        "?action=bulkUpdate" +
+
+        "&type=" +
+
+        type +
+
+        "&date=" +
+
+        encodeURIComponent(date)
+
+      );
+
+    const result =
+      await response.json();
+
+    bulkRunning = false;
+
+    if(result.success){
+
+      document
+        .getElementById(
+          "bulkProgress"
+        )
+        .innerHTML =
+
+        `
+        Completed
+        <br>
+        Updated :
+        ${result.updated}
+        `;
+
+      toast(
+        "Bulk Update Done"
+      );
+
+      loadDashboard();
+
+      loadRecentRecords();
+
+    }
+    else{
+
+      document
+        .getElementById(
+          "bulkProgress"
+        )
+        .innerHTML =
+        "Failed";
+
+      toast(
+        result.message ||
+        "Failed"
+      );
+
+    }
+
+  }
+  catch(err){
+
+    bulkRunning = false;
+
+    document
+      .getElementById(
+        "bulkProgress"
+      )
+      .innerHTML =
+      "Error";
+
+    toast(
+      "Server Error"
+    );
+
+  }
+
+}
+
+/* =========================================
+LIVE CLOCK
+========================================= */
+
+function startClock(){
+
+  const el =
+    document.getElementById(
+      "liveClock"
+    );
+
+  if(!el) return;
+
+  setInterval(()=>{
+
+    const now =
+      new Date();
+
+    el.innerHTML =
+      now.toLocaleString();
+
+  },1000);
+
+}
+
+/* =========================================
+AUTO REFRESH
+========================================= */
+
+setInterval(()=>{
+
+  loadDashboard();
+
+  loadRecentRecords();
+
+},60000);
+
+/* =========================================
+SOUND SUCCESS
+========================================= */
+
+function successSound(){
+
+  try{
+
+    beep.play();
+
+  }
+  catch(err){}
+
+}
+
+/* =========================================
+EXPORT CSV
+========================================= */
+
+async function exportTodayPickup(){
+
+  try{
+
+    window.open(
+
+      API_URL +
+
+      "?action=exportPickupCSV",
+
+      "_blank"
+
+    );
+
+  }
+  catch(err){
+
+    toast(
+      "Export Failed"
+    );
+
+  }
+
+}
+
+/* =========================================
+PAGE INIT EXTENSION
+========================================= */
+
+const oldOnload =
+window.onload;
+
+window.onload = function(){
+
+  if(oldOnload){
+
+    oldOnload();
+
+  }
+
+  loadRecentRecords();
+
+  startClock();
+
+};
+
+</script>
+
+</body>
+</html>
