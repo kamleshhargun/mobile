@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Harsidhi Ventures Pickup Return System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+:root{
+--primary:#2563eb;
+--success:#16a34a;
+--danger:#dc2626;
+--bg:#f5f7fb;
+--card:#ffffff;
+--border:#e5e7eb;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:var(--bg);
+}
+
+.header{
+height:70px;
+background:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.logo{
+font-size:20px;
+font-weight:700;
+}
+
+.container{
+padding:20px;
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:20px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:16px;
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.card h3{
+margin-bottom:12px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.stat{
+padding:15px;
+border-radius:10px;
+background:#eef4ff;
+}
+
+.stat h4{
+font-size:13px;
+}
+
+.stat p{
+font-size:24px;
+font-weight:700;
+margin-top:5px;
+}
+
+input,
+select{
+width:100%;
+padding:12px;
+border:1px solid var(--border);
+border-radius:8px;
+margin-bottom:10px;
+}
+
+button{
+border:none;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+}
+
+.btn-success{
+background:var(--success);
+color:white;
+}
+
+.btn-danger{
+background:var(--danger);
+color:white;
+}
+
+.btn-block{
+width:100%;
+}
+
+#reader{
+width:100%;
+}
+
+.shipmentBox{
+background:#f8fafc;
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+font-size:13px;
+line-height:1.8;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:12px;
+}
+
+table th,
+table td{
+border:1px solid #eee;
+padding:8px;
+}
+
+.toast{
+position:fixed;
+right:20px;
+top:20px;
+background:#111827;
+color:white;
+padding:12px 18px;
+border-radius:8px;
+display:none;
+z-index:9999;
+}
+
+.loading{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.4);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.loading div{
+background:white;
+padding:20px 30px;
+border-radius:10px;
+font-weight:600;
+}
+
+.loginScreen{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.loginCard{
+width:350px;
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 2px 20px rgba(0,0,0,.1);
+}
+
+.hidden{
+display:none;
+}
+
+@media(max-width:1000px){
+
+.container{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div class="loading" id="loading">
+<div>Loading...</div>
+</div>
+
+<!-- LOGIN -->
+
+<div class="loginScreen" id="loginScreen">
+
+<div class="loginCard">
+
+<h2 style="margin-bottom:20px">
+Harsidhi Ventures
+</h2>
+
+<input
+type="password"
+maxlength="4"
+id="pin"
+placeholder="Enter 4 Digit PIN">
+
+<button
+class="btn-primary btn-block"
+onclick="login()">
+Login
+</button>
+
+</div>
+
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<div class="header">
+
+<div class="logo">
+Harsidhi Ventures Pickup Return System
+</div>
+
+<button
+class="btn-danger"
+onclick="logout()">
+Logout
+</button>
+
+</div>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+
+<div class="card">
+
+<h3>Dashboard</h3>
+
+<div class="stats">
+
+<div class="stat">
+<h4>Today Pickup</h4>
+<p id="todayPickup">0</p>
+</div>
+
+<div class="stat">
+<h4>Today Return</h4>
+<p id="todayReturn">0</p>
+</div>
+
+<div class="stat">
+<h4>Monthly Pickup</h4>
+<p id="monthPickup">0</p>
+</div>
+
+<div class="stat">
+<h4>Monthly Return</h4>
+<p id="monthReturn">0</p>
+</div>
+
+</div>
+
+<hr style="margin:15px 0">
+
+<h3>Recent Scans</h3>
+
+<div id="recentScans"></div>
+
+</div>
+
+<!-- SCANNER -->
+
+<div class="card">
+
+<h3>Scanner</h3>
+
+<div id="reader"></div>
+
+<input
+id="awbInput"
+placeholder="Scan or Enter AWB">
+
+<button
+class="btn-primary btn-block"
+onclick="manualScan()">
+Track Shipment
+</button>
+
+<div id="trackingResult"></div>
+
+</div>
+
+<!-- SEARCH -->
+
+<div class="card">
+
+<h3>Search</h3>
+
+<input
+id="searchInput"
+placeholder="AWB / Order ID">
+
+<button
+class="btn-success btn-block"
+onclick="searchShipment()">
+Search
+</button>
+
+<div id="searchResults"></div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const PIN="1234";
+
+/* IMPORTANT */
+
+const API =
+"https://script.google.com/macros/s/AKfycby6uHfax-DAc_6bAF-g1kND2AmNMRoapy0enYrOBUqNnKGsXD1kCV-76l8hPvJ_fuCW/exec";
+
+let currentTracking=null;
+
+/* LOGIN */
+
+function login(){
+
+let pin=
+document.getElementById("pin").value;
+
+if(pin!==PIN){
+
+toast("Invalid PIN");
+return;
+
+}
+
+sessionStorage.setItem(
+"loggedIn",
+"yes"
+);
+
+showApp();
+
+}
+
+function logout(){
+
+sessionStorage.clear();
+location.reload();
+
+}
+
+function showApp(){
+
+document
+.getElementById("loginScreen")
+.classList.add("hidden");
+
+document
+.getElementById("app")
+.classList.remove("hidden");
+
+loadDashboard();
+
+loadRecent();
+
+startScanner();
+
+}
+
+/* INIT */
+
+if(
+sessionStorage.getItem(
+"loggedIn"
+)==="yes"
+){
+showApp();
+}
+
+/* LOADING */
+
+function showLoading(){
+document
+.getElementById("loading")
+.style.display="flex";
+}
+
+function hideLoading(){
+document
+.getElementById("loading")
+.style.display="none";
+}
+
+/* TOAST */
+
+function toast(msg){
+
+let t=
+document.getElementById(
+"toast"
+);
+
+t.innerText=msg;
+t.style.display="block";
+
+setTimeout(()=>{
+t.style.display="none";
+},3000);
+
+}
+
+/* DASHBOARD */
+
+async function loadDashboard(){
+
+try{
+
+let res=
+await fetch(
+API+"?action=dashboard"
+);
+
+let data=
+await res.json();
+
+document
+.getElementById(
+"todayPickup"
+).innerText=
+data.pickupToday;
+
+document
+.getElementById(
+"todayReturn"
+).innerText=
+data.returnToday;
+
+document
+.getElementById(
+"monthPickup"
+).innerText=
+data.pickupMonth;
+
+document
+.getElementById(
+"monthReturn"
+).innerText=
+data.returnMonth;
+
+}catch(e){}
+
+}
+
+/* RECENT */
+
+async function loadRecent(){
+
+let res=
+await fetch(
+API+"?action=recent"
+);
+
+let data=
+await res.json();
+
+let html=
+"<table>";
+
+html+=`
+<tr>
+<th>AWB</th>
+<th>Status</th>
+</tr>
+`;
+
+data.records.forEach(r=>{
+
+html+=`
+<tr>
+<td>${r[1]}</td>
+<td>${r[5]}</td>
+</tr>
+`;
+
+});
+
+html+="</table>";
+
+document
+.getElementById(
+"recentScans"
+)
+.innerHTML=html;
+
+}
+
+/* SCANNER */
+
+function startScanner(){
+
+const qr=
+new Html5Qrcode(
+"reader"
+);
+
+qr.start(
+{facingMode:"environment"},
+{
+fps:10,
+qrbox:250
+},
+(code)=>{
+
+document
+.getElementById(
+"awbInput"
+).value=code;
+
+trackAWB(code);
+
+}
+);
+
+}
+
+/* USB BARCODE */
+
+document
+.getElementById("awbInput")
+.addEventListener(
+"keypress",
+function(e){
+
+if(e.key==="Enter"){
+
+trackAWB(
+this.value
+);
+
+}
+
+}
+);
+
+/* MANUAL */
+
+function manualScan(){
+
+let awb=
+document
+.getElementById(
+"awbInput"
+).value;
+
+trackAWB(awb);
+
+}
+
+/* TRACK */
+
+async function trackAWB(awb){
+
+if(!awb)return;
+
+showLoading();
+
+try{
+
+let res=
+await fetch(
+API+
+"?action=track&awb="+
+encodeURIComponent(awb)
+);
+
+let data=
+await res.json();
+
+hideLoading();
+
+if(!data.success){
+
+toast("Shipment Not Found");
+return;
+
+}
+
+currentTracking=data;
+
+renderTracking(data);
+
+}catch(e){
+
+hideLoading();
+
+toast(
+"Tracking Error"
+);
+
+}
+
+}
+
+/* RENDER */
+
+function renderTracking(d){
+
+let html=`
+
+<div class="shipmentBox">
+
+<b>AWB:</b> ${d.awb}<br>
+
+<b>Courier:</b> ${d.courier}<br>
+
+<b>Status:</b> ${d.status}<br>
+
+<b>Order:</b> ${d.orderId}<br>
+
+<b>Customer:</b> ${d.customerName}<br>
+
+<b>City:</b> ${d.city}<br>
+
+<b>State:</b> ${d.state}<br>
+
+<b>RTO:</b> ${d.rto}<br>
+
+</div>
+
+<br>
+
+<select id="entryType">
+
+<option value="Pickup">
+Pickup
+</option>
+
+<option value="Return">
+Return
+</option>
+
+</select>
+
+<button
+class="btn-success btn-block"
+onclick="saveShipment()">
+Save Entry
+</button>
+
+`;
+
+document
+.getElementById(
+"trackingResult"
+)
+.innerHTML=html;
+
+}
+
+/* SAVE */
+
+async function saveShipment(){
+
+if(!currentTracking)
+return;
+
+showLoading();
+
+let payload={
+
+action:"save",
+
+user:"Operator",
+
+awb:
+currentTracking.awb,
+
+orderId:
+currentTracking.orderId,
+
+type:
+document.getElementById(
+"entryType"
+).value,
+
+courier:
+currentTracking.courier,
+
+status:
+currentTracking.status,
+
+customerName:
+currentTracking.customerName,
+
+city:
+currentTracking.city,
+
+state:
+currentTracking.state,
+
+destination:
+currentTracking.destination,
+
+rto:
+currentTracking.rto
+
+};
+
+let res=
+await fetch(API,{
+
+method:"POST",
+
+body:
+JSON.stringify(
+payload
+)
+
+});
+
+let data=
+await res.json();
+
+hideLoading();
+
+if(data.success){
+
+toast(
+"Saved Successfully"
+);
+
+loadDashboard();
+loadRecent();
+
+}else{
+
+toast(
+"Save Failed"
+);
+
+}
+
+}
+
+/* SEARCH */
+
+async function searchShipment(){
+
+let q=
+document
+.getElementById(
+"searchInput"
+).value;
+
+let res=
+await fetch(
+API+
+"?action=search&query="+
+encodeURIComponent(q)
+);
+
+let data=
+await res.json();
+
+let html="";
+
+data.records.forEach(r=>{
+
+html+=`
+
+<div class="shipmentBox">
+
+AWB : ${r[1]}<br>
+
+Order : ${r[2]}<br>
+
+Type : ${r[3]}<br>
+
+Courier : ${r[4]}<br>
+
+Status : ${r[5]}<br>
+
+Customer : ${r[6]}
+
+</div>
+
+`;
+
+});
+
+document
+.getElementById(
+"searchResults"
+)
+.innerHTML=html;
+
+}
+
+</script>
+
+</body>
+</html>
