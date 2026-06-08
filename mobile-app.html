@@ -3,205 +3,1051 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Kone Soft Tech</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f4f4}
-header,footer{
-position:fixed;left:0;right:0;height:60px;
-background:#222;color:#fff;display:flex;
-align-items:center;justify-content:center;z-index:1000
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
-header{top:0;font-weight:bold;font-size:20px;cursor:pointer}
-footer{bottom:0;font-size:14px}
-#content{padding-top:60px;padding-bottom:60px;height:100vh}
+
+:root{
+--bg:#f4f4f4;
+--card:#ffffff;
+--text:#222;
+--header:#222;
+--headerText:#fff;
+}
+
+body.dark{
+--bg:#121212;
+--card:#1e1e1e;
+--text:#ffffff;
+--header:#000;
+--headerText:#fff;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+height:100vh;
+overflow:hidden;
+}
+
+/* HEADER */
+
+header{
+position:fixed;
+top:0;
+left:0;
+right:0;
+height:60px;
+background:var(--header);
+color:var(--headerText);
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 15px;
+z-index:1000;
+}
+
+.logo{
+font-size:20px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.header-actions{
+display:flex;
+gap:10px;
+}
+
+.header-btn{
+background:#444;
+color:#fff;
+border:none;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* SEARCH */
+
+.searchBar{
+position:fixed;
+top:60px;
+left:0;
+right:0;
+padding:10px;
+background:var(--bg);
+z-index:900;
+}
+
+.searchBar input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+/* CONTENT */
+
+#content{
+padding-top:120px;
+padding-bottom:60px;
+height:100vh;
+}
+
+/* DESKTOP */
+
 #desktop{
-height:100%;overflow:auto;padding:15px;
-display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
-gap:18px;align-content:start
+height:100%;
+overflow:auto;
+padding:15px;
+
+display:grid;
+grid-template-columns:
+repeat(auto-fill,minmax(95px,1fr));
+
+gap:20px;
+align-content:start;
 }
+
+/* ICON */
+
 .icon{
-text-align:center;cursor:pointer;user-select:none
+text-align:center;
+cursor:pointer;
+user-select:none;
 }
-.icon img{width:64px;height:64px;object-fit:contain}
-.icon div{font-size:12px;word-break:break-word}
+
+.icon img{
+width:64px;
+height:64px;
+object-fit:contain;
+background:white;
+border-radius:12px;
+padding:5px;
+}
+
+.icon div{
+margin-top:5px;
+font-size:12px;
+word-break:break-word;
+}
+
 .special-btn{
-width:64px;height:64px;border-radius:12px;background:#fff;
-display:flex;align-items:center;justify-content:center;
-font-size:32px;margin:auto;border:1px solid #ccc
+width:64px;
+height:64px;
+margin:auto;
+
+background:var(--card);
+
+border-radius:12px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:32px;
+
+border:1px solid #ccc;
 }
-#viewer{width:100%;height:100%;border:none;display:none}
-#modal,#menu{
-position:fixed;inset:0;background:rgba(0,0,0,.4);
-display:none;align-items:center;justify-content:center;z-index:2000
+
+/* VIEWER */
+
+#viewer{
+width:100%;
+height:100%;
+border:none;
+display:none;
 }
-.box{
-background:#fff;padding:15px;border-radius:10px;width:320px
+
+/* FOOTER */
+
+footer{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:50px;
+
+background:var(--header);
+color:white;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:13px;
+z-index:1000;
 }
-input{width:100%;padding:10px;margin:8px 0}
-button{padding:10px 12px;margin:4px;cursor:pointer}
-.menuBox{background:#fff;padding:10px;border-radius:10px}
+
+/* MODAL */
+
+#modal,
+#menu{
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.5);
+
+display:none;
+align-items:center;
+justify-content:center;
+
+z-index:2000;
+}
+
+.box,
+.menuBox{
+background:var(--card);
+color:var(--text);
+
+padding:15px;
+border-radius:12px;
+width:330px;
+}
+
+.box h3{
+margin-bottom:10px;
+}
+
+.box input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:6px;
+}
+
+.box button,
+.menuBox button{
+padding:10px 12px;
+margin:4px;
+cursor:pointer;
+}
+
+/* LOADER */
+
+#loader{
+position:fixed;
+inset:0;
+
+display:none;
+
+align-items:center;
+justify-content:center;
+
+background:rgba(0,0,0,.6);
+
+color:white;
+font-size:22px;
+
+z-index:3000;
+}
+
+@media(max-width:600px){
+
+.icon img{
+width:56px;
+height:56px;
+}
+
+.special-btn{
+width:56px;
+height:56px;
+}
+
+}
+ #settingsModal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+
+display:none;
+
+align-items:center;
+justify-content:center;
+
+z-index:2500;
+}
+
+.menuBox{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.menuBox button{
+width:100%;
+}
+
+.box button{
+border:none;
+border-radius:6px;
+background:#222;
+color:white;
+}
+
+body.dark .box button{
+background:#444;
+}
 </style>
 </head>
+
 <body>
 
-<header onclick="goHome()">Kone Soft Tech</header>
+<header>
+
+<div class="logo" onclick="goHome()">
+Kone Soft Tech
+</div>
+
+<div class="header-actions">
+
+<button
+class="header-btn"
+onclick="toggleDarkMode()">
+🌙
+</button>
+
+<button
+class="header-btn"
+onclick="exportApps()">
+Export
+</button>
+
+<button
+class="header-btn"
+onclick="document.getElementById('importFile').click()">
+Import
+</button>
+<button
+class="header-btn"
+onclick="openSettings()">
+⚙️
+</button>
+<input
+type="file"
+id="importFile"
+accept=".json"
+hidden>
+
+</div>
+
+</header>
+
+<div class="searchBar">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search App...">
+
+</div>
 
 <div id="content">
-  <div id="desktop"></div>
-  <iframe id="viewer"></iframe>
+
+<div id="desktop"></div>
+
+<iframe id="viewer"></iframe>
+
 </div>
 
-<footer> © Developed by Kamlesh Hargun 2026</footer>
+<footer>
+© Developed by Kamlesh Hargun 2026
+</footer>
+
+<div id="loader">
+Loading...
+</div>
+<!-- ADD / EDIT APP MODAL -->
 
 <div id="modal">
-  <div class="box">
-    <h3>Add / Edit App</h3>
-    <input id="appName" placeholder="App Name">
-    <input id="appIcon" type="file" accept="image/*">
-    <input id="appUrl" placeholder="https://example.com">
-    <button onclick="saveApp()">Save</button>
-    <button onclick="closeModal()">Cancel</button>
-  </div>
+
+<div class="box">
+
+<h3 id="modalTitle">
+Add App
+</h3>
+
+<input
+type="text"
+id="appName"
+placeholder="App Name">
+
+<input
+type="file"
+id="appIcon"
+accept="image/*">
+
+<input
+type="url"
+id="appUrl"
+placeholder="https://example.com">
+
+<div style="margin-top:10px">
+
+<button onclick="saveApp()">
+Save
+</button>
+
+<button onclick="closeModal()">
+Cancel
+</button>
+
 </div>
+
+</div>
+
+</div>
+
+<!-- APP MENU -->
 
 <div id="menu">
-  <div class="menuBox">
-    <button onclick="editSelected()">Edit</button>
-    <button onclick="deleteSelected()">Delete</button>
-    <button onclick="closeMenu()">Close</button>
-  </div>
+
+<div class="menuBox">
+
+<h3 style="margin-bottom:10px">
+App Menu
+</h3>
+
+<button onclick="editSelected()">
+✏️ Edit
+</button>
+
+<button onclick="deleteSelected()">
+🗑 Delete
+</button>
+
+<button onclick="closeMenu()">
+❌ Close
+</button>
+
 </div>
 
+</div>
+
+<!-- SETTINGS MODAL -->
+
+<div id="settingsModal">
+
+<div class="box">
+
+<h3>
+Settings
+</h3>
+
+<div style="margin-top:10px">
+
+<button onclick="toggleDarkMode()">
+🌙 Toggle Dark Mode
+</button>
+
+</div>
+
+<div style="margin-top:10px">
+
+<button onclick="exportApps()">
+📤 Export Backup
+</button>
+
+</div>
+
+<div style="margin-top:10px">
+
+<button onclick="
+document.getElementById('importFile').click()
+">
+📥 Import Backup
+</button>
+
+</div>
+
+<div style="margin-top:15px">
+
+<button onclick="closeSettings()">
+Close
+</button>
+
+</div>
+
+</div>
+
+</div>
 <script>
-let apps=JSON.parse(localStorage.getItem('koneApps')||'[]');
-let editIndex=null;
-let selectedIndex=null;
+
+let apps =
+JSON.parse(
+localStorage.getItem("koneApps") || "[]"
+);
+
+let editIndex = null;
+let selectedIndex = null;
+
+/* ==========================
+   SAVE
+========================== */
 
 function persist(){
- localStorage.setItem('koneApps',JSON.stringify(apps));
+ localStorage.setItem(
+   "koneApps",
+   JSON.stringify(apps)
+ );
 }
 
-function render(){
- const d=document.getElementById('desktop');
- d.innerHTML='';
+/* ==========================
+   RENDER
+========================== */
 
- const settings=document.createElement('div');
- settings.className='icon';
- settings.innerHTML='<div class="special-btn">⚙️</div><div>Settings</div>';
- d.appendChild(settings);
+function render(filter=""){
 
- const add=document.createElement('div');
- add.className='icon';
- add.innerHTML='<div class="special-btn">+</div><div>Add App</div>';
- add.onclick=()=>openModal();
- d.appendChild(add);
+ const desktop =
+ document.getElementById("desktop");
 
- apps.forEach((a,i)=>{
-   const el=document.createElement('div');
-   el.className='icon';
-   el.innerHTML=`<img src="${a.icon}"><div>${a.name}</div>`;
-   el.onclick=()=>openUrl(a.url);
+ desktop.innerHTML = "";
+
+ /* SETTINGS */
+
+ const settings =
+ document.createElement("div");
+
+ settings.className = "icon";
+
+ settings.innerHTML = `
+ <div class="special-btn">⚙️</div>
+ <div>Settings</div>
+ `;
+
+ settings.onclick = openSettings;
+
+ desktop.appendChild(settings);
+
+ /* ADD APP */
+
+ const add =
+ document.createElement("div");
+
+ add.className = "icon";
+
+ add.innerHTML = `
+ <div class="special-btn">+</div>
+ <div>Add App</div>
+ `;
+
+ add.onclick = () => openModal();
+
+ desktop.appendChild(add);
+
+ /* APPS */
+
+ apps
+ .filter(app =>
+   app.name
+   .toLowerCase()
+   .includes(filter.toLowerCase())
+ )
+ .forEach((app,index)=>{
+
+   const icon =
+   document.createElement("div");
+
+   icon.className = "icon";
+
+   const img =
+   document.createElement("img");
+
+   img.src = app.icon;
+
+   const title =
+   document.createElement("div");
+
+   title.textContent = app.name;
+
+   icon.appendChild(img);
+   icon.appendChild(title);
+
+   icon.onclick = () => {
+      openUrl(app.url);
+   };
+
+   /* RIGHT CLICK */
+
+   icon.addEventListener(
+   "contextmenu",
+   e=>{
+      e.preventDefault();
+      showMenu(index);
+   });
+
+   /* LONG PRESS */
 
    let timer;
-   el.addEventListener('touchstart',()=>{
-      timer=setTimeout(()=>showMenu(i),700);
-   });
-   el.addEventListener('touchend',()=>clearTimeout(timer));
 
-   el.addEventListener('contextmenu',(e)=>{
-      e.preventDefault();
-      showMenu(i);
+   icon.addEventListener(
+   "pointerdown",
+   ()=>{
+      timer =
+      setTimeout(()=>{
+        showMenu(index);
+      },700);
    });
 
-   d.appendChild(el);
+   icon.addEventListener(
+   "pointerup",
+   ()=>{
+      clearTimeout(timer);
+   });
+
+   icon.addEventListener(
+   "pointerleave",
+   ()=>{
+      clearTimeout(timer);
+   });
+
+   desktop.appendChild(icon);
+
  });
+
 }
+
+/* ==========================
+   OPEN URL
+========================== */
 
 function openUrl(url){
- document.getElementById('desktop').style.display='none';
- const v=document.getElementById('viewer');
- v.style.display='block';
- v.src=url;
+
+ const desktop =
+ document.getElementById("desktop");
+
+ const viewer =
+ document.getElementById("viewer");
+
+ const loader =
+ document.getElementById("loader");
+
+ loader.style.display = "flex";
+
+ desktop.style.display = "none";
+
+ viewer.style.display = "block";
+
+ viewer.src = url;
+
+ viewer.onload = ()=>{
+   loader.style.display = "none";
+ };
+
 }
+
+/* ==========================
+   HOME
+========================== */
 
 function goHome(){
- document.getElementById('viewer').style.display='none';
- document.getElementById('viewer').src='';
- document.getElementById('desktop').style.display='grid';
+
+ const viewer =
+ document.getElementById("viewer");
+
+ viewer.src = "";
+
+ viewer.style.display = "none";
+
+ document
+ .getElementById("desktop")
+ .style.display = "grid";
+
 }
 
-function openModal(index=null){
- editIndex=index;
- document.getElementById('modal').style.display='flex';
+/* ==========================
+   MODAL
+========================== */
 
- if(index!==null){
-   document.getElementById('appName').value=apps[index].name;
-   document.getElementById('appUrl').value=apps[index].url;
+function openModal(index=null){
+
+ editIndex = index;
+
+ document
+ .getElementById("modal")
+ .style.display = "flex";
+
+ const title =
+ document.getElementById(
+ "modalTitle"
+ );
+
+ if(index !== null){
+
+   title.textContent =
+   "Edit App";
+
+   document
+   .getElementById("appName")
+   .value =
+   apps[index].name;
+
+   document
+   .getElementById("appUrl")
+   .value =
+   apps[index].url;
+
  }else{
-   document.getElementById('appName').value='';
-   document.getElementById('appUrl').value='';
-   document.getElementById('appIcon').value='';
+
+   title.textContent =
+   "Add App";
+
+   document
+   .getElementById("appName")
+   .value = "";
+
+   document
+   .getElementById("appUrl")
+   .value = "";
+
+   document
+   .getElementById("appIcon")
+   .value = "";
+
  }
+
 }
 
 function closeModal(){
- document.getElementById('modal').style.display='none';
+
+ document
+ .getElementById("modal")
+ .style.display = "none";
+
 }
 
+/* ==========================
+   SAVE APP
+========================== */
+
 function saveApp(){
- const name=document.getElementById('appName').value.trim();
- const url=document.getElementById('appUrl').value.trim();
- const file=document.getElementById('appIcon').files[0];
 
- if(!name||!url){alert('Name and URL required');return;}
+ const name =
+ document
+ .getElementById("appName")
+ .value.trim();
 
- const finish=(icon)=>{
-   if(editIndex!==null){
-      apps[editIndex]={name,url,icon};
+ const url =
+ document
+ .getElementById("appUrl")
+ .value.trim();
+
+ const file =
+ document
+ .getElementById("appIcon")
+ .files[0];
+
+ if(!name || !url){
+
+   alert(
+   "App Name and URL required"
+   );
+
+   return;
+ }
+
+ try{
+   new URL(url);
+ }
+ catch{
+
+   alert("Invalid URL");
+
+   return;
+ }
+
+ const finish = (icon)=>{
+
+   if(editIndex !== null){
+
+      apps[editIndex] = {
+         name,
+         url,
+         icon
+      };
+
    }else{
-      apps.push({name,url,icon});
+
+      apps.push({
+         name,
+         url,
+         icon
+      });
+
    }
+
    persist();
+
    render();
+
    closeModal();
+
  };
 
  if(file){
-   const r=new FileReader();
-   r.onload=e=>finish(e.target.result);
-   r.readAsDataURL(file);
- }else if(editIndex!==null){
-   finish(apps[editIndex].icon);
+
+   const reader =
+   new FileReader();
+
+   reader.onload =
+   e=>{
+      finish(
+      e.target.result
+      );
+   };
+
+   reader.readAsDataURL(
+   file
+   );
+
  }else{
-   alert('Select icon');
+
+   if(editIndex !== null){
+
+      finish(
+      apps[editIndex].icon
+      );
+
+   }else{
+
+      alert(
+      "Please select icon"
+      );
+
+   }
+
  }
+
 }
 
-function showMenu(i){
- selectedIndex=i;
- document.getElementById('menu').style.display='flex';
+/* ==========================
+   MENU
+========================== */
+
+function showMenu(index){
+
+ selectedIndex = index;
+
+ document
+ .getElementById("menu")
+ .style.display = "flex";
+
 }
 
 function closeMenu(){
- document.getElementById('menu').style.display='none';
+
+ document
+ .getElementById("menu")
+ .style.display = "none";
+
 }
 
 function editSelected(){
+
  closeMenu();
- openModal(selectedIndex);
+
+ openModal(
+ selectedIndex
+ );
+
 }
 
 function deleteSelected(){
- if(confirm('Delete this app?')){
-   apps.splice(selectedIndex,1);
+
+ closeMenu();
+
+ if(
+ confirm(
+ "Delete this app?"
+ )
+ ){
+
+   apps.splice(
+   selectedIndex,
+   1
+   );
+
    persist();
+
    render();
  }
- closeMenu();
+
 }
 
+/* ==========================
+   SEARCH
+========================== */
+
+document
+.getElementById(
+"searchInput"
+)
+.addEventListener(
+"input",
+e=>{
+ render(e.target.value);
+}
+);
+
+/* ==========================
+   DARK MODE
+========================== */
+
+function toggleDarkMode(){
+
+ document.body
+ .classList
+ .toggle("dark");
+
+ localStorage.setItem(
+ "darkMode",
+ document.body
+ .classList
+ .contains("dark")
+ );
+
+}
+
+if(
+ localStorage.getItem(
+ "darkMode"
+ ) === "true"
+){
+ document.body
+ .classList
+ .add("dark");
+}
+
+/* ==========================
+   SETTINGS
+========================== */
+
+function openSettings(){
+
+ document
+ .getElementById(
+ "settingsModal"
+ )
+ .style.display = "flex";
+
+}
+
+function closeSettings(){
+
+ document
+ .getElementById(
+ "settingsModal"
+ )
+ .style.display = "none";
+
+}
+
+/* ==========================
+   EXPORT
+========================== */
+
+function exportApps(){
+
+ const blob =
+ new Blob(
+ [
+ JSON.stringify(
+ apps,
+ null,
+ 2
+ )
+ ],
+ {
+ type:
+ "application/json"
+ }
+ );
+
+ const a =
+ document.createElement("a");
+
+ a.href =
+ URL.createObjectURL(
+ blob
+ );
+
+ a.download =
+ "kone-soft-backup.json";
+
+ a.click();
+
+}
+
+/* ==========================
+   IMPORT
+========================== */
+
+document
+.getElementById(
+"importFile"
+)
+.addEventListener(
+"change",
+e=>{
+
+ const file =
+ e.target.files[0];
+
+ if(!file) return;
+
+ const reader =
+ new FileReader();
+
+ reader.onload =
+ event=>{
+
+   try{
+
+      apps =
+      JSON.parse(
+      event.target.result
+      );
+
+      persist();
+
+      render();
+
+      alert(
+      "Backup Restored"
+      );
+
+   }catch{
+
+      alert(
+      "Invalid Backup File"
+      );
+
+   }
+
+ };
+
+ reader.readAsText(
+ file
+ );
+
+}
+);
+
+/* ==========================
+   START
+========================== */
+
 render();
+
 </script>
+
 </body>
 </html>
