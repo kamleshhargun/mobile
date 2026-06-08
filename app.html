@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Custom App Launcher</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+}
+
+.topbar{
+    height:60px;
+    background:#222;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding:0 20px;
+}
+
+.settings-btn{
+    font-size:24px;
+    cursor:pointer;
+}
+
+.popup{
+    position:fixed;
+    top:70px;
+    right:20px;
+    width:320px;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:15px;
+    display:none;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    box-sizing:border-box;
+}
+
+button{
+    padding:10px 15px;
+    cursor:pointer;
+}
+
+.desktop{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    padding:20px;
+}
+
+.app{
+    width:90px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.app img{
+    width:64px;
+    height:64px;
+    object-fit:contain;
+}
+
+.viewer{
+    width:100%;
+    height:calc(100vh - 180px);
+    border:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div class="settings-btn" onclick="toggleSettings()">⚙️</div>
+</div>
+
+<div class="popup" id="popup">
+
+    <button onclick="showForm()">+ Add App</button>
+
+    <div id="formArea" style="display:none;margin-top:10px;">
+
+        <input type="file" id="iconFile" accept="image/png,image/jpeg">
+
+        <input
+            type="text"
+            id="appUrl"
+            placeholder="https://example.com">
+
+        <button onclick="addApp()">
+            Save App
+        </button>
+
+    </div>
+
+</div>
+
+<div class="desktop" id="desktop"></div>
+
+<iframe
+    id="viewer"
+    class="viewer">
+</iframe>
+
+<script>
+
+function toggleSettings(){
+    const p=document.getElementById("popup");
+    p.style.display=
+        p.style.display==="block"
+        ?"none"
+        :"block";
+}
+
+function showForm(){
+    document.getElementById("formArea")
+    .style.display="block";
+}
+
+function addApp(){
+
+    const file=
+    document.getElementById("iconFile")
+    .files[0];
+
+    const url=
+    document.getElementById("appUrl")
+    .value.trim();
+
+    if(!file || !url){
+        alert("Image aur URL dono required hain");
+        return;
+    }
+
+    const reader=
+    new FileReader();
+
+    reader.onload=function(e){
+
+        const desktop=
+        document.getElementById("desktop");
+
+        const app=
+        document.createElement("div");
+
+        app.className="app";
+
+        app.innerHTML=`
+            <img src="${e.target.result}">
+        `;
+
+        app.onclick=function(){
+            document.getElementById("viewer")
+            .src=url;
+        };
+
+        desktop.appendChild(app);
+
+    };
+
+    reader.readAsDataURL(file);
+
+}
+
+</script>
+
+</body>
+</html>
