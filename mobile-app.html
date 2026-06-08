@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kone Soft Top</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f4f4}
+header,footer{
+position:fixed;left:0;right:0;height:60px;
+background:#222;color:#fff;display:flex;
+align-items:center;justify-content:center;z-index:1000
+}
+header{top:0;font-weight:bold;font-size:20px;cursor:pointer}
+footer{bottom:0;font-size:14px}
+#content{padding-top:60px;padding-bottom:60px;height:100vh}
+#desktop{
+height:100%;overflow:auto;padding:15px;
+display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));
+gap:18px;align-content:start
+}
+.icon{
+text-align:center;cursor:pointer;user-select:none
+}
+.icon img{width:64px;height:64px;object-fit:contain}
+.icon div{font-size:12px;word-break:break-word}
+.special-btn{
+width:64px;height:64px;border-radius:12px;background:#fff;
+display:flex;align-items:center;justify-content:center;
+font-size:32px;margin:auto;border:1px solid #ccc
+}
+#viewer{width:100%;height:100%;border:none;display:none}
+#modal,#menu{
+position:fixed;inset:0;background:rgba(0,0,0,.4);
+display:none;align-items:center;justify-content:center;z-index:2000
+}
+.box{
+background:#fff;padding:15px;border-radius:10px;width:320px
+}
+input{width:100%;padding:10px;margin:8px 0}
+button{padding:10px 12px;margin:4px;cursor:pointer}
+.menuBox{background:#fff;padding:10px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<header onclick="goHome()">Kone Soft Top</header>
+
+<div id="content">
+  <div id="desktop"></div>
+  <iframe id="viewer"></iframe>
+</div>
+
+<footer>Developed by Kamlesh Hargun 2026</footer>
+
+<div id="modal">
+  <div class="box">
+    <h3>Add / Edit App</h3>
+    <input id="appName" placeholder="App Name">
+    <input id="appIcon" type="file" accept="image/*">
+    <input id="appUrl" placeholder="https://example.com">
+    <button onclick="saveApp()">Save</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div id="menu">
+  <div class="menuBox">
+    <button onclick="editSelected()">Edit</button>
+    <button onclick="deleteSelected()">Delete</button>
+    <button onclick="closeMenu()">Close</button>
+  </div>
+</div>
+
+<script>
+let apps=JSON.parse(localStorage.getItem('koneApps')||'[]');
+let editIndex=null;
+let selectedIndex=null;
+
+function persist(){
+ localStorage.setItem('koneApps',JSON.stringify(apps));
+}
+
+function render(){
+ const d=document.getElementById('desktop');
+ d.innerHTML='';
+
+ const settings=document.createElement('div');
+ settings.className='icon';
+ settings.innerHTML='<div class="special-btn">⚙️</div><div>Settings</div>';
+ d.appendChild(settings);
+
+ const add=document.createElement('div');
+ add.className='icon';
+ add.innerHTML='<div class="special-btn">+</div><div>Add App</div>';
+ add.onclick=()=>openModal();
+ d.appendChild(add);
+
+ apps.forEach((a,i)=>{
+   const el=document.createElement('div');
+   el.className='icon';
+   el.innerHTML=`<img src="${a.icon}"><div>${a.name}</div>`;
+   el.onclick=()=>openUrl(a.url);
+
+   let timer;
+   el.addEventListener('touchstart',()=>{
+      timer=setTimeout(()=>showMenu(i),700);
+   });
+   el.addEventListener('touchend',()=>clearTimeout(timer));
+
+   el.addEventListener('contextmenu',(e)=>{
+      e.preventDefault();
+      showMenu(i);
+   });
+
+   d.appendChild(el);
+ });
+}
+
+function openUrl(url){
+ document.getElementById('desktop').style.display='none';
+ const v=document.getElementById('viewer');
+ v.style.display='block';
+ v.src=url;
+}
+
+function goHome(){
+ document.getElementById('viewer').style.display='none';
+ document.getElementById('viewer').src='';
+ document.getElementById('desktop').style.display='grid';
+}
+
+function openModal(index=null){
+ editIndex=index;
+ document.getElementById('modal').style.display='flex';
+
+ if(index!==null){
+   document.getElementById('appName').value=apps[index].name;
+   document.getElementById('appUrl').value=apps[index].url;
+ }else{
+   document.getElementById('appName').value='';
+   document.getElementById('appUrl').value='';
+   document.getElementById('appIcon').value='';
+ }
+}
+
+function closeModal(){
+ document.getElementById('modal').style.display='none';
+}
+
+function saveApp(){
+ const name=document.getElementById('appName').value.trim();
+ const url=document.getElementById('appUrl').value.trim();
+ const file=document.getElementById('appIcon').files[0];
+
+ if(!name||!url){alert('Name and URL required');return;}
+
+ const finish=(icon)=>{
+   if(editIndex!==null){
+      apps[editIndex]={name,url,icon};
+   }else{
+      apps.push({name,url,icon});
+   }
+   persist();
+   render();
+   closeModal();
+ };
+
+ if(file){
+   const r=new FileReader();
+   r.onload=e=>finish(e.target.result);
+   r.readAsDataURL(file);
+ }else if(editIndex!==null){
+   finish(apps[editIndex].icon);
+ }else{
+   alert('Select icon');
+ }
+}
+
+function showMenu(i){
+ selectedIndex=i;
+ document.getElementById('menu').style.display='flex';
+}
+
+function closeMenu(){
+ document.getElementById('menu').style.display='none';
+}
+
+function editSelected(){
+ closeMenu();
+ openModal(selectedIndex);
+}
+
+function deleteSelected(){
+ if(confirm('Delete this app?')){
+   apps.splice(selectedIndex,1);
+   persist();
+   render();
+ }
+ closeMenu();
+}
+
+render();
+</script>
+</body>
+</html>
