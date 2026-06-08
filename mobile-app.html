@@ -317,17 +317,6 @@ onclick="toggleDarkMode()">
 
 <button
 class="header-btn"
-onclick="exportApps()">
-Export
-</button>
-
-<button
-class="header-btn"
-onclick="document.getElementById('importFile').click()">
-Import
-</button>
-<button
-class="header-btn"
 onclick="openSettings()">
 ⚙️
 </button>
@@ -450,24 +439,6 @@ Settings
 
 </div>
 
-<div style="margin-top:10px">
-
-<button onclick="exportApps()">
-📤 Export Backup
-</button>
-
-</div>
-
-<div style="margin-top:10px">
-
-<button onclick="
-document.getElementById('importFile').click()
-">
-📥 Import Backup
-</button>
-
-</div>
-
 <div style="margin-top:15px">
 
 <button onclick="closeSettings()">
@@ -480,14 +451,39 @@ Close
 
 </div>
 <script>
+ const apps = [
 
-let apps =
-JSON.parse(
-localStorage.getItem("koneApps") || "[]"
-);
+{
+name:"Pickup",
+url:"pickup.html",
+icon:"https://cdn-icons-png.flaticon.com/512/3500/3500833.png"
+},
 
-let editIndex = null;
-let selectedIndex = null;
+{
+name:"Return",
+url:"return.html",
+icon:"https://cdn-icons-png.flaticon.com/512/679/679720.png"
+},
+
+{
+name:"Today Count",
+url:"today-count.html",
+icon:"https://cdn-icons-png.flaticon.com/512/1828/1828919.png"
+},
+
+{
+name:"Yesterday Count",
+url:"yesterday-count.html",
+icon:"https://cdn-icons-png.flaticon.com/512/747/747310.png"
+},
+
+{
+name:"Total Count",
+url:"total-count.html",
+icon:"https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+}
+
+];
 
 /* ==========================
    SAVE
@@ -526,22 +522,6 @@ function render(filter=""){
  settings.onclick = openSettings;
 
  desktop.appendChild(settings);
-
- /* ADD APP */
-
- const add =
- document.createElement("div");
-
- add.className = "icon";
-
- add.innerHTML = `
- <div class="special-btn">+</div>
- <div>Add App</div>
- `;
-
- add.onclick = () => openModal();
-
- desktop.appendChild(add);
 
  /* APPS */
 
