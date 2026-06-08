@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<style>
+body {
+  font-family: 'Segoe UI', Arial;
+  margin: 0;
+  background: #f4f6fb;
+  text-align: center;
+}
+
+/* HEADER */
+.header {
+  background: #2d3e50;
+  color: #fff;
+  padding: 20px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* GRID */
+.dashboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  padding: 30px;
+}
+
+/* CARD */
+.card {
+  width: 250px;
+  min-height: 250px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  padding: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  background: #eef3ff;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stat {
+  background: #f1f3f9;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.stat span {
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.today { border-left: 5px solid #4CAF50; }
+.yesterday { border-left: 5px solid #FF9800; }
+.total { border-left: 5px solid #2196F3; }
+
+/* SETTING */
+.setting-btn {
+  background: #2d3e50;
+  color: white;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">Harsidhi Ventures</div>
+
+<div class="dashboard">
+
+  <!-- PICKUP -->
+  <div class="card" onclick="openPage('pickup.html')">
+    <h3>Pickup</h3>
+    <div class="stats">
+      <div class="stat today">Today <span id="pickup_today">0</span></div>
+      <div class="stat yesterday">Yesterday <span id="pickup_yesterday">0</span></div>
+      <div class="stat total">Total <span id="pickup_total">0</span></div>
+    </div>
+  </div>
+
+  <!-- RETURN -->
+  <div class="card" onclick="openPage('return.html')">
+    <h3>Return</h3>
+    <div class="stats">
+      <div class="stat today">Today <span id="return_today">0</span></div>
+      <div class="stat yesterday">Yesterday <span id="return_yesterday">0</span></div>
+      <div class="stat total">Total <span id="return_total">0</span></div>
+    </div>
+  </div>
+
+  <!-- RETURN REQUEST -->
+  <div class="card" onclick="openPage('return-request.html')">
+    <h3>Return Request</h3>
+    <div class="stats">
+      <div class="stat today">Today <span>0</span></div>
+      <div class="stat yesterday">Yesterday <span>0</span></div>
+      <div class="stat total">Total <span>0</span></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER -->
+  <div class="card" onclick="openPage('customer.html')">
+    <h3>Customer</h3>
+    <div class="stats">
+      <div class="stat today">Today <span>0</span></div>
+      <div class="stat yesterday">Yesterday <span>0</span></div>
+      <div class="stat total">Total <span>0</span></div>
+    </div>
+  </div>
+
+  <!-- LOOKUP -->
+  <div class="card" onclick="openPage('lookup.html')">
+    <h3>Lookup Orders</h3>
+    <div class="stats">
+      <div class="stat total">Order<span>Search</span></div>
+    </div>
+  </div>
+
+  <!-- CUTTING -->
+  <div class="card" onclick="openPage('cutting.html')">
+    <h3>Cutting</h3>
+    <div class="stats">
+      <div class="stat today">Today <span>0</span></div>
+      <div class="stat yesterday">Yesterday <span>0</span></div>
+      <div class="stat total">Total <span>0</span></div>
+    </div>
+  </div>
+
+  <!-- FURNISHED -->
+  <div class="card" onclick="openPage('furnished.html')">
+    <h3>Furnished</h3>
+    <div class="stats">
+      <div class="stat today">Today <span>0</span></div>
+      <div class="stat yesterday">Yesterday <span>0</span></div>
+      <div class="stat total">Total <span>0</span></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="card">
+    <h3>Settings</h3>
+    <div>
+      <div class="setting-btn">API Setting</div>
+      <div class="setting-btn">Reset Data</div>
+      <div class="setting-btn">User Management</div>
+      <div class="setting-btn">Export Data</div>
+      <div class="setting-btn" onclick="location.reload()">⬅ Refresh</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const API_URL = "https://script.google.com/macros/s/AKfycbxpHx77yM2aeGi6k-q8CwJA3YI1znrGbzzf3SjKrNhFK8eG5RxoEPHAKiFvsNq3L0s4/exec";
+
+/* PAGE NAV */
+function openPage(page){
+  window.location.href = page;
+}
+
+/* LOAD DATA */
+function loadDashboard(){
+
+  fetch(API_URL + "?type=stats")
+  .then(res => res.json())
+  .then(data => {
+
+    document.getElementById("pickup_today").innerText = data.todayPickup;
+    document.getElementById("pickup_yesterday").innerText = data.yesterdayPickup;
+    document.getElementById("pickup_total").innerText = data.totalPickup;
+
+    document.getElementById("return_today").innerText = data.todayReturn;
+    document.getElementById("return_yesterday").innerText = data.yesterdayReturn;
+    document.getElementById("return_total").innerText = data.totalReturn;
+
+  });
+
+}
+
+loadDashboard();
+
+</script>
+
+</body>
+</html>
