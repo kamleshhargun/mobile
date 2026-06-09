@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>AWB Scanner</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+body{
+font-family:Arial;
+padding:15px;
+max-width:700px;
+margin:auto;
+}
+
+#reader{
+width:100%;
+}
+
+button{
+padding:12px;
+margin:5px;
+font-size:16px;
+}
+
+#result{
+margin-top:20px;
+border:1px solid #ccc;
+padding:10px;
+}
+
+pre{
+white-space:pre-wrap;
+word-wrap:break-word;
+}
+
+</style>
+
+</head>
+<body>
+
+<h2>AWB Scanner</h2>
+
+<div id="reader"></div>
+
+<input
+id="awbInput"
+type="text"
+placeholder="AWB Number"
+style="width:100%;padding:10px;margin-top:10px;"
+>
+
+<br><br>
+
+<button onclick="processAWB()">
+NEXT / UPDATE
+</button>
+
+<button onclick="stopScanner()">
+STOP
+</button>
+
+<div id="result"></div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwbCfJYM4HvvqHegqJUqunjQE0aul6MpTOlvc8HFzfJw7w-eExQVQXKayjhb3ZSPuxSdw/exec";
+
+let scanner;
+
+startScanner();
+
+function startScanner(){
+
+scanner = new Html5Qrcode("reader");
+
+scanner.start(
+{
+facingMode:"environment"
+},
+{
+fps:10,
+qrbox:250
+},
+function(decodedText){
+
+document.getElementById("awbInput").value =
+decodedText;
+
+processAWB();
+
+}
+);
+
+}
+
+function stopScanner(){
+
+if(scanner){
+
+scanner.stop();
+
+alert("Scanner Stopped");
+
+}
+
+}
+
+async function processAWB(){
+
+const awb =
+document.getElementById("awbInput")
+.value
+.trim();
+
+if(!awb){
+
+alert("Scan AWB First");
+
+return;
+
+}
+
+document.getElementById("result")
+.innerHTML =
+"Loading...";
+
+try{
+
+const response =
+await fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+awb:awb
+})
+});
+
+const data =
+await response.json();
+
+if(!data.success){
+
+document.getElementById("result")
+.innerHTML =
+data.message;
+
+return;
+
+}
+
+const s = data.shipment;
+
+document.getElementById("result")
+.innerHTML = `
+
+<b>Action:</b> ${data.action}<br>
+<b>AWB:</b> ${s.awb_number}<br>
+<b>Status:</b> ${s.status}<br>
+<b>Courier:</b> ${s.courier_name}<br>
+<b>Order:</b> ${s.order_number}<br>
+<b>Customer Order:</b> ${s.customer_order_number}<br>
+<b>Pickup:</b> ${s.pickup_date}<br>
+<b>Shipped:</b> ${s.shipped_date}<br>
+<b>Delivered:</b> ${s.delivered_date}<br>
+
+<hr>
+
+<pre>${JSON.stringify(
+s,
+null,
+2
+)}</pre>
+
+`;
+
+document.getElementById("awbInput")
+.value = "";
+
+}
+catch(err){
+
+document.getElementById("result")
+.innerHTML =
+err.toString();
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
