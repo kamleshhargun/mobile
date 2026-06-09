@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -59,6 +58,11 @@ padding:12px 18px;
 font-size:15px;
 font-weight:600;
 cursor:pointer;
+transition:.2s;
+}
+
+.btn:hover{
+opacity:.9;
 }
 
 .btn-camera{
@@ -69,6 +73,12 @@ color:#fff;
 .btn-manual{
 background:#374151;
 color:#fff;
+}
+
+.btn-torch{
+background:#f59e0b;
+color:#fff;
+display:none;
 }
 
 .btn-save{
@@ -91,6 +101,7 @@ border:1px solid #d1d5db;
 border-radius:12px;
 outline:none;
 margin-bottom:12px;
+font-size:15px;
 }
 
 .input:focus{
@@ -99,12 +110,13 @@ border-color:#10b981;
 
 #reader{
 display:none;
-width:220px;
-height:220px;
+width:100%;
+max-width:320px;
+margin:0 auto 15px;
 overflow:hidden;
 border-radius:16px;
-margin:auto;
-margin-bottom:12px;
+border:2px solid #10b981;
+background:#000;
 }
 
 .result-card{
@@ -116,6 +128,7 @@ border-radius:12px;
 font-size:14px;
 line-height:1.8;
 margin-bottom:12px;
+word-break:break-word;
 }
 
 .action-row{
@@ -129,7 +142,7 @@ bottom:20px;
 left:50%;
 transform:translateX(-50%);
 background:#111827;
-color:white;
+color:#fff;
 padding:10px 16px;
 border-radius:10px;
 z-index:99999;
@@ -152,6 +165,14 @@ font-weight:700;
 
 @media(max-width:600px){
 
+body{
+padding:12px;
+}
+
+.panel{
+padding:15px;
+}
+
 .action-row{
 flex-direction:column;
 }
@@ -159,6 +180,10 @@ flex-direction:column;
 .btn-save,
 .btn-stop{
 width:100%;
+}
+
+.header{
+font-size:24px;
 }
 
 }
@@ -182,17 +207,20 @@ Pickup Entry
 <button
 class="btn btn-camera"
 onclick="startCamera()">
-
 📷 Camera Scan
-
 </button>
 
 <button
 class="btn btn-manual"
 onclick="focusAWB()">
-
 ⌨ Manual / Scanner
+</button>
 
+<button
+id="torchBtn"
+class="btn btn-torch"
+onclick="toggleTorch()">
+🔦 Torch
 </button>
 
 </div>
@@ -220,17 +248,13 @@ class="result-card">
 <button
 class="btn btn-save"
 onclick="saveEntry()">
-
 Next
-
 </button>
 
 <button
 class="btn btn-stop"
 onclick="stopWork()">
-
 Stop
-
 </button>
 
 </div>
@@ -242,7 +266,6 @@ Stop
 <div id="loadingOverlay">
 Loading...
 </div>
-<script>
 
 /* ===================================
 CONFIG
@@ -252,642 +275,206 @@ const API_URL =
 "https://script.google.com/macros/s/AKfycbxE364kp1NqAiMCM-Pj2QxyoMMnCTZxLDr5yq6QAxUNZ0saq-SDIUMlBCftWXOUtDbu/exec";
 
 /* ===================================
-FIXED TYPE
-=================================== */
-
-const currentType = "Pickup";
-
-/* ===================================
-GLOBAL
-=================================== */
-
-let currentTracking = null;
-
-let html5QrCode = null;
-
-/* New Success Sound */
-
-const beep =
-new Audio(
-"https://actions.google.com/sounds/v1/cartoon/pop.ogg"
-);
-
-/* ===================================
-FOCUS AWB
-=================================== */
-
-function focusAWB(){
-
- document
- .getElementById("awbInput")
- .focus();
-
-}
-
-/* ===================================
-TOAST
-=================================== */
-
-function toast(msg){
-
- const t =
- document.createElement("div");
-
- t.className = "toast";
-
- t.innerText = msg;
-
- document.body.appendChild(t);
-
- setTimeout(
- ()=>{
-   t.remove();
- },
- 2000
- );
-
-}
-
-/* ===================================
-LOADER
-=================================== */
-
-function showLoader(){
-
- document
- .getElementById(
- "loadingOverlay"
- )
- .style.display =
- "flex";
-
-}
-
-function hideLoader(){
-
- document
- .getElementById(
- "loadingOverlay"
- )
- .style.display =
- "none";
-
-}
-
-/* ===================================
-CLEAR FORM
-=================================== */
-
-function clearForm(){
-
- currentTracking = null;
-
- document
- .getElementById("awbInput")
- .value = "";
-
- document
- .getElementById("orderInput")
- .value = "";
-
- document
- .getElementById("orderInput")
- .style.display = "none";
-
- document
- .getElementById("resultCard")
- .style.display = "none";
-
- document
- .getElementById("resultCard")
- .innerHTML = "";
-
-}
-
-/* ===================================
-START CAMERA
+CAMERA SCANNER
 =================================== */
 
 async function startCamera(){
 
- try{
-
-   if(html5QrCode){
-
-     await stopCamera();
-
-   }
-
-   document
-   .getElementById("reader")
-   .style.display =
-   "block";
-
-   html5QrCode =
-   new Html5Qrcode(
-   "reader"
-   );
-
-   await html5QrCode.start(
-
-   {
-     facingMode:
-     "environment"
-   },
-
-   {
-     fps:20,
-
-     qrbox:{
- width:220,
- height:220
-}
-   },
-
-   function(decodedText){
-
-     document
-     .getElementById("awbInput")
-     .value =
-     decodedText;
-
-     playSuccessSound();
-
-     stopCamera();
-
-     trackShipment();
-
-   }
-
-   );
-
- }catch(err){
-
-   console.log(err);
-
-   toast(
-   "Camera Error"
-   );
-
- }
-
-}
-
-/* ===================================
-STOP CAMERA
-=================================== */
-
-async function stopCamera(){
-
- try{
-
-   if(html5QrCode){
-
-     await html5QrCode.stop();
-
-     await html5QrCode.clear();
-
-     html5QrCode = null;
-
-   }
-
- }catch(err){}
-
- document
- .getElementById("reader")
- .style.display =
- "none";
-
-}
-
-/* ===================================
-USB SCANNER
-=================================== */
-
-let scannerBuffer = "";
-
-document.addEventListener(
-"keydown",
-function(e){
-
- if(
- document.activeElement.id
- !== "awbInput"
- ){
-   return;
- }
-
- if(e.key === "Enter"){
-
-   e.preventDefault();
-
-   const awb =
-   scannerBuffer.trim();
-
-   if(awb.length > 5){
-
-     document
-     .getElementById(
-     "awbInput"
-     )
-     .value = awb;
-
-     trackShipment();
-
-   }
-
-   scannerBuffer = "";
-
-   return;
- }
-
- if(e.key.length === 1){
-
-   scannerBuffer += e.key;
-
- }
-
-}
-);
-
-/* ===================================
-MANUAL ENTER
-=================================== */
-
-document
-.getElementById(
-"awbInput"
-)
-.addEventListener(
-"keydown",
-function(e){
-
- if(e.key === "Enter"){
-
-   trackShipment();
-
- }
-
-}
-);
-
-/* ===================================
-TRACK SHIPMENT
-=================================== */
-
-async function trackShipment(){
-
- const awb =
-
- document
- .getElementById(
- "awbInput"
- )
- .value
- .trim();
-
- if(!awb){
-
-   toast(
-   "Scan AWB"
-   );
-
-   return;
-
- }
-
- showTrackingLoading();
-
- try{
-
-   const response = await fetch(
-`${API_URL}?action=trackShipment&awb=${encodeURIComponent(awb)}`,
-{
-    method:"GET",
-    cache:"no-cache"
-}
-);
-
-   const result =
-
-   await response.json();
-
-   if(result.success){
-
-     currentTracking =
-     result;
-
-     renderTracking(
-     result
-     );
-
-     return;
-
-   }
-
-   openManualOrder();
-
- }catch(err){
-
-   console.log(err);
-
-   openManualOrder();
-
- }
-
-}
-/* ===================================
-TRACKING LOADING
-=================================== */
-
-function showTrackingLoading(){
-
-const card =
-document.getElementById(
-"resultCard"
-);
-
-card.style.display =
-"block";
-
-card.innerHTML =
-"Fetching Tracking...";
-
-}
-
-/* ===================================
-MANUAL ORDER MODE
-=================================== */
-
-function openManualOrder(){
-
-currentTracking = null;
-
-const card =
-document.getElementById(
-"resultCard"
-);
-
-card.style.display =
-"block";
-
-card.innerHTML = `
-
- <div style="
- color:#dc2626;
- font-weight:700;
- ">
-
-Tracking Not Found
-
- </div>
-
- <div style="
- margin-top:8px;
- ">
-
-Enter Order ID Manually
-
- </div>
-
-`;
-
-document
-.getElementById(
-"orderInput"
-)
-.style.display =
-"block";
-
-document
-.getElementById(
-"orderInput"
-)
-.focus();
-
-}
-
-/* ===================================
-RENDER TRACKING
-=================================== */
-
-function renderTracking(data){
-
-const card =
-document.getElementById(
-"resultCard"
-);
-
-card.style.display =
-"block";
-
-card.innerHTML = `
-
-<b>AWB :</b>
-${data.awb || ""} <br>
-
-<b>Order ID :</b>
-${data.orderId || ""} <br>
-
-<b>Status :</b>
-${data.status || ""} <br>
-
-<b>Courier :</b>
-${data.courier || ""} <br>
-
-<b>Name :</b>
-${data.customerName || ""} <br>
-
-<b>City :</b>
-${data.city || ""}
-
-`;
-
-document
-.getElementById(
-"orderInput"
-)
-.value =
-data.orderId || "";
-
-}
-
-/* ===================================
-SUCCESS SOUND
-=================================== */
-
-function playSuccessSound(){
-
 try{
 
-beep.currentTime = 0;
+if(isScanning) return;
 
-beep.play();
-
-}catch(err){}
-
+if(html5QrCode){
+await stopCamera();
 }
 
-/* ===================================
-SAVE ENTRY
-=================================== */
+document.getElementById("reader").style.display="block";
 
-async function saveEntry(){
+html5QrCode =
+new Html5Qrcode("reader");
 
-const awb =
-document
-.getElementById("awbInput")
-.value
-.trim();
+isScanning = true;
 
-if(!awb){
+await html5QrCode.start(
 
-    toast("AWB Missing");
-    return;
+{
+facingMode:"environment"
+},
 
-}
+{
+fps:20,
 
-const payload = {
+qrbox:function(viewfinderWidth,viewfinderHeight){
 
-    type: currentType,
+const size =
+Math.min(
+viewfinderWidth,
+viewfinderHeight,
+280
+);
 
-    awb: awb,
-
-    orderId:
-    document
-    .getElementById("orderInput")
-    .value
-    .trim(),
-
-    courier: currentTracking?.courier || "",
-    status: currentTracking?.status || "",
-    customerName: currentTracking?.customerName || "",
-    city: currentTracking?.city || "",
-    state: currentTracking?.state || "",
-    destination: currentTracking?.destination || "",
-    pickupDate: currentTracking?.pickupDate || "",
-    deliveredDate: currentTracking?.deliveredDate || "",
-
-    expectedDate:
-    currentTracking?.expectedDate ||
-    currentTracking?.estimatedDate ||
-    "",
-
-    isRTO:
-    currentTracking?.isRTO || false
-
+return {
+width:size,
+height:size
 };
 
-try{
+},
 
-    showLoader();
+aspectRatio:1
+},
 
-    const response = await fetch(
-        API_URL,
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"text/plain;charset=utf-8"
-            },
-            body:JSON.stringify({
-                action:"saveEntry",
-                payload:payload
-            })
-        }
-    );
+async function(decodedText){
 
-    const text = await response.text();
+const now = Date.now();
 
-    let result = {};
+if(
+decodedText === lastScannedCode &&
+(now - lastScanTime) < 3000
+){
+return;
+}
 
-    try{
+lastScannedCode = decodedText;
+lastScanTime = now;
 
-        result = JSON.parse(text);
+document
+.getElementById("awbInput")
+.value = decodedText.trim();
 
-    }catch(err){
+playSuccessSound();
 
-        hideLoader();
+await stopCamera();
 
-        console.log("Server Response:", text);
+trackShipment();
 
-        toast("Invalid Server Response");
+}
 
-        return;
+);
 
-    }
-
-    hideLoader();
-
-    if(result.duplicate){
-
-        toast("Duplicate AWB");
-
-        document
-        .getElementById("awbInput")
-        .select();
-
-        return;
-
-    }
-
-    if(!result.success){
-
-        toast(
-            result.message ||
-            "Save Failed"
-        );
-
-        return;
-
-    }
-
-    /* SUCCESS */
-
-    let counts =
-    JSON.parse(
-        localStorage.getItem("todayCounts") ||
-        '{"pickup":0,"return":0}'
-    );
-
-    counts.pickup++;
-
-    localStorage.setItem(
-        "todayCounts",
-        JSON.stringify(counts)
-    );
-
-    localStorage.setItem(
-        "pickupCount",
-        counts.pickup
-    );
-
-    playSuccessSound();
-
-    toast("Saved Successfully");
-
-    clearForm();
-
-    document
-    .getElementById("awbInput")
-    .focus();
+setTimeout(enableTorchButton,1500);
 
 }catch(err){
 
-    hideLoader();
+console.error(err);
 
-    console.error(err);
+isScanning = false;
 
-    toast("Save Failed");
+toast("Camera Error");
+
+}
+
+}
+ async function stopCamera(){
+
+try{
+
+if(html5QrCode){
+
+await html5QrCode.stop();
+
+await html5QrCode.clear();
+
+}
+
+}catch(err){
+
+console.log(err);
+
+}
+
+html5QrCode = null;
+
+isScanning = false;
+
+torchEnabled = false;
+
+document
+.getElementById("reader")
+.style.display = "none";
+
+const torchBtn =
+document.getElementById("torchBtn");
+
+if(torchBtn){
+
+torchBtn.style.display = "none";
+
+torchBtn.innerText = "🔦 Torch";
+
+}
+
+}
+ async function enableTorchButton(){
+
+try{
+
+if(!html5QrCode) return;
+
+const caps =
+html5QrCode.getRunningTrackCapabilities();
+
+if(caps && caps.torch){
+
+document
+.getElementById("torchBtn")
+.style.display = "inline-block";
+
+}
+
+}catch(err){
+
+console.log(err);
 
 }
 
 }
 
-/* ===================================
-STOP
-=================================== */
+async function toggleTorch(){
 
-function stopWork(){
+try{
+
+if(!html5QrCode) return;
+
+torchEnabled = !torchEnabled;
+
+await html5QrCode.applyVideoConstraints({
+
+advanced:[
+{
+torch:torchEnabled
+}
+]
+
+});
+
+document
+.getElementById("torchBtn")
+.innerText =
+torchEnabled
+? "🔦 Torch ON"
+: "🔦 Torch";
+
+}catch(err){
+
+toast("Torch Not Supported");
+
+}
+
+}
+ document
+.getElementById("awbInput")
+.addEventListener("keydown",function(e){
+
+if(e.key==="Enter"){
+
+e.preventDefault();
+
+trackShipment();
+
+}
+
+});
+ function stopWork(){
 
 stopCamera();
 
@@ -896,26 +483,27 @@ clearForm();
 focusAWB();
 
 }
+ window.addEventListener(
+"beforeunload",
+function(){
 
-/* ===================================
-AUTO FOCUS
-=================================== */
+if(html5QrCode){
 
-window.onload = function(){
+stopCamera();
 
-setTimeout(()=>{
+}
 
-document
-.getElementById(
-"awbInput"
-)
-.focus();
+}
+);
+ window.onload=function(){
+
+setTimeout(function(){
+
+focusAWB();
 
 },300);
 
 };
-
-</script>
-
+ 
 </body>
 </html>
