@@ -854,14 +854,11 @@ let result = {};
 
 try{
 
-```
  result =
  JSON.parse(text);
-```
 
 }catch(err){
 
-```
  hideLoader();
 
  toast(
@@ -877,7 +874,6 @@ hideLoader();
 
 if(result.duplicate){
 
-```
  toast(
  "Duplicate AWB"
  );
@@ -889,13 +885,11 @@ if(result.duplicate){
  .select();
 
  return;
-```
 
 }
 
 if(!result.success){
 
-```
  toast(
 
  result.message ||
@@ -905,7 +899,6 @@ if(!result.success){
  );
 
  return;
-```
 
 }
 
@@ -936,6 +929,18 @@ toast(
 }
 
 }
+let counts =
+JSON.parse(
+localStorage.getItem("todayCounts") ||
+'{"pickup":0,"return":0}'
+);
+
+counts.pickup++;
+
+localStorage.setItem(
+"todayCounts",
+JSON.stringify(counts)
+);
 
 /* ===================================
 STOP
