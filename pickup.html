@@ -148,11 +148,17 @@ flex-direction:column;
 <div class="center-content">
 
 <div class="mode-row">
-<button id="pickupBtn" class="mode-btn pickup">
+<button
+id="pickupBtn"
+class="mode-btn pickup active-pickup"
+onclick="selectType('Pickup')">
 Pickup
 </button>
 
-<button id="returnBtn" class="mode-btn return">
+<button
+id="returnBtn"
+class="mode-btn return"
+onclick="selectType('Return')">
 Return
 </button>
 </div>
@@ -209,8 +215,7 @@ Stop
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxE364kp1NqAiMCM-Pj2QxyoMMnCTZxLDr5yq6QAxUNZ0saq-SDIUMlBCftWXOUtDbu/exec";
 
-const currentType = "Pickup";
-
+let currentType = "Pickup";
 let currentTracking = null;
 let html5QrCode = null;
 let isScanning = false;
@@ -228,45 +233,30 @@ function selectType(type){
 
   currentType = type;
 
-  document
-    .getElementById("scanPanel")
-    .style.display = "flex";
+  const pickupBtn =
+    document.getElementById("pickupBtn");
 
-  document
-    .getElementById("pickupBtn")
-    .classList.remove(
-      "active-pickup"
-    );
+  const returnBtn =
+    document.getElementById("returnBtn");
 
-  document
-    .getElementById("returnBtn")
-    .classList.remove(
-      "active-return"
-    );
+  pickupBtn.classList.remove("active-pickup");
+  returnBtn.classList.remove("active-return");
 
   if(type === "Pickup"){
 
-    document
-      .getElementById("pickupBtn")
-      .classList.add(
-        "active-pickup"
-      );
+    pickupBtn.classList.add("active-pickup");
 
   }else{
 
-    document
-      .getElementById("returnBtn")
-      .classList.add(
-        "active-return"
-      );
+    returnBtn.classList.add("active-return");
 
   }
 
+  document.getElementById("scanPanel").style.display = "flex";
+
   clearForm();
 
-  document
-    .getElementById("awbInput")
-    .focus();
+  document.getElementById("awbInput").focus();
 
 }
 
@@ -945,6 +935,11 @@ setTimeout(()=>{
   .focus();
 
 },200);
+  window.onload = function () {
+
+  selectType("Pickup");
+
+};
 </script>
 </body>
 </html>
