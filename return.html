@@ -854,14 +854,14 @@ let result = {};
 
 try{
 
-```
+ 
  result =
  JSON.parse(text);
-```
+ 
 
 }catch(err){
 
-```
+ 
  hideLoader();
 
  toast(
@@ -869,7 +869,7 @@ try{
  );
 
  return;
-```
+ 
 
 }
 
@@ -877,7 +877,7 @@ hideLoader();
 
 if(result.duplicate){
 
-```
+ 
  toast(
  "Duplicate AWB"
  );
@@ -889,13 +889,13 @@ if(result.duplicate){
  .select();
 
  return;
-```
+ 
 
 }
 
 if(!result.success){
 
-```
+ 
  toast(
 
  result.message ||
@@ -905,7 +905,7 @@ if(!result.success){
  );
 
  return;
-```
+ 
 
 }
 
