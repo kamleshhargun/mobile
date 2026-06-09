@@ -32,6 +32,16 @@ footer{text-align:center;padding:20px;color:var(--secondary)}
 .modal-box{width:320px;padding:22px;border-radius:26px;background:var(--card);display:flex;flex-direction:column;gap:10px}
 .modal-box button{padding:14px;border:none;border-radius:14px;cursor:pointer}
 @media(max-width:768px){#dashboard{grid-template-columns:1fr 1fr;padding:0 14px 80px}.summary-widget,.large-widget{grid-column:1/-1}}
+#homePage{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:18px;
+}
+
+#contentArea{
+    width:100%;
+    padding:10px;
+}
 </style>
 </head>
 <body>
@@ -83,7 +93,7 @@ footer{text-align:center;padding:20px;color:var(--secondary)}
 <div class="large-number" id="totalCount">0</div>
 </div>
 </div>
-
+<div id="contentArea" style="display:none;"></div>
 </main>
 
 <footer>© 2026 Kone Soft Tech</footer>
@@ -100,7 +110,44 @@ footer{text-align:center;padding:20px;color:var(--secondary)}
 </div>
 
 <script>
-function openPage(page){window.location.href=page}
+async function openPage(page){
+
+    try{
+
+        const res = await fetch(page);
+
+        if(!res.ok){
+            throw new Error("Page Not Found");
+        }
+
+        const html = await res.text();
+
+        document.getElementById("homePage").style.display = "none";
+
+        document.getElementById("contentArea").style.display = "block";
+
+        document.getElementById("contentArea").innerHTML = `
+            <button onclick="goHome()"
+            style="
+            margin-bottom:15px;
+            padding:10px 18px;
+            border:none;
+            border-radius:12px;
+            cursor:pointer;
+            ">
+            ← Back
+            </button>
+            ${html}
+        `;
+
+    }catch(err){
+
+        document.getElementById("contentArea").innerHTML =
+        "<h3>Page Load Failed</h3>";
+
+    }
+
+}
 
 function updateClock(){
 const now=new Date();
@@ -140,7 +187,13 @@ closeSettings();
 const t=localStorage.getItem("theme")||"light";
 if(t!=="light")document.body.classList.add(t);
 })();
+function goHome(){
 
+    document.getElementById("contentArea").style.display = "none";
+
+    document.getElementById("homePage").style.display = "grid";
+
+}
 window.addEventListener("click",e=>{
 if(e.target===document.getElementById("settingsModal")) closeSettings();
 });
