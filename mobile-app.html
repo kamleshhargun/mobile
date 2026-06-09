@@ -6,42 +6,218 @@
 <title>Harsidhi Ventures</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-:root{--bg:#f2f2f7;--card:#fff;--text:#111;--secondary:#6e6e73;--shadow:rgba(0,0,0,.08)}
+
+:root{
+--bg:#f2f2f7;
+--card:#fff;
+--text:#111;
+--secondary:#6e6e73;
+--shadow:rgba(0,0,0,.08)
+}
+
 body.dark{--bg:#000;--card:#1c1c1e;--text:#fff;--secondary:#98989d;--shadow:rgba(255,255,255,.05)}
 body.blue{--bg:#eef5ff;--card:#fff;--text:#0a2540;--secondary:#537188;--shadow:rgba(0,119,255,.15)}
 body.green{--bg:#eefaf0;--card:#fff;--text:#16361f;--secondary:#4b6f54;--shadow:rgba(0,150,0,.12)}
-body{background:var(--bg);color:var(--text);min-height:100vh;transition:.3s}
-.topbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:18px 20px;background:var(--bg)}
-.brand-title{font-size:24px;font-weight:700}
-#liveDateTime{font-size:13px;color:var(--secondary);margin-top:4px}
-.settings-btn{width:46px;height:46px;border:none;border-radius:14px;cursor:pointer;background:var(--card);box-shadow:0 4px 20px var(--shadow);font-size:20px}
-.search-section{padding:0 20px 18px}
-#searchInput{width:100%;padding:14px 16px;border:none;border-radius:18px;background:var(--card);color:var(--text);box-shadow:0 4px 20px var(--shadow)}
-#dashboard{padding:0 20px 90px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px}
-.widget{background:var(--card);border-radius:28px;padding:18px;cursor:pointer;box-shadow:0 6px 24px var(--shadow)}
-.widget img{width:64px;height:64px;object-fit:contain;display:block;margin:auto}
-.small-widget{text-align:center;min-height:180px;display:flex;flex-direction:column;justify-content:center}
-.small-widget h3{margin-top:14px}
-.summary-widget,.large-widget{grid-column:span 2}
-.summary-title,.large-title{font-size:22px;font-weight:700}
-.summary-row{display:flex;justify-content:space-between;margin-top:14px}
-.large-widget{display:flex;align-items:center;gap:20px;min-height:170px}
-.large-number{font-size:34px;font-weight:800;margin-top:8px}
-footer{text-align:center;padding:20px;color:var(--secondary)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:500}
-.modal-box{width:320px;padding:22px;border-radius:26px;background:var(--card);display:flex;flex-direction:column;gap:10px}
-.modal-box button{padding:14px;border:none;border-radius:14px;cursor:pointer}
-@media(max-width:768px){#dashboard{grid-template-columns:1fr 1fr;padding:0 14px 80px}.summary-widget,.large-widget{grid-column:1/-1}}
+
+body{
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+transition:.3s;
+display:flex;
+flex-direction:column
+}
+
+.topbar{
+position:sticky;
+top:0;
+z-index:100;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 20px;
+background:var(--bg)
+}
+
+.brand-title{
+font-size:24px;
+font-weight:700;
+cursor:pointer
+}
+
+#liveDateTime{
+font-size:13px;
+color:var(--secondary);
+margin-top:4px
+}
+
+.settings-btn{
+width:46px;
+height:46px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+background:var(--card);
+box-shadow:0 4px 20px var(--shadow);
+font-size:20px
+}
+
+.search-section{
+padding:0 20px 18px
+}
+
+#searchInput{
+width:100%;
+padding:14px 16px;
+border:none;
+border-radius:18px;
+background:var(--card);
+color:var(--text);
+box-shadow:0 4px 20px var(--shadow)
+}
+
+#dashboard{
+flex:1;
+padding:0 20px 30px;
+max-width:1400px;
+width:100%;
+margin:auto
+}
+
 #homePage{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-    gap:18px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px
+}
+
+.widget{
+background:var(--card);
+border-radius:28px;
+padding:18px;
+cursor:pointer;
+box-shadow:0 6px 24px var(--shadow);
+transition:.25s
+}
+
+.widget:hover{
+transform:translateY(-3px)
+}
+
+.widget img{
+width:64px;
+height:64px;
+object-fit:contain;
+display:block;
+margin:auto
+}
+
+.small-widget{
+text-align:center;
+min-height:180px;
+display:flex;
+flex-direction:column;
+justify-content:center
+}
+
+.small-widget h3{
+margin-top:14px
+}
+
+.summary-widget,
+.large-widget{
+grid-column:span 2
+}
+
+.summary-title,
+.large-title{
+font-size:22px;
+font-weight:700
+}
+
+.summary-row{
+display:flex;
+justify-content:space-between;
+margin-top:14px
+}
+
+.large-widget{
+display:flex;
+align-items:center;
+gap:20px;
+min-height:170px
+}
+
+.large-number{
+font-size:34px;
+font-weight:800;
+margin-top:8px
 }
 
 #contentArea{
-    width:100%;
-    min-height:calc(100vh - 140px);
-    padding:0;
+width:100%;
+min-height:calc(100vh - 170px);
+padding:0
+}
+
+footer{
+margin-top:auto;
+text-align:center;
+padding:18px;
+color:var(--secondary)
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:500
+}
+
+.modal-box{
+width:min(320px,90%);
+padding:22px;
+border-radius:26px;
+background:var(--card);
+display:flex;
+flex-direction:column;
+gap:10px
+}
+
+.modal-box button{
+padding:14px;
+border:none;
+border-radius:14px;
+cursor:pointer
+}
+
+@media(max-width:767px){
+
+.topbar{padding:15px}
+.search-section{padding:0 15px 15px}
+#dashboard{padding:0 15px 25px}
+#homePage{grid-template-columns:repeat(2,1fr);gap:15px}
+.small-widget{min-height:160px}
+.brand-title{font-size:21px}
+
+}
+
+@media(min-width:768px) and (max-width:1199px){
+
+#homePage{
+grid-template-columns:repeat(3,1fr)
+}
+
+}
+
+@media(min-width:1200px){
+
+#homePage{
+grid-template-columns:repeat(4,1fr)
+}
+
 }
 </style>
 </head>
