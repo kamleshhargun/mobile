@@ -60,40 +60,38 @@ footer{text-align:center;padding:20px;color:var(--secondary)}
 
 <main id="dashboard">
 
-<div class="widget small-widget" onclick="openPage('pickup.html')" data-name="pickup">
-<img src="icons/pickup.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3500/3500833.png'">
-<h3>Pickup</h3>
+<div id="homePage">
+
+    <div class="widget small-widget" onclick="openPage('pickup.html')" data-name="pickup">
+        <img src="icons/pickup.png">
+        <h3>Pickup</h3>
+    </div>
+
+    <div class="widget small-widget" onclick="openPage('return.html')" data-name="return">
+        <img src="icons/return.png">
+        <h3>Return</h3>
+    </div>
+
+    <div class="widget summary-widget">
+      
+    </div>
+
+    <div class="widget small-widget" onclick="openPage('today-count.html')" data-name="today">
+      
+    </div>
+
+    <div class="widget small-widget" onclick="openPage('yesterday-count.html')" data-name="yesterday">
+      
+    </div>
+
+    <div class="widget large-widget" onclick="openPage('total-count.html')" data-name="total">
+      
+    </div>
+
 </div>
 
-<div class="widget small-widget" onclick="openPage('return.html')" data-name="return">
-<img src="icons/return.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/679/679720.png'">
-<h3>Return</h3>
-</div>
-
-<div class="widget summary-widget">
-<div class="summary-title">Today's Summary</div>
-<div class="summary-row"><span>📦 Pickup</span><span id="pickupCount">0</span></div>
-<div class="summary-row"><span>↩️ Return</span><span id="returnCount">0</span></div>
-</div>
-
-<div class="widget small-widget" onclick="openPage('today-count.html')" data-name="today">
-<img src="icons/today.png">
-<h3>Today Count</h3>
-</div>
-
-<div class="widget small-widget" onclick="openPage('yesterday-count.html')" data-name="yesterday">
-<img src="icons/yesterday.png">
-<h3>Yesterday Count</h3>
-</div>
-
-<div class="widget large-widget" onclick="openPage('total-count.html')" data-name="total">
-<img src="icons/total.png">
-<div>
-<div class="large-title">Total Count</div>
-<div class="large-number" id="totalCount">0</div>
-</div>
-</div>
 <div id="contentArea" style="display:none;"></div>
+
 </main>
 
 <footer>© 2026 Kone Soft Tech</footer>
@@ -122,7 +120,7 @@ async function openPage(page){
 
         const html = await res.text();
 
-        document.getElementById("homePage").style.display = "none";
+        document.getElementById("homePage").style.display = "grid";
 
         document.getElementById("contentArea").style.display = "block";
 
