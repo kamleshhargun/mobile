@@ -7,7 +7,7 @@
 
 <title>Return Entry</title>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <style>
 
@@ -33,7 +33,7 @@ margin:auto;
 text-align:center;
 font-size:28px;
 font-weight:700;
-color:#991b1b;
+color:#b91c1c;
 margin-bottom:20px;
 }
 
@@ -62,7 +62,7 @@ cursor:pointer;
 }
 
 .btn-camera{
-background:#059669;
+background:#dc2626;
 color:#fff;
 }
 
@@ -72,7 +72,7 @@ color:#fff;
 }
 
 .btn-save{
-background:#10b981;
+background:#dc2626;
 color:#fff;
 flex:1;
 }
@@ -99,9 +99,11 @@ border-color:#10b981;
 
 #reader{
 display:none;
-width:100%;
+width:220px;
+height:220px;
 overflow:hidden;
-border-radius:12px;
+border-radius:16px;
+margin:auto;
 margin-bottom:12px;
 }
 
@@ -267,7 +269,7 @@ let html5QrCode = null;
 
 const beep =
 new Audio(
-"https://actions.google.com/sounds/v1/cartoon/pop.ogg"
+"https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
 );
 
 /* ===================================
@@ -397,9 +399,9 @@ async function startCamera(){
      fps:20,
 
      qrbox:{
-       width:280,
-       height:140
-     }
+ width:220,
+ height:220
+}
    },
 
    function(decodedText){
@@ -558,19 +560,13 @@ async function trackShipment(){
 
  try{
 
-   const response =
-
-   await fetch(
-
-   API_URL +
-
-   "?action=trackShipment&awb=" +
-
-   encodeURIComponent(
-   awb
-   )
-
-   );
+   const response = await fetch(
+`${API_URL}?action=trackShipment&awb=${encodeURIComponent(awb)}`,
+{
+    method:"GET",
+    cache:"no-cache"
+}
+);
 
    const result =
 
@@ -739,199 +735,149 @@ SAVE ENTRY
 async function saveEntry(){
 
 const awb =
-
 document
-.getElementById(
-"awbInput"
-)
+.getElementById("awbInput")
 .value
 .trim();
 
 if(!awb){
 
-toast(
-"AWB Missing"
-);
-
-return;
+    toast("AWB Missing");
+    return;
 
 }
 
 const payload = {
 
-type:
-currentType,
+    type: currentType,
 
-awb:
-awb,
+    awb: awb,
 
-orderId:
+    orderId:
+    document
+    .getElementById("orderInput")
+    .value
+    .trim(),
 
-document
-.getElementById(
-"orderInput"
-)
-.value
-.trim(),
+    courier: currentTracking?.courier || "",
+    status: currentTracking?.status || "",
+    customerName: currentTracking?.customerName || "",
+    city: currentTracking?.city || "",
+    state: currentTracking?.state || "",
+    destination: currentTracking?.destination || "",
+    pickupDate: currentTracking?.pickupDate || "",
+    deliveredDate: currentTracking?.deliveredDate || "",
 
-courier:
-currentTracking?.courier || "",
+    expectedDate:
+    currentTracking?.expectedDate ||
+    currentTracking?.estimatedDate ||
+    "",
 
-status:
-currentTracking?.status || "",
-
-customerName:
-currentTracking?.customerName || "",
-
-city:
-currentTracking?.city || "",
-
-state:
-currentTracking?.state || "",
-
-destination:
-currentTracking?.destination || "",
-
-pickupDate:
-currentTracking?.pickupDate || "",
-
-deliveredDate:
-currentTracking?.deliveredDate || "",
-
-expectedDate:
-
-currentTracking?.expectedDate ||
-
-currentTracking?.estimatedDate ||
-
-"",
-
-isRTO:
-currentTracking?.isRTO || false
+    isRTO:
+    currentTracking?.isRTO || false
 
 };
 
 try{
 
-showLoader();
+    showLoader();
 
-const response =
+    const response = await fetch(
+        API_URL,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"text/plain;charset=utf-8"
+            },
+            body:JSON.stringify({
+                action:"saveEntry",
+                payload:payload
+            })
+        }
+    );
 
-await fetch(
+    const text = await response.text();
 
-API_URL,
+    let result = {};
 
-{
+    try{
 
-method:"POST",
+        result = JSON.parse(text);
 
-headers:{
+    }catch(err){
 
-"Content-Type":
-"text/plain;charset=utf-8"
+        hideLoader();
 
-},
+        console.log("Server Response:", text);
 
-body:JSON.stringify({
+        toast("Invalid Server Response");
 
-action:
-"saveEntry",
+        return;
 
-payload:
-payload
+    }
 
-})
+    hideLoader();
 
-}
+    if(result.duplicate){
 
-);
+        toast("Duplicate AWB");
 
-const text =
+        document
+        .getElementById("awbInput")
+        .select();
 
-await response.text();
+        return;
 
-let result = {};
+    }
 
-try{
+    if(!result.success){
 
- 
- result =
- JSON.parse(text);
- 
+        toast(
+            result.message ||
+            "Save Failed"
+        );
 
-}catch(err){
+        return;
 
- 
- hideLoader();
+    }
 
- toast(
- "Invalid Server Response"
- );
+    /* SUCCESS */
 
- return;
- 
+    let counts =
+    JSON.parse(
+        localStorage.getItem("todayCounts") ||
+        '{"pickup":0,"return":0}'
+    );
 
-}
+    counts.return++;
 
-hideLoader();
+    localStorage.setItem(
+        "returnCounts",
+        JSON.stringify(counts)
+    );
 
-if(result.duplicate){
+    localStorage.setItem(
+        "returnCount",
+        counts.return
+    );
 
- 
- toast(
- "Duplicate AWB"
- );
+    playSuccessSound();
 
- document
- .getElementById(
- "awbInput"
- )
- .select();
+    toast("Saved Successfully");
 
- return;
- 
+    clearForm();
 
-}
-
-if(!result.success){
-
- 
- toast(
-
- result.message ||
-
- "Save Failed"
-
- );
-
- return;
- 
-
-}
-
-playSuccessSound();
-
-toast(
-"Saved Successfully"
-);
-
-clearForm();
-
-document
-.getElementById(
-"awbInput"
-)
-.focus();
+    document
+    .getElementById("awbInput")
+    .focus();
 
 }catch(err){
 
-hideLoader();
+    hideLoader();
 
-console.log(err);
+    console.error(err);
 
-toast(
-"Save Failed"
-);
+    toast("Save Failed");
 
 }
 
