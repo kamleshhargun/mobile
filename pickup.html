@@ -273,7 +273,21 @@ CONFIG
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycbxE364kp1NqAiMCM-Pj2QxyoMMnCTZxLDr5yq6QAxUNZ0saq-SDIUMlBCftWXOUtDbu/exec";
+/* ===================================
+FIXED TYPE
+=================================== */
 
+const currentType = "Pickup";
+
+/* ===================================
+GLOBAL
+=================================== */
+
+let html5QrCode = null;
+let isScanning = false;
+let lastScannedCode = "";
+let lastScanTime = 0;
+let torchEnabled = false;
 /* ===================================
 CAMERA SCANNER
 =================================== */
