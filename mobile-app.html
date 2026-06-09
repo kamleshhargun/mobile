@@ -296,6 +296,31 @@ color:white;
 body.dark .box button{
 background:#444;
 }
+ .today-stats{
+display:flex;
+justify-content:center;
+gap:4px;
+margin-top:4px;
+flex-wrap:wrap;
+}
+
+.pickup-badge{
+background:#d4edda;
+color:#155724;
+padding:2px 6px;
+border-radius:10px;
+font-size:10px;
+font-weight:bold;
+}
+
+.return-badge{
+background:#f8d7da;
+color:#721c24;
+padding:2px 6px;
+border-radius:10px;
+font-size:10px;
+font-weight:bold;
+}
 </style>
 </head>
 
@@ -468,8 +493,9 @@ icon:"https://cdn-icons-png.flaticon.com/512/679/679720.png"
 {
 name:"Today Count",
 url:"today-count.html",
-icon:"https://cdn-icons-png.flaticon.com/512/1828/1828919.png"
-},
+icon:"today-icon.png",
+id:"todayCount"
+}
 
 {
 name:"Yesterday Count",
@@ -547,6 +573,32 @@ function render(filter=""){
    document.createElement("div");
 
    title.textContent = app.name;
+  if(app.id==="todayCount"){
+
+    const counts =
+    JSON.parse(
+    localStorage.getItem("todayCounts") ||
+    '{"pickup":0,"return":0}'
+    );
+
+    const stats =
+    document.createElement("div");
+
+    stats.className =
+    "today-stats";
+
+    stats.innerHTML = `
+      <span class="pickup-badge">
+      P ${counts.pickup}
+      </span>
+
+      <span class="return-badge">
+      R ${counts.return}
+      </span>
+    `;
+
+    icon.appendChild(stats);
+}
 
    icon.appendChild(img);
    icon.appendChild(title);
