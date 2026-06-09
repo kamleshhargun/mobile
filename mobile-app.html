@@ -49,7 +49,9 @@ footer{text-align:center;padding:20px;color:var(--secondary)}
 
 <header class="topbar">
 <div>
-<div class="brand-title">Harsidhi Ventures</div>
+<div class="brand-title" onclick="showHome()" style="cursor:pointer">
+    Harsidhi Ventures
+</div>
 <div id="liveDateTime">Loading...</div>
 </div>
 <button class="settings-btn" onclick="openSettings()">⚙️</button>
@@ -109,6 +111,15 @@ footer{text-align:center;padding:20px;color:var(--secondary)}
 </div>
 
 <script>
+    function showHome(){
+
+    document.getElementById("contentArea").style.display = "none";
+
+    document.getElementById("contentArea").innerHTML = "";
+
+    document.getElementById("homePage").style.display = "grid";
+
+}
 async function openPage(page){
 
     try{
