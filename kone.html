@@ -353,7 +353,29 @@ button:hover{
         gap:8px;
     }
 }
+.timeline-item{
+    padding:15px;
+    border-left:3px solid #2563eb;
+    margin-bottom:12px;
+    background:#fff;
+    border-radius:12px;
+}
 
+.timeline-status{
+    font-weight:700;
+    color:#111827;
+}
+
+.timeline-location{
+    color:#64748b;
+    margin-top:5px;
+}
+
+.timeline-time{
+    color:#94a3b8;
+    font-size:13px;
+    margin-top:5px;
+}
 </style>
 </head>
 
@@ -455,7 +477,7 @@ class="json-header"
 onclick="toggleJson()">
 
 <div class="json-title">
-📦 Shipment Response Details
+🚚 Tracking Timeline
 </div>
 
 <div class="json-badge">
@@ -787,15 +809,11 @@ async function processAWB(){
         /* UPDATE JSON */
 
         document.getElementById(
-            "jsonView"
-        ).innerHTML =
-        syntaxHighlight(
-            JSON.stringify(
-                shipment,
-                null,
-                2
-            )
-        );
+    "jsonView"
+).innerHTML =
+renderTrackingTimeline(
+    shipment.tracking_history
+);
 
         saveBeep();
 
@@ -1065,7 +1083,41 @@ window.onload = () => {
     }
 
 }
+function renderTrackingTimeline(history){
 
+    if(!history || !history.length){
+
+        return `
+        <div class="info-card">
+            No Tracking Available
+        </div>
+        `;
+    }
+
+    return history
+    .slice()
+    .reverse()
+    .map(item => `
+
+        <div class="timeline-item">
+
+            <div class="timeline-status">
+                ${item.description || item.status}
+            </div>
+
+            <div class="timeline-location">
+                📍 ${item.location || "-"}
+            </div>
+
+            <div class="timeline-time">
+                🕒 ${new Date(item.datetime).toLocaleString()}
+            </div>
+
+        </div>
+
+    `).join("");
+
+}
 </script>
 
 </body>
