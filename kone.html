@@ -908,11 +908,13 @@ async function startScanner() {
             { facingMode: "environment" },
 
             {
-               fps: 10,
-                qrbox: {
-                width: 250,
-                height: 120
-                }
+             fps: 10,
+            qrbox: function(viewfinderWidth, viewfinderHeight) {
+            return {
+            width: viewfinderWidth, 
+            height: viewfinderHeight
+        };
+    }
             },
 
             async (decodedText) => {
