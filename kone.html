@@ -4,180 +4,913 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AWB Scanner Pro</title>
+
 <script src="https://unpkg.com/html5-qrcode"></script>
+
 <style>
-body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#f4f7fb;color:#1f2937}
-.container{max-width:1000px;margin:auto;padding:20px}
-.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.top{display:flex;justify-content:space-between;align-items:center}
-.badge{background:#dcfce7;color:#166534;padding:8px 14px;border-radius:999px;font-weight:600}
-#reader{width:100%;margin-top:15px}
-input{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:12px}
-.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-button{border:none;padding:12px 18px;border-radius:12px;cursor:pointer;font-weight:600}
-.primary{background:#2563eb;color:#fff}
-.warn{background:#f59e0b;color:#fff}
-.danger{background:#ef4444;color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:15px}
-.info{background:#fff;border-radius:14px;padding:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
-pre{white-space:pre-wrap;word-break:break-word}
- .json-card{
-    margin-top:20px;
-    background:#ffffff;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 4px 15px rgba(0,0,0,.06);
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.json-toggle{
-    width:100%;
-    background:#eef4ff;
-    color:#2563eb;
-    border:none;
-    padding:16px;
-    font-size:15px;
+body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:#f3f6fb;
+    color:#1f2937;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.main-card{
+    background:#fff;
+    border-radius:24px;
+    padding:24px;
+    box-shadow:0 10px 35px rgba(0,0,0,.08);
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.title{
+    font-size:28px;
+    font-weight:700;
+}
+
+.subtitle{
+    color:#64748b;
+    margin-top:5px;
+    font-size:14px;
+}
+
+.online-badge{
+    background:#dcfce7;
+    color:#166534;
+    padding:10px 16px;
+    border-radius:999px;
     font-weight:600;
+    font-size:14px;
+}
+
+/* =========================
+   SCANNER
+========================= */
+
+#reader{
+    width:100%;
+    margin-top:20px;
+    overflow:hidden;
+    border-radius:18px;
+    border:2px solid #e5e7eb;
+}
+
+#reader video{
+    border-radius:18px;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.input-section{
+    margin-top:20px;
+}
+
+.input-label{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:8px;
+    color:#374151;
+}
+
+input{
+    width:100%;
+    padding:14px 16px;
+    border:1px solid #d1d5db;
+    border-radius:14px;
+    font-size:15px;
+    outline:none;
+    transition:.2s;
+}
+
+input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.12);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btns{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:15px;
+}
+
+button{
+    border:none;
     cursor:pointer;
-    text-align:left;
+    padding:14px 20px;
+    border-radius:14px;
+    font-weight:600;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-1px);
+}
+
+.primary{
+    background:#2563eb;
+    color:#fff;
+}
+
+.primary:hover{
+    background:#1d4ed8;
+}
+
+.warn{
+    background:#f59e0b;
+    color:#fff;
+}
+
+.danger{
+    background:#ef4444;
+    color:#fff;
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+    display:none;
+    margin-top:15px;
+    background:#eff6ff;
+    color:#1d4ed8;
+    padding:14px;
+    border-radius:14px;
+    font-weight:600;
+}
+
+/* =========================
+   SHIPMENT DETAILS
+========================= */
+
+.section-title{
+    margin-top:25px;
+    margin-bottom:12px;
+    font-size:18px;
+    font-weight:700;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.info-card{
+    background:#fff;
+    border-radius:18px;
+    padding:16px;
+    border:1px solid #e5e7eb;
+    box-shadow:0 4px 12px rgba(0,0,0,.04);
+}
+
+.info-title{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:6px;
+}
+
+.info-value{
+    font-size:16px;
+    font-weight:700;
+    color:#111827;
+    word-break:break-word;
+}
+
+/* =========================
+   JSON VIEWER
+========================= */
+
+.json-card{
+    margin-top:25px;
+    border-radius:20px;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+}
+
+.json-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 20px;
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    cursor:pointer;
+}
+
+.json-title{
+    font-weight:700;
+    font-size:15px;
+}
+
+.json-badge{
+    background:rgba(255,255,255,.18);
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
 }
 
 #jsonBox{
-    max-height:400px;
+    display:none;
+    background:#f8fafc;
+    max-height:500px;
     overflow:auto;
-    background:#0f172a;
 }
 
 #jsonView{
     margin:0;
-    padding:15px;
-    color:#22c55e;
+    padding:20px;
     font-size:13px;
-    line-height:1.6;
-    font-family:Consolas, monospace;
+    line-height:1.8;
+    font-family:Consolas,monospace;
 }
+
+/* Syntax Highlight */
+
+.key{
+    color:#2563eb;
+    font-weight:700;
+}
+
+.string{
+    color:#16a34a;
+}
+
+.number{
+    color:#ea580c;
+}
+
+.boolean{
+    color:#7c3aed;
+}
+
+.null{
+    color:#dc2626;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:9999;
+    min-width:250px;
+    background:#111827;
+    color:#fff;
+    padding:14px 18px;
+    border-radius:14px;
+    display:none;
+    box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+    .container{
+        padding:12px;
+    }
+
+    .main-card{
+        padding:16px;
+    }
+
+    .title{
+        font-size:22px;
+    }
+
+    .btns{
+        flex-direction:column;
+    }
+
+    button{
+        width:100%;
+    }
+
+    .json-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+    }
+}
+
 </style>
 </head>
+
 <body>
+
+<div class="toast" id="toast"></div>
+
 <div class="container">
-<div class="card">
-<div class="top">
-<h2>📦 AWB Scanner Pro</h2>
-<div class="badge">ONLINE</div>
+
+<div class="main-card">
+
+<div class="topbar">
+
+<div>
+<div class="title">📦 AWB Scanner Pro</div>
+<div class="subtitle">
+Smart Shipment Tracking Dashboard
+</div>
+</div>
+
+<div class="online-badge">
+🟢 ONLINE
+</div>
+
 </div>
 
 <div id="reader"></div>
 
-<input id="awbInput" placeholder="Scan or enter AWB">
+<div class="input-section">
+
+<div class="input-label">
+AWB Number
+</div>
+
+<input
+id="awbInput"
+placeholder="Scan or Enter AWB Number"
+/>
+
 <div class="btns">
-<button id="saveBtn" class="primary">SAVE NEW AWB</button>
-<button id="stopBtn" class="danger">STOP</button>
+
+<button
+id="saveBtn"
+class="primary">
+SAVE NEW AWB
+</button>
+
+<button
+id="stopBtn"
+class="danger">
+STOP SCANNER
+</button>
+
+</div>
+
+<div
+class="loading"
+id="loading">
+⏳ Fetching Shipment Information...
+</div>
+
+</div>
+
+<div class="section-title">
+Shipment Information
+</div>
+
+<div
+class="grid"
+id="details">
+
+<div class="info-card">
+<div class="info-title">
+Awaiting Scan
+</div>
+<div class="info-value">
+No Shipment Loaded
+</div>
+</div>
+
 </div>
 
 <div class="json-card">
-    <button class="json-toggle" onclick="toggleJson()">
-        📄 View Complete API Response
-    </button>
 
-    <div id="jsonBox" style="display:none;">
-        <pre id="jsonView"></pre>
-    </div>
+<div
+class="json-header"
+onclick="toggleJson()">
+
+<div class="json-title">
+📄 Complete API Response
 </div>
 
-<script>
-const API_URL="https://script.google.com/macros/s/AKfycbwbCfJYM4HvvqHegqJUqunjQE0aul6MpTOlvc8HFzfJw7w-eExQVQXKayjhb3ZSPuxSdw/exec";
+<div class="json-badge">
+RAW JSON
+</div>
+
+</div>
+
+<div id="jsonBox">
+
+<pre id="jsonView">
+Scan an AWB to view complete API response.
+</pre>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+ <script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwbCfJYM4HvvqHegqJUqunjQE0aul6MpTOlvc8HFzfJw7w-eExQVQXKayjhb3ZSPuxSdw/exec";
+
+/* =====================================
+   VARIABLES
+===================================== */
+
+let scanner = null;
+let lastScan = "";
+let scanLock = false;
+
+/* =====================================
+   BEEP SOUNDS
+===================================== */
 
 function beep(freq,duration){
- const ctx=new(window.AudioContext||window.webkitAudioContext)();
- const osc=ctx.createOscillator();
- osc.frequency.value=freq;
- osc.connect(ctx.destination);
- osc.start();
- setTimeout(()=>{osc.stop();ctx.close();},duration);
+
+    try{
+
+        const ctx =
+        new (window.AudioContext || window.webkitAudioContext)();
+
+        const osc = ctx.createOscillator();
+
+        osc.frequency.value = freq;
+
+        osc.connect(ctx.destination);
+
+        osc.start();
+
+        setTimeout(()=>{
+            osc.stop();
+            ctx.close();
+        },duration);
+
+    }catch(e){}
+
 }
 
-function foundBeep(){beep(900,150)}
-function errorBeep(){beep(250,300)}
-function saveBeep(){beep(1200,120)}
+function foundBeep(){
+    beep(900,150);
+}
 
-let scanner;
+function errorBeep(){
+    beep(250,300);
+}
+
+function saveBeep(){
+    beep(1200,120);
+}
+
+/* =====================================
+   TOAST
+===================================== */
+
+function showToast(message){
+
+    const toast =
+    document.getElementById("toast");
+
+    toast.innerText = message;
+    toast.style.display = "block";
+
+    setTimeout(()=>{
+        toast.style.display = "none";
+    },3000);
+
+}
+
+/* =====================================
+   JSON HIGHLIGHT
+===================================== */
+
+function syntaxHighlight(json){
+
+    json = json
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+
+    return json.replace(
+
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+
+        function(match){
+
+            let cls = "number";
+
+            if(/^"/.test(match)){
+
+                cls = /:$/.test(match)
+                    ? "key"
+                    : "string";
+
+            }
+            else if(/true|false/.test(match)){
+                cls = "boolean";
+            }
+            else if(/null/.test(match)){
+                cls = "null";
+            }
+
+            return '<span class="' + cls + '">' +
+                   match +
+                   '</span>';
+
+        }
+
+    );
+
+}
+
+/* =====================================
+   TOGGLE JSON
+===================================== */
+
+function toggleJson(){
+
+    const box =
+    document.getElementById("jsonBox");
+
+    box.style.display =
+        box.style.display === "block"
+        ? "none"
+        : "block";
+
+}
+
+/* =====================================
+   LOADING
+===================================== */
+
+function showLoading(){
+
+    document.getElementById("loading")
+    .style.display = "block";
+
+}
+
+function hideLoading(){
+
+    document.getElementById("loading")
+    .style.display = "none";
+
+}
+
+/* =====================================
+   DETAILS CARDS
+===================================== */
+
+function updateShipmentCards(shipment){
+
+    document.getElementById("details").innerHTML = `
+
+    <div class="info-card">
+        <div class="info-title">AWB Number</div>
+        <div class="info-value">
+            ${shipment.awb_number || "-"}
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Status</div>
+        <div class="info-value">
+            ${shipment.status || "-"}
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Courier</div>
+        <div class="info-value">
+            ${shipment.courier_name || "-"}
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Order Number</div>
+        <div class="info-value">
+            ${shipment.order_number || "-"}
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Customer Order</div>
+        <div class="info-value">
+            ${shipment.customer_order_number || "-"}
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-title">Delivered Date</div>
+        <div class="info-value">
+            ${shipment.delivered_date || "-"}
+        </div>
+    </div>
+
+    `;
+
+}
+
+/* =====================================
+   PROCESS AWB
+===================================== */
 
 async function processAWB(){
- const awb=document.getElementById('awbInput').value.trim();
- if(!awb){errorBeep();return;}
 
- try{
-  const res=await fetch(API_URL,{
-   method:'POST',
-   body:JSON.stringify({awb})
-  });
-  const data=await res.json();
+    const awb =
+    document.getElementById("awbInput")
+    .value
+    .trim();
 
-  if(!data.success){
-    errorBeep();
-    alert(data.message||'Not found');
-    return;
-  }
+    if(!awb){
 
-  foundBeep();
+        errorBeep();
 
-  const s=data.shipment;
+        showToast("Please Enter AWB");
 
-  document.getElementById('saveBtn').textContent =
-      data.action==='update' ? 'UPDATE AWB' : 'SAVE NEW AWB';
+        return;
 
-  document.getElementById('saveBtn').className =
-      data.action==='update' ? 'warn' : 'primary';
+    }
 
-  document.getElementById('details').innerHTML=`
-    <div class="info"><b>AWB</b><br>${s.awb_number||''}</div>
-    <div class="info"><b>Status</b><br>${s.status||''}</div>
-    <div class="info"><b>Courier</b><br>${s.courier_name||''}</div>
-    <div class="info"><b>Order</b><br>${s.order_number||''}</div>
-    <div class="info"><b>Customer Order</b><br>${s.customer_order_number||''}</div>
-    <div class="info"><b>Delivered</b><br>${s.delivered_date||''}</div>
-  `;
+    showLoading();
 
-  document.getElementById('jsonView').textContent =
-      JSON.stringify(s,null,2);
+    try{
 
-  saveBeep();
+        const response =
+        await fetch(API_URL,{
 
- }catch(e){
-  errorBeep();
-  alert(e);
- }
-}
+            method:"POST",
 
-document.getElementById('saveBtn').onclick=processAWB;
+            body:JSON.stringify({
+                awb:awb
+            })
 
-document.getElementById('stopBtn').onclick=()=>{
- if(scanner){scanner.stop();}
-};
+        });
 
-(async()=>{
- try{
-  scanner=new Html5Qrcode("reader");
-  await scanner.start(
-   {facingMode:"environment"},
-   {fps:10,qrbox:250},
-   txt=>{
-    document.getElementById('awbInput').value=txt;
-    processAWB();
-   }
-  );
- }catch(e){console.log(e)}
-})();
- function toggleJson(){
+        const data =
+        await response.json();
 
-    const box=document.getElementById("jsonBox");
+        hideLoading();
 
-    if(box.style.display=="none"){
-        box.style.display="block";
-    }else{
-        box.style.display="none";
+        if(!data.success){
+
+            errorBeep();
+
+            showToast(
+                data.message || "Shipment Not Found"
+            );
+
+            return;
+
+        }
+
+        foundBeep();
+
+        const shipment =
+        data.shipment;
+
+        /* BUTTON MODE */
+
+        const saveBtn =
+        document.getElementById("saveBtn");
+
+        if(data.action === "update"){
+
+            saveBtn.innerText =
+            "UPDATE AWB";
+
+            saveBtn.className =
+            "warn";
+
+        }
+        else{
+
+            saveBtn.innerText =
+            "SAVE NEW AWB";
+
+            saveBtn.className =
+            "primary";
+
+        }
+
+        /* UPDATE CARDS */
+
+        updateShipmentCards(
+            shipment
+        );
+
+        /* UPDATE JSON */
+
+        document.getElementById(
+            "jsonView"
+        ).innerHTML =
+        syntaxHighlight(
+            JSON.stringify(
+                shipment,
+                null,
+                2
+            )
+        );
+
+        saveBeep();
+
+        showToast(
+            "Shipment Loaded Successfully"
+        );
+
+    }
+    catch(error){
+
+        hideLoading();
+
+        errorBeep();
+
+        console.error(error);
+
+        showToast(
+            "Server Connection Failed"
+        );
+
     }
 
 }
+
+/* =====================================
+   BUTTON EVENTS
+===================================== */
+
+document
+.getElementById("saveBtn")
+.addEventListener(
+    "click",
+    processAWB
+);
+
+document
+.getElementById("stopBtn")
+.addEventListener(
+    "click",
+    async()=>{
+
+        try{
+
+            if(scanner){
+
+                await scanner.stop();
+
+                showToast(
+                    "Scanner Stopped"
+                );
+
+            }
+
+        }
+        catch(e){
+
+            console.log(e);
+
+        }
+
+    }
+);
+
+/* =====================================
+   ENTER KEY
+===================================== */
+
+document
+.getElementById("awbInput")
+.addEventListener(
+    "keypress",
+    function(e){
+
+        if(e.key==="Enter"){
+
+            processAWB();
+
+        }
+
+    }
+);
+
+/* =====================================
+   START SCANNER
+===================================== */
+
+async function startScanner(){
+
+    try{
+
+        scanner =
+        new Html5Qrcode(
+            "reader"
+        );
+
+        await scanner.start(
+
+            {
+                facingMode:"environment"
+            },
+
+            {
+                fps:10,
+                qrbox:250
+            },
+
+            async(text)=>{
+
+                /* DUPLICATE PROTECTION */
+
+                if(scanLock)
+                    return;
+
+                if(text===lastScan)
+                    return;
+
+                scanLock = true;
+
+                lastScan = text;
+
+                document
+                .getElementById(
+                    "awbInput"
+                ).value = text;
+
+                processAWB();
+
+                setTimeout(()=>{
+
+                    scanLock = false;
+
+                },2000);
+
+            }
+
+        );
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        showToast(
+            "Camera Permission Required"
+        );
+
+    }
+
+}
+
+/* =====================================
+   AUTO START
+===================================== */
+
+window.onload = ()=>{
+
+    document
+    .getElementById("awbInput")
+    .focus();
+
+    startScanner();
+
+};
+
 </script>
+
 </body>
 </html>
