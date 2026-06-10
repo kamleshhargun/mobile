@@ -904,8 +904,8 @@ async function startScanner() {
              fps: 10,
             qrbox: function(viewfinderWidth, viewfinderHeight) {
             return {
-            width: viewfinderWidth, 
-            height: viewfinderHeight
+            width: viewfinderWidth - 10,
+            height: viewfinderHeight - 10
         };
     }
             },
@@ -913,6 +913,8 @@ async function startScanner() {
             async (decodedText) => {
 
                 if (scanLock) return;
+                scannerRunning = true;
+                scanner = new Html5Qrcode("reader");
 
                 if (decodedText === lastScan) return;
 
@@ -943,7 +945,7 @@ async function startScanner() {
 
     }
     catch (error) {
-
+        scannerRunning = false;
         console.error(error);
 
         showToast(
@@ -968,10 +970,8 @@ window.onload = () => {
         .getElementById("stopBtn")
         .style.display = "block";
 
-    startScanner(
-        scannerRunning = false;
-    );
-
+    startScanner();
+    scannerRunning = false;
 };
 
      async function saveShipment(){
@@ -984,23 +984,25 @@ window.onload = () => {
 
         document.getElementById("awbInput").value = "";
 
-        document.getElementById("awbInput").focus();
+    document.getElementById("awbInput").focus();
 
-        currentShipment = null;
+    currentShipment = null;
 
-        lastScan = "";
+    lastScan = "";
 
-        btn.innerText = "SAVE NEW AWB";
+    scanLock = false;
 
-        btn.dataset.mode = "save";
+    btn.innerText = "SAVE NEW AWB";
 
-        updateShipmentCards({});
+    btn.dataset.mode = "save";
 
-        await startScanner(
-            scannerRunning = true;
-        );
+    updateShipmentCards({});
 
-        return;
+    scannerRunning = false;
+
+    await startScanner();
+
+    return;
     }
 
     // SAVE MODE
@@ -1037,6 +1039,8 @@ window.onload = () => {
         if(scanner){
 
             await scanner.stop();
+            scanner.clear();
+            scanner = null;
 
         }
 
