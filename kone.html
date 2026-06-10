@@ -72,14 +72,30 @@ body{
 
 #reader{
     width:100%;
+    height:220px;
     margin-top:20px;
     overflow:hidden;
     border-radius:18px;
     border:2px solid #e5e7eb;
+    background:#000;
 }
 
 #reader video{
+    width:100% !important;
+    height:220px !important;
+    object-fit:cover !important;
     border-radius:18px;
+}
+
+#desktopMessage{
+    display:none;
+    margin-top:15px;
+    padding:18px;
+    border-radius:16px;
+    background:#eff6ff;
+    color:#2563eb;
+    text-align:center;
+    font-weight:600;
 }
 
 /* =========================
@@ -304,7 +320,13 @@ button:hover{
 ========================= */
 
 @media(max-width:768px){
+#reader{
+    height:180px;
+}
 
+#reader video{
+    height:180px !important;
+}
     .container{
         padding:12px;
     }
@@ -358,7 +380,15 @@ Smart Shipment Tracking Dashboard
 
 </div>
 
+<div class="section-title">
+📷 Scan AWB Barcode
+</div>
+
 <div id="reader"></div>
+
+<div id="desktopMessage">
+📷 Scanner Camera Available Only On Mobile Devices
+</div>
 
 <div class="input-section">
 
@@ -368,7 +398,10 @@ AWB Number
 
 <input
 id="awbInput"
-placeholder="Scan or Enter AWB Number"
+placeholder="Scan Barcode or Enter AWB Number"
+autocomplete="off"
+autocapitalize="off"
+spellcheck="false"
 />
 
 <div class="btns">
@@ -381,7 +414,8 @@ SAVE NEW AWB
 
 <button
 id="stopBtn"
-class="danger">
+class="danger"
+style="display:none;">
 STOP SCANNER
 </button>
 
@@ -396,7 +430,7 @@ id="loading">
 </div>
 
 <div class="section-title">
-Shipment Information
+📦 Shipment Information
 </div>
 
 <div
@@ -421,11 +455,11 @@ class="json-header"
 onclick="toggleJson()">
 
 <div class="json-title">
-📄 Complete API Response
+📦 Shipment Response Details
 </div>
 
 <div class="json-badge">
-RAW JSON
+DETAILS
 </div>
 
 </div>
@@ -610,7 +644,20 @@ function updateShipmentCards(shipment){
     <div class="info-card">
         <div class="info-title">Status</div>
         <div class="info-value">
-            ${shipment.status || "-"}
+            <span style="
+color:
+${
+shipment.status==="Delivered"
+?"#16a34a"
+:
+shipment.status==="In Transit"
+?"#2563eb"
+:
+"#f59e0b"
+};
+">
+${shipment.status || "-"}
+</span>
         </div>
     </div>
 
@@ -750,8 +797,18 @@ async function processAWB(){
         saveBeep();
 
         showToast(
-            "Shipment Loaded Successfully"
-        );
+    "Shipment Loaded Successfully"
+);
+
+document
+.getElementById("awbInput")
+.value = "";
+
+document
+.getElementById("awbInput")
+.focus();
+
+lastScan = "";
 
     }
     catch(error){
@@ -763,12 +820,21 @@ async function processAWB(){
         console.error(error);
 
         showToast(
-            "Server Connection Failed"
+            "Unable To Connect Server"
         );
 
     }
 
 }
+     document
+.getElementById("awbInput")
+.addEventListener(
+"click",
+function(){
+
+    this.select();
+
+});
 
 /* =====================================
    BUTTON EVENTS
@@ -784,30 +850,29 @@ document
 document
 .getElementById("stopBtn")
 .addEventListener(
-    "click",
-    async()=>{
+"click",
+async()=>{
 
-        try{
+    try{
 
-            if(scanner){
+        if(scanner){
 
-                await scanner.stop();
+            await scanner.stop();
 
-                showToast(
-                    "Scanner Stopped"
-                );
-
-            }
-
-        }
-        catch(e){
-
-            console.log(e);
+            showToast(
+            "Scanner Stopped"
+            );
 
         }
 
     }
-);
+    catch(error){
+
+        console.log(error);
+
+    }
+
+});
 
 /* =====================================
    ENTER KEY
@@ -820,7 +885,7 @@ document
     function(e){
 
         if(e.key==="Enter"){
-
+        e.preventDefault();
             processAWB();
 
         }
@@ -849,37 +914,37 @@ async function startScanner(){
 
             {
                 fps:10,
-                qrbox:250
+                qrbox:{
+                width:250,
+                height:120
             },
 
             async(text)=>{
 
-                /* DUPLICATE PROTECTION */
+    if(scanLock)
+        return;
 
-                if(scanLock)
-                    return;
+    if(text===lastScan)
+        return;
 
-                if(text===lastScan)
-                    return;
+    scanLock = true;
 
-                scanLock = true;
+    lastScan = text;
 
-                lastScan = text;
+    document
+    .getElementById(
+        "awbInput"
+    ).value = text;
 
-                document
-                .getElementById(
-                    "awbInput"
-                ).value = text;
+    await processAWB();
 
-                processAWB();
+    setTimeout(()=>{
 
-                setTimeout(()=>{
+        scanLock = false;
 
-                    scanLock = false;
+    },1500);
 
-                },2000);
-
-            }
+}
 
         );
 
@@ -906,7 +971,30 @@ window.onload = ()=>{
     .getElementById("awbInput")
     .focus();
 
-    startScanner();
+    const isMobile =
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+    .test(navigator.userAgent);
+
+    if(isMobile){
+
+        document
+        .getElementById("stopBtn")
+        .style.display = "block";
+
+        startScanner();
+
+    }
+    else{
+
+        document
+        .getElementById("reader")
+        .style.display = "none";
+
+        document
+        .getElementById("desktopMessage")
+        .style.display = "block";
+
+    }
 
 };
 
