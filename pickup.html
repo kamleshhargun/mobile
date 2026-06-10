@@ -21,6 +21,40 @@ button{border:none;padding:12px 18px;border-radius:12px;cursor:pointer;font-weig
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:15px}
 .info{background:#fff;border-radius:14px;padding:12px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
 pre{white-space:pre-wrap;word-break:break-word}
+ .json-card{
+    margin-top:20px;
+    background:#ffffff;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,.06);
+}
+
+.json-toggle{
+    width:100%;
+    background:#eef4ff;
+    color:#2563eb;
+    border:none;
+    padding:16px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    text-align:left;
+}
+
+#jsonBox{
+    max-height:400px;
+    overflow:auto;
+    background:#0f172a;
+}
+
+#jsonView{
+    margin:0;
+    padding:15px;
+    color:#22c55e;
+    font-size:13px;
+    line-height:1.6;
+    font-family:Consolas, monospace;
+}
 </style>
 </head>
 <body>
@@ -39,12 +73,14 @@ pre{white-space:pre-wrap;word-break:break-word}
 <button id="stopBtn" class="danger">STOP</button>
 </div>
 
-<div id="details" class="grid"></div>
-<div class="card" style="margin-top:15px">
-<h3>Raw JSON</h3>
-<pre id="jsonView">Waiting...</pre>
-</div>
-</div>
+<div class="json-card">
+    <button class="json-toggle" onclick="toggleJson()">
+        📄 View Complete API Response
+    </button>
+
+    <div id="jsonBox" style="display:none;">
+        <pre id="jsonView"></pre>
+    </div>
 </div>
 
 <script>
@@ -131,6 +167,17 @@ document.getElementById('stopBtn').onclick=()=>{
   );
  }catch(e){console.log(e)}
 })();
+ function toggleJson(){
+
+    const box=document.getElementById("jsonBox");
+
+    if(box.style.display=="none"){
+        box.style.display="block";
+    }else{
+        box.style.display="none";
+    }
+
+}
 </script>
 </body>
 </html>
