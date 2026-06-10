@@ -490,6 +490,8 @@ const API_URL =
 let scanner = null;
 let lastScan = "";
 let scanLock = false;
+let currentShipment = null;
+let scannerRunning = false;
 
 /* =====================================
    BEEP SOUNDS
@@ -750,6 +752,7 @@ async function processAWB(){
 
         const shipment =
         data.shipment;
+        currentShipment = shipment;
 
         /* BUTTON MODE */
 
@@ -800,16 +803,6 @@ async function processAWB(){
     "Shipment Loaded Successfully"
 );
 
-document
-.getElementById("awbInput")
-.value = "";
-
-document
-.getElementById("awbInput")
-.focus();
-
-lastScan = "";
-
     }
     catch(error){
 
@@ -844,7 +837,7 @@ document
 .getElementById("saveBtn")
 .addEventListener(
     "click",
-    processAWB
+    saveShipment
 );
 
 document
@@ -902,7 +895,7 @@ async function startScanner() {
     try {
 
         scanner = new Html5Qrcode("reader");
-
+        
         await scanner.start(
 
             { facingMode: "environment" },
@@ -946,6 +939,7 @@ async function startScanner() {
         );
 
         showToast("Camera Started");
+        
 
     }
     catch (error) {
@@ -974,9 +968,99 @@ window.onload = () => {
         .getElementById("stopBtn")
         .style.display = "block";
 
-    startScanner();
+    startScanner(
+        scannerRunning = false;
+    );
 
 };
+
+     async function saveShipment(){
+
+    const btn =
+    document.getElementById("saveBtn");
+
+    // NEXT ENTRY MODE
+    if(btn.dataset.mode === "next"){
+
+        document.getElementById("awbInput").value = "";
+
+        document.getElementById("awbInput").focus();
+
+        currentShipment = null;
+
+        lastScan = "";
+
+        btn.innerText = "SAVE NEW AWB";
+
+        btn.dataset.mode = "save";
+
+        updateShipmentCards({});
+
+        await startScanner(
+            scannerRunning = true;
+        );
+
+        return;
+    }
+
+    // SAVE MODE
+
+    if(!currentShipment){
+
+        showToast("Scan AWB First");
+
+        return;
+    }
+
+    try{
+
+        btn.disabled = true;
+
+        btn.innerText = "Saving...";
+
+        // Yahan Google Sheet Save API Call
+
+        await fetch(API_URL,{
+            method:"POST",
+            body:JSON.stringify({
+                action:"save",
+                shipment:currentShipment
+            })
+        });
+
+        showToast(
+            "Saved Successfully"
+        );
+
+        // CAMERA STOP
+
+        if(scanner){
+
+            await scanner.stop();
+
+        }
+
+        btn.innerText = "NEXT ENTRY";
+
+        btn.dataset.mode = "next";
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        showToast(
+            "Save Failed"
+        );
+
+    }
+    finally{
+
+        btn.disabled = false;
+
+    }
+
+}
 
 </script>
 
