@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AWB Scanner Pro</title>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <style>
 
@@ -387,7 +387,7 @@ Smart Shipment Tracking Dashboard
 <div id="reader"></div>
 
 <div id="desktopMessage">
-📷 Scanner Camera Available Only On Mobile Devices
+📷 Camera Ready
 </div>
 
 <div class="input-section">
@@ -894,64 +894,61 @@ document
 );
 
 /* =====================================
-   START SCANNER
+   START SCANNER FIXED
 ===================================== */
 
-async function startScanner(){
+async function startScanner() {
 
-    try{
+    try {
 
-        scanner =
-        new Html5Qrcode(
-            "reader"
-        );
+        scanner = new Html5Qrcode("reader");
 
         await scanner.start(
 
-            {
-                facingMode:"environment"
-            },
+            { facingMode: "environment" },
 
             {
-                fps:10,
-                qrbox:{
-                width:250,
-                height:120
+                fps: 10,
+                qrbox: {
+                    width: 250,
+                    height: 120
+                }
             },
 
-            async(text)=>{
+            async (decodedText) => {
 
-    if(scanLock)
-        return;
+                if (scanLock) return;
 
-    if(text===lastScan)
-        return;
+                if (decodedText === lastScan) return;
 
-    scanLock = true;
+                scanLock = true;
 
-    lastScan = text;
+                lastScan = decodedText;
 
-    document
-    .getElementById(
-        "awbInput"
-    ).value = text;
+                document.getElementById(
+                    "awbInput"
+                ).value = decodedText;
 
-    await processAWB();
+                await processAWB();
 
-    setTimeout(()=>{
+                setTimeout(() => {
+                    scanLock = false;
+                }, 1500);
 
-        scanLock = false;
+            },
 
-    },1500);
-
-}
+            (errorMessage) => {
+                // Ignore scan errors
+            }
 
         );
 
-    }
-    catch(error){
+        showToast("Camera Started");
 
-        console.log(error);
+    }
+    catch (error) {
+
+        console.error(error);
 
         showToast(
             "Camera Permission Required"
@@ -965,36 +962,17 @@ async function startScanner(){
    AUTO START
 ===================================== */
 
-window.onload = ()=>{
+window.onload = () => {
 
     document
-    .getElementById("awbInput")
-    .focus();
+        .getElementById("awbInput")
+        .focus();
 
-    const isMobile =
-    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
-    .test(navigator.userAgent);
-
-    if(isMobile){
-
-        document
+    document
         .getElementById("stopBtn")
         .style.display = "block";
 
-        startScanner();
-
-    }
-    else{
-
-        document
-        .getElementById("reader")
-        .style.display = "none";
-
-        document
-        .getElementById("desktopMessage")
-        .style.display = "block";
-
-    }
+    startScanner();
 
 };
 
