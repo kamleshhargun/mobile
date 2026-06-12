@@ -14,57 +14,66 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, sans-serif;
+    font-family:'Segoe UI', Arial, sans-serif;
 }
 
 body{
-    background:#f2f4f8;
-    height:100vh;
-    overflow:hidden;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
     padding:10px;
+    overflow:hidden;
 }
 
-
-/* Main Container */
 
 .container{
     width:100%;
-    max-width:700px;
-    height:100%;
-    display:flex;
-    flex-direction:column;
+    max-width:650px;
+    height:96vh;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(12px);
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
 }
 
 
-/* Pickup Return Buttons */
+/* Date */
+
+#entryDate{
+    width:100%;
+    margin-bottom:12px;
+}
+
+
+/* Pickup Return */
 
 .header{
     display:flex;
-    gap:10px;
-    margin-bottom:10px;
+    gap:12px;
+    margin-bottom:12px;
 }
 
 
 .modeBtn{
     flex:1;
-    height:52px;
-    border:0;
-    border-radius:10px;
-    background:#d7d7d7;
-    color:#444;
+    height:55px;
+    border:none;
+    border-radius:16px;
+    background:#ffffff50;
+    color:#ffffff;
     font-size:18px;
     font-weight:700;
     cursor:pointer;
-    transition:0.25s;
+    transition:.25s;
 }
 
 
 .modeBtn.active{
-    background:#1976d2;
-    color:#fff;
+    background:#22c55e;
+    box-shadow:0 6px 18px rgba(34,197,94,.5);
 }
 
 
@@ -72,27 +81,27 @@ body{
 
 #reader{
     width:100%;
-    height:24vh;
-    min-height:220px;
+    height:230px;
     background:#000;
-    border-radius:12px;
+    border-radius:18px;
     overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.4);
 }
 
 
-/* Flash Button */
+/* Flash */
 
 #flashBtn{
     display:none;
     width:100%;
-    height:50px;
-    margin-top:8px;
+    height:48px;
+    margin-top:10px;
     border:none;
-    border-radius:10px;
-    background:#ff9800;
+    border-radius:14px;
+    background:#f59e0b;
     color:#fff;
-    font-size:18px;
-    font-weight:bold;
+    font-size:17px;
+    font-weight:700;
     cursor:pointer;
 }
 
@@ -102,49 +111,52 @@ body{
 .loader{
     display:none;
     text-align:center;
-    padding:12px;
-    font-size:18px;
-    font-weight:bold;
+    color:#ffffff;
+    font-size:17px;
+    font-weight:700;
+    margin:12px 0;
 }
 
 
-/* Entry Card */
+/* Card */
 
 .card{
-    display:block;
-    margin-top:10px;
-    background:#fff;
-    border-radius:12px;
-    padding:18px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.12);
+    background:#ffffff;
+    margin-top:15px;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
 }
 
 
-/* Labels */
+/* Label */
 
 .label{
-    color:#666;
-    font-size:13px;
+    color:#475569;
+    font-size:14px;
+    font-weight:600;
     margin-top:10px;
 }
 
 
-/* Input Boxes */
+/* Inputs */
 
 .inputBox{
     width:100%;
-    height:50px;
-    margin-top:5px;
-    padding:0 12px;
-    border:1px solid #ccc;
-    border-radius:10px;
+    height:55px;
+    margin-top:6px;
+    padding:0 15px;
+    border:2px solid #e2e8f0;
+    border-radius:14px;
     font-size:18px;
     outline:none;
+    transition:.2s;
 }
 
 
 .inputBox:focus{
-    border-color:#1976d2;
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.15);
 }
 
 
@@ -152,19 +164,19 @@ body{
 
 .buttonArea{
     display:flex;
-    gap:10px;
-    margin-top:18px;
+    gap:12px;
+    margin-top:22px;
 }
 
 
 .buttonArea button{
     flex:1;
-    height:58px;
-    border:0;
-    border-radius:10px;
+    height:60px;
+    border:none;
+    border-radius:16px;
     color:#fff;
-    font-size:24px;
-    font-weight:bold;
+    font-size:28px;
+    font-weight:700;
     cursor:pointer;
 }
 
@@ -179,52 +191,46 @@ body{
 }
 
 
-/* Mobile Responsive */
+/* Mobile */
 
 @media(max-width:600px){
 
     body{
-        padding:8px;
+        padding:6px;
     }
 
-    .modeBtn{
-        height:48px;
-        font-size:16px;
+    .container{
+        height:98vh;
+        padding:12px;
+        border-radius:18px;
     }
 
 
     #reader{
-        height:22vh;
-        min-height:190px;
+        height:200px;
     }
 
 
-    #flashBtn{
-        height:46px;
+    .modeBtn{
+        height:50px;
         font-size:16px;
     }
 
 
-    .card{
-        padding:14px;
-    }
-
-
     .inputBox{
-        height:46px;
+        height:50px;
         font-size:16px;
     }
 
 
     .buttonArea button{
-        height:52px;
-        font-size:22px;
+        height:55px;
+        font-size:24px;
     }
 
 }
 
 </style>
- 
 
 
 </head>
@@ -234,39 +240,41 @@ body{
 <div class="container">
 
     <!-- Date -->
-    <div style="text-align:center; margin-bottom:10px;">
-        <input 
-            type="date"
-            id="entryDate"
-            style="height:45px; padding:0 12px; border:1px solid #ccc; border-radius:8px; font-size:16px;">
-    </div>
+    <input 
+        type="date"
+        id="entryDate"
+        class="inputBox">
 
 
     <!-- Pickup / Return -->
+
     <div class="header">
 
         <button 
-            id="pickupBtn" 
-            class="modeBtn" 
+            id="pickupBtn"
+            class="modeBtn"
             onclick="selectMode('Pickup')">
-            Pickup
+            📦 Pickup
         </button>
 
+
         <button 
-            id="returnBtn" 
-            class="modeBtn" 
+            id="returnBtn"
+            class="modeBtn"
             onclick="selectMode('Return')">
-            Return
+            🔄 Return
         </button>
 
     </div>
 
 
-    <!-- Camera Scanner -->
+    <!-- Camera -->
+
     <div id="reader"></div>
 
 
-    <!-- Flash Button -->
+    <!-- Flash -->
+
     <button 
         id="flashBtn"
         onclick="toggleFlash()">
@@ -275,12 +283,14 @@ body{
 
 
     <!-- Loading -->
+
     <div id="loading" class="loader">
         🔍 Searching Order...
     </div>
 
 
-    <!-- AWB & Order Entry -->
+    <!-- Entry Card -->
+
     <div id="entryCard" class="card">
 
 
@@ -288,18 +298,21 @@ body{
             AWB Number
         </div>
 
+
         <input 
-    id="awbInput"
-    class="inputBox"
-    type="text"
-    placeholder="Scan or Enter AWB"
-    autocomplete="off"
-    onkeypress="checkAWBEnter(event)">
+            id="awbInput"
+            class="inputBox"
+            type="text"
+            placeholder="Scan / Enter AWB Number"
+            autocomplete="off"
+            onkeypress="checkAWBEnter(event)">
+
 
 
         <div class="label">
             Order ID
         </div>
+
 
         <input 
             id="orderInput"
@@ -309,10 +322,11 @@ body{
             autocomplete="off">
 
 
-        <!-- Buttons -->
+
         <div class="buttonArea">
 
-            <button 
+
+            <button
                 class="saveBtn"
                 type="button"
                 onclick="saveScan()">
@@ -320,16 +334,19 @@ body{
             </button>
 
 
-            <button 
+            <button
                 class="cancelBtn"
                 type="button"
                 onclick="cancelScan()">
                 ❌
             </button>
 
+
         </div>
 
+
     </div>
+
 
 </div>
 
@@ -337,7 +354,7 @@ body{
 
 <script>
 
-const API_URL="https://script.google.com/macros/s/AKfycbxeRAJyo6O-V0CEhPeO9gWII5kpt9n98MFpnwxpT5thc_rERvt0YsXstPZz2fdId4iR/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbwgdYaVNKNXbZw_QVYpIs-y37Fczf7Es7uc-sM7icEZLDc4U8_msZRDWK1tBGWh10Ly/exec";
 
 let scanner=null;
 let cameraRunning=false;
@@ -688,7 +705,7 @@ window.onload=function(){
     `${yyyy}-${mm}-${dd}`;
 
 };
-    /* ==========================================
+/* ==========================================
    MANUAL AWB SEARCH
 ========================================== */
 
@@ -698,46 +715,69 @@ async function checkAWBEnter(event){
         return;
     }
 
+
+    /* Check Pickup / Return Selection */
+
+    if(currentType === ""){
+
+        alert("Please Select Pickup or Return First");
+
+        document.getElementById("awbInput").value = "";
+
+        return;
+    }
+
+
     const awb = document
         .getElementById("awbInput")
         .value
         .trim();
 
+
     if(awb === ""){
         return;
     }
 
+
     currentAWB = awb;
 
+
     document.getElementById("orderInput").value = "";
+
     document.getElementById("loading").style.display = "block";
 
+
     try{
+
+        /* Tracking Search */
 
         const response = await fetch(
             API_URL +
             "?action=track&awb=" +
-            encodeURIComponent(awb)
+            encodeURIComponent(currentAWB)
         );
+
 
         const data = await response.json();
 
+
         document.getElementById("loading").style.display = "none";
+
 
         if(data.success){
 
             currentOrder = data.orderId || "";
 
-            document.getElementById("orderInput").value =
-                currentOrder;
+            document.getElementById("orderInput").value = currentOrder;
 
         }else{
 
-            alert("Order ID Not Found. Enter manually");
+            alert("Order ID Not Found\n\nPlease Enter Manually");
 
             document.getElementById("orderInput").focus();
 
         }
+
 
     }catch(err){
 
