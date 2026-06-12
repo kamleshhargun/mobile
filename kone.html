@@ -72,7 +72,7 @@ body{
 }
 
 .card{
-    display:none;
+    display:block;
     margin-top:10px;
     background:#fff;
     border-radius:12px;
@@ -184,6 +184,17 @@ body{
     }
 
 }
+    .inputBox{
+
+    width:100%;
+    height:50px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    padding:0 12px;
+    font-size:18px;
+    margin-top:5px;
+
+}
 </style>
  
 
@@ -238,31 +249,44 @@ body{
     </div>
 
     <!-- Result -->
-    <div id="resultCard" class="card">
+    <div id="entryCard" class="card">
 
-        <div class="label">AWB</div>
-        <div id="awbText" class="value">-</div>
+    <div class="label">
+        AWB Number
+    </div>
 
-        <div class="label">Order ID</div>
-        <div id="orderText" class="value">-</div>
+    <input 
+        id="awbInput"
+        class="inputBox"
+        type="text"
+        autocomplete="off">
 
-        <div class="buttonArea">
 
-            <button
-                class="saveBtn"
-                type="button"
-                onclick="saveScan()">
-                ✅
-            </button>
+    <div class="label">
+        Order ID
+    </div>
 
-            <button
-                class="cancelBtn"
-                type="button"
-                onclick="cancelScan()">
-                ❌
-            </button>
+    <input 
+        id="orderInput"
+        class="inputBox"
+        type="text"
+        autocomplete="off">
 
-        </div>
+
+    <div class="buttonArea">
+
+        <button 
+            class="saveBtn"
+            onclick="saveScan()">
+            ✅
+        </button>
+
+
+        <button 
+            class="cancelBtn"
+            onclick="cancelScan()">
+            ❌
+        </button>
 
     </div>
 
@@ -295,7 +319,7 @@ body{
 
 <script>
 
-const API_URL="https://script.google.com/macros/s/AKfycbzmxpCxKgqfupyKrYS-ONDf_Mlz5wjZWTFljg0-4VEY-iAxE6voMhIyq0WFoaIA0apq/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbz3qWsheFIJrCI7o6YQRNAH2o6a5mj46gj_6cWLKqHGm0fEk-r05c82tBPXldktYyzf/exec";
 
 let scanner=null;
 let cameraRunning=false;
@@ -374,6 +398,9 @@ async function onScanSuccess(decodedText){
     await stopCamera();
 
     currentAWB=decodedText.trim();
+    
+    document.getElementById("awbInput").value=currentAWB;
+    document.getElementById("orderInput").value="";
 
     document.getElementById("loading").style.display="block";
     document.getElementById("resultCard").style.display="none";
@@ -422,15 +449,12 @@ async function onScanSuccess(decodedText){
 
             currentOrder=data.orderId || "";
 
-            document.getElementById("awbText").innerText=currentAWB;
-            document.getElementById("orderText").innerText=currentOrder;
-
-            document.getElementById("resultCard").style.display="block";
+            document.getElementById("orderInput").value=currentOrder;
 
             return;
         }
 
-        openManualPopup();
+        document.getElementById("orderInput").focus();
 
     }catch(err){
 
@@ -447,125 +471,111 @@ async function onScanSuccess(decodedText){
 }
 
 /* ==========================================
-   MANUAL POPUP
-========================================== */
-
-function openManualPopup(){
-
-    document.getElementById("manualOrder").value="";
-
-    document.getElementById("manualPopup").style.display="flex";
-
-    setTimeout(()=>{
-        document.getElementById("manualOrder").focus();
-    },100);
-
-}
-
-function submitManual(){
-
-    const value=document
-    .getElementById("manualOrder")
-    .value
-    .trim();
-
-    if(value===""){
-
-        alert("Enter Order ID");
-        return;
-
-    }
-
-    currentOrder=value;
-
-    document.getElementById("manualPopup").style.display="none";
-
-    document.getElementById("awbText").innerText=currentAWB;
-    document.getElementById("orderText").innerText=currentOrder;
-
-    document.getElementById("resultCard").style.display="block";
-
-}
-
-/* ==========================================
    SAVE
 ========================================== */
 
 async function saveScan(){
 
-if(currentType===""){
-    alert("Select Pickup / Return");
-    return;
-}
+    if(currentType===""){
+        alert("Select Pickup / Return");
+        return;
+    }
 
-const selectedDate =
-    document.getElementById("entryDate").value;
+    // AWB और Order ID Input Box से Value लो
+    currentAWB = document
+        .getElementById("awbInput")
+        .value
+        .trim();
 
-const payload = {
-    action: "save",
-    type: currentType,
-    awb: currentAWB,
-    orderId: currentOrder,
-    date: selectedDate
-};
+    currentOrder = document
+        .getElementById("orderInput")
+        .value
+        .trim();
 
-try{
+    if(currentAWB===""){
+        alert("AWB Number Missing");
+        return;
+    }
 
-    const response = await fetch(API_URL, {
-        method: "POST",
-        redirect: "follow",
-        headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify(payload)
-    });
+    if(currentOrder===""){
+        alert("Enter Order ID");
+        return;
+    }
 
-    const text = await response.text();
+    const selectedDate =
+        document.getElementById("entryDate").value;
 
-    console.log("SERVER RESPONSE:", text);
-
-    let result;
+    const payload = {
+        action: "save",
+        type: currentType,
+        awb: currentAWB,
+        orderId: currentOrder,
+        date: selectedDate
+    };
 
     try{
-        result = JSON.parse(text);
-    }catch(e){
-        alert("Invalid Server Response\n\n" + text);
-        return;
-    }
 
-    if(result.success){
-        alert("Saved Successfully");
-        resetScanner();
-        return;
-    }
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
 
-    if(result.duplicate){
+        const text = await response.text();
+
+        console.log("SERVER RESPONSE:", text);
+
+        let result;
+
+        try{
+            result = JSON.parse(text);
+        }catch(e){
+            alert("Invalid Server Response\n\n" + text);
+            return;
+        }
+
+
+        if(result.success){
+
+            alert("Saved Successfully");
+
+            resetScanner();
+
+            return;
+        }
+
+
+        if(result.duplicate){
+
+            alert(
+                "Duplicate Found\n\n" +
+                "Order ID : " + result.orderId +
+                "\nDate : " + result.date
+            );
+
+            resetScanner();
+
+            return;
+        }
+
+
         alert(
-            "Duplicate Found\n\n" +
-            "Order ID : " + result.orderId +
-            "\nDate : " + result.date
+            result.message || "Save Failed"
         );
-        resetScanner();
-        return;
+
+
+    }catch(err){
+
+        console.error("SAVE ERROR:", err);
+
+        alert(
+            "Save Failed\n\n" +
+            err.message
+        );
+
     }
-
-    if(result.manual){
-        openManualPopup();
-        return;
-    }
-
-    alert(result.message || "Unknown Error");
-
-}catch(err){
-
-    console.error(err);
-
-    alert(
-        "Save Failed\n\n" +
-        err.message
-    );
-
-}
 
 }
 
@@ -620,12 +630,10 @@ async function resetScanner(){
     currentAWB="";
     currentOrder="";
 
-    document.getElementById("awbText").innerText="-";
-    document.getElementById("orderText").innerText="-";
+    document.getElementById("awbInput").value="";
+    document.getElementById("orderInput").value="";
 
     document.getElementById("loading").style.display="none";
-    document.getElementById("resultCard").style.display="none";
-    document.getElementById("manualPopup").style.display="none";
 
     document.getElementById("pickupBtn").classList.remove("active");
     document.getElementById("returnBtn").classList.remove("active");
