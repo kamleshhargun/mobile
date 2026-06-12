@@ -290,11 +290,12 @@ body{
         </div>
 
         <input 
-            id="awbInput"
-            class="inputBox"
-            type="text"
-            placeholder="Scan or Enter AWB"
-            autocomplete="off">
+    id="awbInput"
+    class="inputBox"
+    type="text"
+    placeholder="Scan or Enter AWB"
+    autocomplete="off"
+    onkeypress="checkAWBEnter(event)">
 
 
         <div class="label">
@@ -705,6 +706,70 @@ window.onload=function(){
     `${yyyy}-${mm}-${dd}`;
 
 };
+    /* ==========================================
+   MANUAL AWB SEARCH
+========================================== */
+
+async function checkAWBEnter(event){
+
+    if(event.key !== "Enter"){
+        return;
+    }
+
+    const awb = document
+        .getElementById("awbInput")
+        .value
+        .trim();
+
+    if(awb === ""){
+        return;
+    }
+
+    currentAWB = awb;
+
+    document.getElementById("orderInput").value = "";
+    document.getElementById("loading").style.display = "block";
+
+    try{
+
+        const response = await fetch(
+            API_URL +
+            "?action=track&awb=" +
+            encodeURIComponent(awb)
+        );
+
+        const data = await response.json();
+
+        document.getElementById("loading").style.display = "none";
+
+        if(data.success){
+
+            currentOrder = data.orderId || "";
+
+            document.getElementById("orderInput").value =
+                currentOrder;
+
+        }else{
+
+            alert("Order ID Not Found. Enter manually");
+
+            document.getElementById("orderInput").focus();
+
+        }
+
+    }catch(err){
+
+        document.getElementById("loading").style.display = "none";
+
+        console.error(err);
+
+        alert("Tracking Failed");
+
+        document.getElementById("orderInput").focus();
+
+    }
+
+}
 
 </script>
 
