@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Pickup & Return Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f9;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .cards {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 180px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .num {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #2c3e50;
+      color: white;
+    }
+
+    .pickup { color: green; font-weight: bold; }
+    .return { color: red; font-weight: bold; }
+  </style>
+</head>
+
+<body>
+
+<h1>📦 Pickup & Return Dashboard</h1>
+
+<div class="cards">
+  <div class="card">
+    Pickup
+    <div class="num" id="pickup">0</div>
+  </div>
+
+  <div class="card">
+    Return
+    <div class="num" id="return">0</div>
+  </div>
+
+  <div class="card">
+    Total
+    <div class="num" id="total">0</div>
+  </div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Type</th>
+      <th>AWB</th>
+      <th>Order ID</th>
+    </tr>
+  </thead>
+  <tbody id="body"></tbody>
+</table>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzNRozF6uVRCdclOazTGwxT08quX-FgeJnhey8JctuVFNPpCDJynpuSQC6hCQ0HN66M/exec";
+
+async function loadData() {
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    document.getElementById("pickup").innerText = data.pickup;
+    document.getElementById("return").innerText = data.returnCount;
+    document.getElementById("total").innerText = data.total;
+
+    let html = "";
+
+    data.rows.forEach(r => {
+      const cls = (r.type || "").toLowerCase().includes("pickup") ? "pickup" : "return";
+
+      html += `
+        <tr>
+          <td>${r.date || ""}</td>
+          <td class="${cls}">${r.type}</td>
+          <td>${r.awb || ""}</td>
+          <td>${r.orderId || ""}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById("body").innerHTML = html;
+
+  } catch (e) {
+    console.log("Error:", e);
+  }
+}
+
+loadData();
+setInterval(loadData, 10000); // auto refresh
+</script>
+
+</body>
+</html>
