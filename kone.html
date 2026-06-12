@@ -1,1123 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AWB Scanner Pro</title>
-
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AWB Scanner</title>
 
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background:#f3f6fb;
-    color:#1f2937;
+font-family:Arial;
+background:#f5f5f5;
+padding:20px;
 }
 
 .container{
-    max-width:1100px;
-    margin:auto;
-    padding:20px;
+max-width:500px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
 }
 
-/* =========================
-   HEADER
-========================= */
-
-.main-card{
-    background:#fff;
-    border-radius:24px;
-    padding:24px;
-    box-shadow:0 10px 35px rgba(0,0,0,.08);
+h2{
+text-align:center;
 }
 
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    flex-wrap:wrap;
-}
-
-.title{
-    font-size:28px;
-    font-weight:700;
-}
-
-.subtitle{
-    color:#64748b;
-    margin-top:5px;
-    font-size:14px;
-}
-
-.online-badge{
-    background:#dcfce7;
-    color:#166534;
-    padding:10px 16px;
-    border-radius:999px;
-    font-weight:600;
-    font-size:14px;
-}
-
-/* =========================
-   SCANNER
-========================= */
-
-#reader{
-    width:100%;
-    height:220px;
-    margin-top:20px;
-    overflow:hidden;
-    border-radius:18px;
-    border:none;
-    background:#000;
-}
-
-#reader video{
-    width:100% !important;
-    height:220px !important;
-    object-fit:cover !important;
-    border-radius:18px;
-}
-
-#desktopMessage{
-    display:none;
-    margin-top:15px;
-    padding:18px;
-    border-radius:16px;
-    background:#eff6ff;
-    color:#2563eb;
-    text-align:center;
-    font-weight:600;
-}
-
-/* =========================
-   INPUT
-========================= */
-
-.input-section{
-    margin-top:20px;
-}
-
-.input-label{
-    font-size:14px;
-    font-weight:600;
-    margin-bottom:8px;
-    color:#374151;
-}
-
-input{
-    width:100%;
-    padding:14px 16px;
-    border:1px solid #d1d5db;
-    border-radius:14px;
-    font-size:15px;
-    outline:none;
-    transition:.2s;
-}
-
-input:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 4px rgba(37,99,235,.12);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.btns{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-top:15px;
+select,input,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+font-size:16px;
 }
 
 button{
-    border:none;
-    cursor:pointer;
-    padding:14px 20px;
-    border-radius:14px;
-    font-weight:600;
-    transition:.2s;
+background:#1976d2;
+color:white;
+border:none;
+cursor:pointer;
 }
 
 button:hover{
-    transform:translateY(-1px);
+background:#1259a7;
 }
 
-.primary{
-    background:#2563eb;
-    color:#fff;
-}
-
-.primary:hover{
-    background:#1d4ed8;
-}
-
-.warn{
-    background:#f59e0b;
-    color:#fff;
-}
-
-.danger{
-    background:#ef4444;
-    color:#fff;
-}
-
-/* =========================
-   LOADING
-========================= */
-
-.loading{
-    display:none;
-    margin-top:15px;
-    background:#eff6ff;
-    color:#1d4ed8;
-    padding:14px;
-    border-radius:14px;
-    font-weight:600;
-}
-
-/* =========================
-   SHIPMENT DETAILS
-========================= */
-
-.section-title{
-    margin-top:25px;
-    margin-bottom:12px;
-    font-size:18px;
-    font-weight:700;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
-}
-
-.info-card{
-    background:#fff;
-    border-radius:18px;
-    padding:16px;
-    border:1px solid #e5e7eb;
-    box-shadow:0 4px 12px rgba(0,0,0,.04);
-}
-
-.info-title{
-    color:#64748b;
-    font-size:13px;
-    margin-bottom:6px;
-}
-
-.info-value{
-    font-size:16px;
-    font-weight:700;
-    color:#111827;
-    word-break:break-word;
-}
-
-/* =========================
-   JSON VIEWER
-========================= */
-
-.json-card{
-    margin-top:25px;
-    border-radius:20px;
-    overflow:hidden;
-    background:#fff;
-    border:1px solid #e5e7eb;
-    box-shadow:0 8px 25px rgba(0,0,0,.06);
-}
-
-.json-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:16px 20px;
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
-    color:#fff;
-    cursor:pointer;
-}
-
-.json-title{
-    font-weight:700;
-    font-size:15px;
-}
-
-.json-badge{
-    background:rgba(255,255,255,.18);
-    padding:6px 12px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:600;
-}
-
-#jsonBox{
-    display:none;
-    background:#f8fafc;
-    max-height:500px;
-    overflow:auto;
-}
-
-#jsonView{
-    margin:0;
-    padding:20px;
-    font-size:13px;
-    line-height:1.8;
-    font-family:Consolas,monospace;
-}
-
-/* Syntax Highlight */
-
-.key{
-    color:#2563eb;
-    font-weight:700;
-}
-
-.string{
-    color:#16a34a;
-}
-
-.number{
-    color:#ea580c;
-}
-
-.boolean{
-    color:#7c3aed;
-}
-
-.null{
-    color:#dc2626;
-}
-
-/* =========================
-   TOAST
-========================= */
-
-.toast{
-    position:fixed;
-    top:20px;
-    right:20px;
-    z-index:9999;
-    min-width:250px;
-    background:#111827;
-    color:#fff;
-    padding:14px 18px;
-    border-radius:14px;
-    display:none;
-    box-shadow:0 8px 25px rgba(0,0,0,.25);
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:768px){
-#reader{
-    height:180px;
-}
-
-#reader video{
-    height:180px !important;
-}
-    .container{
-        padding:12px;
-    }
-
-    .main-card{
-        padding:16px;
-    }
-
-    .title{
-        font-size:22px;
-    }
-
-    .btns{
-        flex-direction:column;
-    }
-
-    button{
-        width:100%;
-    }
-
-    .json-header{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:8px;
-    }
-}
-.timeline-item{
-    padding:15px;
-    border-left:3px solid #2563eb;
-    margin-bottom:12px;
-    background:#fff;
-    border-radius:12px;
-}
-
-.timeline-status{
-    font-weight:700;
-    color:#111827;
-}
-
-.timeline-location{
-    color:#64748b;
-    margin-top:5px;
-}
-
-.timeline-time{
-    color:#94a3b8;
-    font-size:13px;
-    margin-top:5px;
+#msg{
+margin-top:15px;
+font-weight:bold;
+text-align:center;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="toast" id="toast"></div>
-
 <div class="container">
 
-<div class="main-card">
+<h2>AWB Scanner</h2>
 
-<div class="topbar">
-
-<div>
-<div class="title">📦 AWB Scanner Pro</div>
-<div class="subtitle">
-Smart Shipment Tracking Dashboard
-</div>
-</div>
-
-<div class="online-badge">
-🟢 ONLINE
-</div>
-
-</div>
-
-<div class="section-title">
-📷 Scan AWB Barcode
-</div>
-
-<div id="reader"></div>
-
-<div id="desktopMessage">
-📷 Camera Ready
-</div>
-
-<div class="input-section">
-
-<div class="input-label">
-AWB Number
-</div>
+<select id="type">
+<option value="">Select Type</option>
+<option value="Delhivery">Delhivery</option>
+<option value="BOXD">BOXD</option>
+</select>
 
 <input
-id="awbInput"
-placeholder="Scan Barcode or Enter AWB Number"
-autocomplete="off"
-autocapitalize="off"
-spellcheck="false"
-/>
+id="awb"
+placeholder="Scan AWB Here"
+autocomplete="off">
 
-<div class="btns">
-
-<button
-id="saveBtn"
-class="primary">
-SAVE NEW AWB
+<button onclick="saveAWB()">
+Save
 </button>
 
-<button
-id="stopBtn"
-class="danger"
-style="display:none;">
-STOP SCANNER
-</button>
+<div id="msg"></div>
 
 </div>
 
-<div
-class="loading"
-id="loading">
-⏳ Fetching Shipment Information...
-</div>
+<script>
 
-</div>
+const API_URL="https://script.google.com/macros/s/AKfycbzJMNmMc-0tH7bSqYW_9SKDRmV1Id20bs-bcoLvFvlZ4s6FXEQOjCB3NIVMQ_ncRzlB/exec";
 
-<div class="section-title">
-📦 Shipment Information
-</div>
+document.getElementById("awb").focus();
 
-<div
-class="grid"
-id="details">
+document.getElementById("awb").addEventListener("keydown",function(e){
 
-<div class="info-card">
-<div class="info-title">
-Awaiting Scan
-</div>
-<div class="info-value">
-No Shipment Loaded
-</div>
-</div>
+if(e.key==="Enter"){
 
-</div>
-
-<div class="json-card">
-
-<div
-class="json-header"
-onclick="toggleJson()">
-
-<div class="json-title">
-🚚 Tracking Timeline
-</div>
-
-<div class="json-badge">
-DETAILS
-</div>
-
-</div>
-
-<div id="jsonBox">
-
-<pre id="jsonView">
-Scan an AWB to view complete API response.
-</pre>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
- <script>
-
-const API_URL =
-"https://script.google.com/macros/s/AKfycbwbCfJYM4HvvqHegqJUqunjQE0aul6MpTOlvc8HFzfJw7w-eExQVQXKayjhb3ZSPuxSdw/exec";
-
-/* =====================================
-   VARIABLES
-===================================== */
-
-let scanner = null;
-let lastScan = "";
-let scanLock = false;
-let currentShipment = null;
-let scannerRunning = false;
-
-/* =====================================
-   BEEP SOUNDS
-===================================== */
-
-function beep(freq,duration){
-
-    try{
-
-        const ctx =
-        new (window.AudioContext || window.webkitAudioContext)();
-
-        const osc = ctx.createOscillator();
-
-        osc.frequency.value = freq;
-
-        osc.connect(ctx.destination);
-
-        osc.start();
-
-        setTimeout(()=>{
-            osc.stop();
-            ctx.close();
-        },duration);
-
-    }catch(e){}
+saveAWB();
 
 }
-
-function foundBeep(){
-    beep(900,150);
-}
-
-function errorBeep(){
-    beep(250,300);
-}
-
-function saveBeep(){
-    beep(1200,120);
-}
-
-/* =====================================
-   TOAST
-===================================== */
-
-function showToast(message){
-
-    const toast =
-    document.getElementById("toast");
-
-    toast.innerText = message;
-    toast.style.display = "block";
-
-    setTimeout(()=>{
-        toast.style.display = "none";
-    },3000);
-
-}
-
-/* =====================================
-   JSON HIGHLIGHT
-===================================== */
-
-function syntaxHighlight(json){
-
-    json = json
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;");
-
-    return json.replace(
-
-        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-
-        function(match){
-
-            let cls = "number";
-
-            if(/^"/.test(match)){
-
-                cls = /:$/.test(match)
-                    ? "key"
-                    : "string";
-
-            }
-            else if(/true|false/.test(match)){
-                cls = "boolean";
-            }
-            else if(/null/.test(match)){
-                cls = "null";
-            }
-
-            return '<span class="' + cls + '">' +
-                   match +
-                   '</span>';
-
-        }
-
-    );
-
-}
-
-/* =====================================
-   TOGGLE JSON
-===================================== */
-
-function toggleJson(){
-
-    const box =
-    document.getElementById("jsonBox");
-
-    box.style.display =
-        box.style.display === "block"
-        ? "none"
-        : "block";
-
-}
-
-/* =====================================
-   LOADING
-===================================== */
-
-function showLoading(){
-
-    document.getElementById("loading")
-    .style.display = "block";
-
-}
-
-function hideLoading(){
-
-    document.getElementById("loading")
-    .style.display = "none";
-
-}
-
-/* =====================================
-   DETAILS CARDS
-===================================== */
-
-function updateShipmentCards(shipment){
-
-    document.getElementById("details").innerHTML = `
-
-    <div class="info-card">
-        <div class="info-title">AWB Number</div>
-        <div class="info-value">
-            ${shipment.awb_number || "-"}
-        </div>
-    </div>
-
-    <div class="info-card">
-        <div class="info-title">Status</div>
-        <div class="info-value">
-            <span style="
-color:
-${
-shipment.status==="Delivered"
-?"#16a34a"
-:
-shipment.status==="In Transit"
-?"#2563eb"
-:
-"#f59e0b"
-};
-">
-${shipment.status || "-"}
-</span>
-        </div>
-    </div>
-
-    <div class="info-card">
-        <div class="info-title">Courier</div>
-        <div class="info-value">
-            ${shipment.courier_name || "-"}
-        </div>
-    </div>
-
-    <div class="info-card">
-        <div class="info-title">Order Number</div>
-        <div class="info-value">
-            ${shipment.order_number || "-"}
-        </div>
-    </div>
-
-    <div class="info-card">
-        <div class="info-title">Customer Order</div>
-        <div class="info-value">
-            ${shipment.customer_order_number || "-"}
-        </div>
-    </div>
-
-    <div class="info-card">
-        <div class="info-title">Delivered Date</div>
-        <div class="info-value">
-            ${shipment.delivered_date || "-"}
-        </div>
-    </div>
-
-    `;
-
-}
-
-/* =====================================
-   PROCESS AWB
-===================================== */
-
-async function processAWB(){
-
-    const awb =
-    document.getElementById("awbInput")
-    .value
-    .trim();
-
-    if(!awb){
-
-        errorBeep();
-
-        showToast("Please Enter AWB");
-
-        return;
-
-    }
-
-    showLoading();
-
-    try{
-
-        const response =
-        await fetch(API_URL,{
-
-            method:"POST",
-
-            body:JSON.stringify({
-                awb:awb
-            })
-
-        });
-
-        const data =
-        await response.json();
-
-        hideLoading();
-
-        if(!data.success){
-
-            errorBeep();
-
-            showToast(
-                data.message || "Shipment Not Found"
-            );
-
-            return;
-
-        }
-
-        foundBeep();
-
-        const shipment =
-        data.shipment;
-        currentShipment = shipment;
-
-        /* BUTTON MODE */
-
-        const saveBtn =
-        document.getElementById("saveBtn");
-
-        if(data.action === "update"){
-
-            saveBtn.innerText =
-            "UPDATE AWB";
-
-            saveBtn.className =
-            "warn";
-
-        }
-        else{
-
-            saveBtn.innerText =
-            "SAVE NEW AWB";
-
-            saveBtn.className =
-            "primary";
-
-        }
-
-        /* UPDATE CARDS */
-
-        updateShipmentCards(
-            shipment
-        );
-
-        /* UPDATE JSON */
-
-        document.getElementById(
-    "jsonView"
-).innerHTML =
-renderTrackingTimeline(
-    shipment.tracking_history
-);
-
-        saveBeep();
-
-        showToast(
-    "Shipment Loaded Successfully"
-);
-
-    }
-    catch(error){
-
-        hideLoading();
-
-        errorBeep();
-
-        console.error(error);
-
-        showToast(
-            "Unable To Connect Server"
-        );
-
-    }
-
-}
-     document
-.getElementById("awbInput")
-.addEventListener(
-"click",
-function(){
-
-    this.select();
 
 });
 
-/* =====================================
-   BUTTON EVENTS
-===================================== */
+async function saveAWB(){
 
-document
-.getElementById("saveBtn")
-.addEventListener(
-    "click",
-    saveShipment
-);
+const type=document.getElementById("type").value;
 
-document
-.getElementById("stopBtn")
-.addEventListener(
-"click",
-async()=>{
+const awb=document.getElementById("awb").value.trim();
 
-    try{
+if(type==""){
 
-        if(scanner){
+show("Select Type");
 
-            await scanner.stop();
+return;
 
-            showToast(
-            "Scanner Stopped"
-            );
+}
 
-        }
+if(awb==""){
 
-    }
-    catch(error){
+show("Scan AWB");
 
-        console.log(error);
+return;
 
-    }
+}
 
+show("Please Wait...");
+
+const response=await fetch(API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    action: "save",
+    type: type,
+    awb: awb
+  })
 });
 
-/* =====================================
-   ENTER KEY
-===================================== */
+const result=await response.json();
 
-document
-.getElementById("awbInput")
-.addEventListener(
-    "keypress",
-    function(e){
+if(result.success){
 
-        if(e.key==="Enter"){
-        e.preventDefault();
-            processAWB();
+show("Saved : "+result.orderId);
 
-        }
+document.getElementById("awb").value="";
 
-    }
-);
+document.getElementById("awb").focus();
 
-/* =====================================
-   START SCANNER FIXED
-===================================== */
+}else{
 
-async function startScanner() {
-
-    try {
-
-        scanner = new Html5Qrcode("reader");
-        
-        await scanner.start(
-
-            { facingMode: "environment" },
-
-            {
-             fps: 10,
-            qrbox: function(viewfinderWidth, viewfinderHeight) {
-            return {
-            width: viewfinderWidth - 10,
-            height: viewfinderHeight - 10
-        };
-    }
-            },
-
-            async (decodedText) => {
-
-                if (scanLock) return;
-                scannerRunning = true;
-                scanner = new Html5Qrcode("reader");
-
-                if (decodedText === lastScan) return;
-
-                scanLock = true;
-
-                lastScan = decodedText;
-
-                document.getElementById(
-                    "awbInput"
-                ).value = decodedText;
-
-                await processAWB();
-
-                setTimeout(() => {
-                    scanLock = false;
-                }, 1500);
-
-            },
-
-            (errorMessage) => {
-                // Ignore scan errors
-            }
-
-        );
-
-        showToast("Camera Started");
-        
-
-    }
-    catch (error) {
-        scannerRunning = false;
-        console.error(error);
-
-        showToast(
-            "Camera Permission Required"
-        );
-
-    }
+show(result.message);
 
 }
 
-/* =====================================
-   AUTO START
-===================================== */
+}
 
-window.onload = () => {
+function show(txt){
 
-    document
-        .getElementById("awbInput")
-        .focus();
-
-    document
-        .getElementById("stopBtn")
-        .style.display = "block";
-
-    startScanner();
-    scannerRunning = false;
-};
-
-     async function saveShipment(){
-
-    const btn =
-    document.getElementById("saveBtn");
-
-    // NEXT ENTRY MODE
-    if(btn.dataset.mode === "next"){
-
-        document.getElementById("awbInput").value = "";
-
-    document.getElementById("awbInput").focus();
-
-    currentShipment = null;
-
-    lastScan = "";
-
-    scanLock = false;
-
-    btn.innerText = "SAVE NEW AWB";
-
-    btn.dataset.mode = "save";
-
-    updateShipmentCards({});
-
-    scannerRunning = false;
-
-    await startScanner();
-
-    return;
-    }
-
-    // SAVE MODE
-
-    if(!currentShipment){
-
-        showToast("Scan AWB First");
-
-        return;
-    }
-
-    try{
-
-        btn.disabled = true;
-
-        btn.innerText = "Saving...";
-
-        // Yahan Google Sheet Save API Call
-
-        await fetch(API_URL,{
-            method:"POST",
-            body:JSON.stringify({
-                action:"save",
-                shipment:currentShipment
-            })
-        });
-
-        showToast(
-            "Saved Successfully"
-        );
-
-        // CAMERA STOP
-
-        if(scanner){
-
-            await scanner.stop();
-            scanner.clear();
-            scanner = null;
-
-        }
-
-        btn.innerText = "NEXT ENTRY";
-
-        btn.dataset.mode = "next";
-
-    }
-    catch(error){
-
-        console.log(error);
-
-        showToast(
-            "Save Failed"
-        );
-
-    }
-    finally{
-
-        btn.disabled = false;
-
-    }
+document.getElementById("msg").innerHTML=txt;
 
 }
-function renderTrackingTimeline(history){
 
-    if(!history || !history.length){
-
-        return `
-        <div class="info-card">
-            No Tracking Available
-        </div>
-        `;
-    }
-
-    return history
-    .slice()
-    .reverse()
-    .map(item => `
-
-        <div class="timeline-item">
-
-            <div class="timeline-status">
-                ${item.description || item.status}
-            </div>
-
-            <div class="timeline-location">
-                📍 ${item.location || "-"}
-            </div>
-
-            <div class="timeline-time">
-                🕒 ${new Date(item.datetime).toLocaleString()}
-            </div>
-
-        </div>
-
-    `).join("");
-
-}
 </script>
 
 </body>
