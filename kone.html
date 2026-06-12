@@ -9,7 +9,13 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
 
 body{
     background:#f2f4f8;
@@ -21,6 +27,9 @@ body{
     padding:10px;
 }
 
+
+/* Main Container */
+
 .container{
     width:100%;
     max-width:700px;
@@ -29,11 +38,15 @@ body{
     flex-direction:column;
 }
 
+
+/* Pickup Return Buttons */
+
 .header{
     display:flex;
     gap:10px;
     margin-bottom:10px;
 }
+
 
 .modeBtn{
     flex:1;
@@ -45,13 +58,17 @@ body{
     font-size:18px;
     font-weight:700;
     cursor:pointer;
-    transition:.25s;
+    transition:0.25s;
 }
+
 
 .modeBtn.active{
     background:#1976d2;
     color:#fff;
 }
+
+
+/* Camera */
 
 #reader{
     display:none;
@@ -63,6 +80,26 @@ body{
     overflow:hidden;
 }
 
+
+/* Flash Button */
+
+#flashBtn{
+    display:none;
+    width:100%;
+    height:50px;
+    margin-top:8px;
+    border:none;
+    border-radius:10px;
+    background:#ff9800;
+    color:#fff;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+
+/* Loading */
+
 .loader{
     display:none;
     text-align:center;
@@ -71,33 +108,55 @@ body{
     font-weight:bold;
 }
 
+
+/* Entry Card */
+
 .card{
     display:block;
     margin-top:10px;
     background:#fff;
     border-radius:12px;
     padding:18px;
-    box-shadow:0 2px 8px rgba(0,0,0,.12);
+    box-shadow:0 2px 8px rgba(0,0,0,0.12);
 }
 
+
+/* Labels */
+
 .label{
-    color:#777;
+    color:#666;
     font-size:13px;
     margin-top:10px;
 }
 
-.value{
-    font-size:22px;
-    font-weight:700;
-    margin-top:4px;
-    word-break:break-word;
+
+/* Input Boxes */
+
+.inputBox{
+    width:100%;
+    height:50px;
+    margin-top:5px;
+    padding:0 12px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:18px;
+    outline:none;
 }
+
+
+.inputBox:focus{
+    border-color:#1976d2;
+}
+
+
+/* Buttons */
 
 .buttonArea{
     display:flex;
     gap:10px;
     margin-top:18px;
 }
+
 
 .buttonArea button{
     flex:1;
@@ -106,77 +165,57 @@ body{
     border-radius:10px;
     color:#fff;
     font-size:24px;
+    font-weight:bold;
     cursor:pointer;
 }
+
 
 .saveBtn{
     background:#16a34a;
 }
 
+
 .cancelBtn{
     background:#dc2626;
 }
 
-.popup{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-}
 
-.popupBox{
-    width:90%;
-    max-width:380px;
-    background:#fff;
-    padding:22px;
-    border-radius:12px;
-}
-
-.popupBox h2{
-    margin-bottom:15px;
-    font-size:22px;
-}
-
-.popupBox input{
-    width:100%;
-    height:48px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    padding:0 12px;
-    font-size:18px;
-    outline:none;
-}
-
-.popupBox button{
-    width:100%;
-    height:50px;
-    margin-top:15px;
-    border:0;
-    border-radius:8px;
-    background:#1976d2;
-    color:#fff;
-    font-size:18px;
-    cursor:pointer;
-}
+/* Mobile Responsive */
 
 @media(max-width:600px){
+
+    body{
+        padding:8px;
+    }
 
     .modeBtn{
         height:48px;
         font-size:16px;
     }
 
+
     #reader{
         height:22vh;
         min-height:190px;
     }
 
-    .value{
-        font-size:18px;
+
+    #flashBtn{
+        height:46px;
+        font-size:16px;
     }
+
+
+    .card{
+        padding:14px;
+    }
+
+
+    .inputBox{
+        height:46px;
+        font-size:16px;
+    }
+
 
     .buttonArea button{
         height:52px;
@@ -184,17 +223,7 @@ body{
     }
 
 }
-    .inputBox{
 
-    width:100%;
-    height:50px;
-    border:1px solid #ccc;
-    border-radius:10px;
-    padding:0 12px;
-    font-size:18px;
-    margin-top:5px;
-
-}
 </style>
  
 
@@ -206,120 +235,109 @@ body{
 <div class="container">
 
     <!-- Date -->
-    <div style="text-align:center;margin-bottom:10px;">
-        <input
+    <div style="text-align:center; margin-bottom:10px;">
+        <input 
             type="date"
             id="entryDate"
-            style="height:45px;padding:0 12px;border:1px solid #ccc;border-radius:8px;font-size:16px;"
-        >
+            style="height:45px; padding:0 12px; border:1px solid #ccc; border-radius:8px; font-size:16px;">
     </div>
+
 
     <!-- Pickup / Return -->
     <div class="header">
-        <button id="pickupBtn" class="modeBtn" onclick="selectMode('Pickup')">
+
+        <button 
+            id="pickupBtn" 
+            class="modeBtn" 
+            onclick="selectMode('Pickup')">
             Pickup
         </button>
 
-        <button id="returnBtn" class="modeBtn" onclick="selectMode('Return')">
+        <button 
+            id="returnBtn" 
+            class="modeBtn" 
+            onclick="selectMode('Return')">
             Return
         </button>
+
     </div>
 
-    <!-- Camera -->
+
+    <!-- Camera Scanner -->
     <div id="reader"></div>
-    <button id="flashBtn" 
-        onclick="toggleFlash()" 
-        style="
-        display:none;
-        width:100%;
-        height:50px;
-        margin-top:8px;
-        border:none;
-        border-radius:10px;
-        background:#ff9800;
-        color:white;
-        font-size:18px;
-        font-weight:bold;
-        cursor:pointer;">
-    🔦 Flash ON
-</button>
-    <!-- Loader -->
+
+
+    <!-- Flash Button -->
+    <button 
+        id="flashBtn"
+        onclick="toggleFlash()">
+        🔦 Flash ON
+    </button>
+
+
+    <!-- Loading -->
     <div id="loading" class="loader">
         🔍 Searching Order...
     </div>
 
-    <!-- Result -->
+
+    <!-- AWB & Order Entry -->
     <div id="entryCard" class="card">
 
-    <div class="label">
-        AWB Number
-    </div>
 
-    <input 
-        id="awbInput"
-        class="inputBox"
-        type="text"
-        autocomplete="off">
+        <div class="label">
+            AWB Number
+        </div>
 
-
-    <div class="label">
-        Order ID
-    </div>
-
-    <input 
-        id="orderInput"
-        class="inputBox"
-        type="text"
-        autocomplete="off">
-
-
-    <div class="buttonArea">
-
-        <button 
-            class="saveBtn"
-            onclick="saveScan()">
-            ✅
-        </button>
-
-
-        <button 
-            class="cancelBtn"
-            onclick="cancelScan()">
-            ❌
-        </button>
-
-    </div>
-
-</div>
-
-<!-- Manual Order Popup -->
-
-<div id="manualPopup" class="popup">
-
-    <div class="popupBox">
-
-        <h2>Order ID Not Found</h2>
-
-        <input
-            id="manualOrder"
+        <input 
+            id="awbInput"
+            class="inputBox"
             type="text"
-            placeholder="Enter Order ID"
-            autocomplete="off"
-        >
+            placeholder="Scan or Enter AWB"
+            autocomplete="off">
 
-        <button
-            type="button"
-            onclick="submitManual()">
-            Save Order ID
-        </button>
+
+        <div class="label">
+            Order ID
+        </div>
+
+        <input 
+            id="orderInput"
+            class="inputBox"
+            type="text"
+            placeholder="Auto Fetch or Enter Order ID"
+            autocomplete="off">
+
+
+        <!-- Buttons -->
+        <div class="buttonArea">
+
+            <button 
+                class="saveBtn"
+                type="button"
+                onclick="saveScan()">
+                ✅
+            </button>
+
+
+            <button 
+                class="cancelBtn"
+                type="button"
+                onclick="cancelScan()">
+                ❌
+            </button>
+
+        </div>
 
     </div>
 
 </div>
+
+</body>
 
 <script>
 
-const API_URL="https://script.google.com/macros/s/AKfycbwl7JL5UcbocgciedoBS8Jr3BGg6775ugMcw72V0IdArZk1Xbv0_ghlBPjtAjvPq75Q/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbxeRAJyo6O-V0CEhPeO9gWII5kpt9n98MFpnwxpT5thc_rERvt0YsXstPZz2fdId4iR/exec";
 
 let scanner=null;
 let cameraRunning=false;
