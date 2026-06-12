@@ -415,74 +415,52 @@ async function onScanSuccess(decodedText){
 
     await stopCamera();
 
-    currentAWB=decodedText.trim();
-    
-    document.getElementById("awbInput").value=currentAWB;
-    document.getElementById("orderInput").value="";
+    currentAWB = decodedText.trim();
 
-    document.getElementById("loading").style.display="block";
-    document.getElementById("resultCard").style.display="none";
+    document.getElementById("awbInput").value = currentAWB;
+    document.getElementById("orderInput").value = "";
+
+    document.getElementById("loading").style.display = "block";
 
     try{
 
-        /* Duplicate Check First */
-
-        const dupResponse=await fetch(
-            API_URL+
-            "?action=duplicate&awb="+
-            encodeURIComponent(currentAWB)+
-            "&type="+
-            encodeURIComponent(currentType)
-        );
-
-        const dupData=await dupResponse.json();
-
-        if(dupData.found){
-
-            document.getElementById("loading").style.display="none";
-
-            alert(
-                "Duplicate Found\n\n"+
-                "Order ID : "+dupData.orderId+
-                "\nDate : "+dupData.date
-            );
-
-            resetScanner();
-            return;
-        }
-
-        /* Tracking */
-
-        const response=await fetch(
-            API_URL+
-            "?action=track&awb="+
+        // Direct Tracking (Duplicate Check Removed)
+        const response = await fetch(
+            API_URL +
+            "?action=track&awb=" +
             encodeURIComponent(currentAWB)
         );
 
-        const data=await response.json();
+        const data = await response.json();
 
-        document.getElementById("loading").style.display="none";
+        document.getElementById("loading").style.display = "none";
+
 
         if(data.success){
 
-            currentOrder=data.orderId || "";
+            currentOrder = data.orderId || "";
 
-            document.getElementById("orderInput").value=currentOrder;
+            document.getElementById("orderInput").value = currentOrder;
 
-            return;
+        }else{
+
+            // Order ID not found, manual entry allowed
+            document.getElementById("orderInput").focus();
+
         }
 
-        document.getElementById("orderInput").focus();
 
     }catch(err){
 
-        document.getElementById("loading").style.display="none";
+        document.getElementById("loading").style.display = "none";
 
         console.error(err);
 
-        alert("Network Error");
+        alert(
+            "Tracking Failed\n\nEnter Order ID Manually"
+        );
 
-        resetScanner();
+        document.getElementById("orderInput").focus();
 
     }
 
