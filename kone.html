@@ -477,85 +477,82 @@ function submitManual(){
 
 async function saveScan(){
 
-    if(currentType===""){
+if(currentType===""){
+    alert("Select Pickup / Return");
+    return;
+}
 
-        alert("Select Pickup / Return");
-        return;
-
-    }
-
-    const selectedDate=
+const selectedDate =
     document.getElementById("entryDate").value;
 
-    const payload={
+const payload = {
+    action: "save",
+    type: currentType,
+    awb: currentAWB,
+    orderId: currentOrder,
+    date: selectedDate
+};
 
-        action:"save",
-        type:currentType,
-        awb:currentAWB,
-        orderId:currentOrder,
-        date:selectedDate
+try{
 
-    };
+    const response = await fetch(API_URL, {
+        method: "POST",
+        redirect: "follow",
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const text = await response.text();
+
+    console.log("SERVER RESPONSE:", text);
+
+    let result;
 
     try{
-
-        const response=await fetch(
-            API_URL,
-            {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(payload)
-            }
-        );
-
-        const text = await response.text();
-
-console.log("SERVER RESPONSE:", text);
-
-const result = JSON.parse(text);
-
-        if(result.success){
-
-            alert("Saved Successfully");
-
-            resetScanner();
-            return;
-
-        }
-
-        if(result.duplicate){
-
-            alert(
-                "Duplicate Found\n\n"+
-                "Order ID : "+result.orderId+
-                "\nDate : "+result.date
-            );
-
-            resetScanner();
-            return;
-
-        }
-
-        if(result.manual){
-
-            openManualPopup();
-            return;
-
-        }
-
-        alert(result.message);
-
-    }catch(err){
-
-        console.error("SAVE ERROR:", err);
-
-    alert("Save Failed\n\n" + err);
-
+        result = JSON.parse(text);
+    }catch(e){
+        alert("Invalid Server Response\n\n" + text);
+        return;
     }
 
+    if(result.success){
+        alert("Saved Successfully");
+        resetScanner();
+        return;
+    }
+
+    if(result.duplicate){
+        alert(
+            "Duplicate Found\n\n" +
+            "Order ID : " + result.orderId +
+            "\nDate : " + result.date
+        );
+        resetScanner();
+        return;
+    }
+
+    if(result.manual){
+        openManualPopup();
+        return;
+    }
+
+    alert(result.message || "Unknown Error");
+
+}catch(err){
+
+    console.error(err);
+
+    alert(
+        "Save Failed\n\n" +
+        err.message
+    );
+
 }
+
+}
+
 
 /* ==========================================
    CANCEL
