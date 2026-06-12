@@ -1,282 +1,193 @@
 
+```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>Pickup / Return Scanner</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 
 body{
-
-background:#f2f4f8;
-
-padding:15px;
-
+    background:#f2f4f8;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:10px;
 }
 
 .container{
-
-max-width:700px;
-
-margin:auto;
-
+    width:100%;
+    max-width:700px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
 }
 
 .header{
-
-display:flex;
-
-gap:10px;
-
-margin-bottom:15px;
-
+    display:flex;
+    gap:10px;
+    margin-bottom:10px;
 }
 
 .modeBtn{
-
-flex:1;
-
-height:55px;
-
-border:none;
-
-border-radius:10px;
-
-font-size:18px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-transition:.3s;
-
-background:#d7d7d7;
-
-color:#444;
-
+    flex:1;
+    height:52px;
+    border:0;
+    border-radius:10px;
+    background:#d7d7d7;
+    color:#444;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.25s;
 }
 
 .modeBtn.active{
-
-background:#1976d2;
-
-color:#fff;
-
+    background:#1976d2;
+    color:#fff;
 }
 
 #reader{
-
-display:none;
-
-width:100%;
-
-height:48vh;
-
-min-height:320px;
-
-border-radius:12px;
-
-overflow:hidden;
-
-background:#000;
-
-}
-
-.card{
-
-margin-top:15px;
-
-background:#fff;
-
-padding:20px;
-
-border-radius:12px;
-
-box-shadow:0 2px 8px rgba(0,0,0,.1);
-
-display:none;
-
-}
-
-.label{
-
-font-size:13px;
-
-color:#777;
-
-margin-top:10px;
-
-}
-
-.value{
-
-font-size:22px;
-
-font-weight:bold;
-
-word-break:break-all;
-
-margin-top:5px;
-
-}
-
-.buttonArea{
-
-display:flex;
-
-gap:10px;
-
-margin-top:25px;
-
-}
-
-.saveBtn{
-
-flex:1;
-
-height:60px;
-
-border:none;
-
-border-radius:10px;
-
-background:#1db954;
-
-color:white;
-
-font-size:24px;
-
-cursor:pointer;
-
-}
-
-.cancelBtn{
-
-flex:1;
-
-height:60px;
-
-border:none;
-
-border-radius:10px;
-
-background:#e53935;
-
-color:white;
-
-font-size:24px;
-
-cursor:pointer;
-
+    display:none;
+    width:100%;
+    height:24vh;
+    min-height:220px;
+    background:#000;
+    border-radius:12px;
+    overflow:hidden;
 }
 
 .loader{
+    display:none;
+    text-align:center;
+    padding:12px;
+    font-size:18px;
+    font-weight:bold;
+}
 
-display:none;
+.card{
+    display:none;
+    margin-top:10px;
+    background:#fff;
+    border-radius:12px;
+    padding:18px;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
 
-text-align:center;
+.label{
+    color:#777;
+    font-size:13px;
+    margin-top:10px;
+}
 
-padding:20px;
+.value{
+    font-size:22px;
+    font-weight:700;
+    margin-top:4px;
+    word-break:break-word;
+}
 
-font-size:18px;
+.buttonArea{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+}
 
+.buttonArea button{
+    flex:1;
+    height:58px;
+    border:0;
+    border-radius:10px;
+    color:#fff;
+    font-size:24px;
+    cursor:pointer;
+}
+
+.saveBtn{
+    background:#16a34a;
+}
+
+.cancelBtn{
+    background:#dc2626;
 }
 
 .popup{
-
-position:fixed;
-
-top:0;
-
-left:0;
-
-right:0;
-
-bottom:0;
-
-background:rgba(0,0,0,.55);
-
-display:none;
-
-align-items:center;
-
-justify-content:center;
-
-z-index:9999;
-
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
 }
 
 .popupBox{
-
-width:90%;
-
-max-width:400px;
-
-background:white;
-
-padding:25px;
-
-border-radius:12px;
-
+    width:90%;
+    max-width:380px;
+    background:#fff;
+    padding:22px;
+    border-radius:12px;
 }
 
 .popupBox h2{
-
-margin-bottom:15px;
-
+    margin-bottom:15px;
+    font-size:22px;
 }
 
 .popupBox input{
-
-width:100%;
-
-height:50px;
-
-font-size:20px;
-
-padding:10px;
-
-margin-top:10px;
-
+    width:100%;
+    height:48px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    padding:0 12px;
+    font-size:18px;
+    outline:none;
 }
 
 .popupBox button{
-
-margin-top:15px;
-
-width:100%;
-
-height:50px;
-
-font-size:20px;
-
-background:#1976d2;
-
-color:white;
-
-border:none;
-
-border-radius:8px;
-
-cursor:pointer;
-
+    width:100%;
+    height:50px;
+    margin-top:15px;
+    border:0;
+    border-radius:8px;
+    background:#1976d2;
+    color:#fff;
+    font-size:18px;
+    cursor:pointer;
 }
 
+@media(max-width:600px){
+
+    .modeBtn{
+        height:48px;
+        font-size:16px;
+    }
+
+    #reader{
+        height:22vh;
+        min-height:190px;
+    }
+
+    .value{
+        font-size:18px;
+    }
+
+    .buttonArea button{
+        height:52px;
+        font-size:22px;
+    }
+
+}
 </style>
+```
+
 
 </head>
 
@@ -284,571 +195,439 @@ cursor:pointer;
 
 <div class="container">
 
-<div class="header">
+    <!-- Date -->
+    <div style="text-align:center;margin-bottom:10px;">
+        <input
+            type="date"
+            id="entryDate"
+            style="height:45px;padding:0 12px;border:1px solid #ccc;border-radius:8px;font-size:16px;"
+        >
+    </div>
 
-<button
+    <!-- Pickup / Return -->
+    <div class="header">
+        <button id="pickupBtn" class="modeBtn" onclick="selectMode('Pickup')">
+            Pickup
+        </button>
 
-id="pickupBtn"
+        <button id="returnBtn" class="modeBtn" onclick="selectMode('Return')">
+            Return
+        </button>
+    </div>
 
-class="modeBtn"
+    <!-- Camera -->
+    <div id="reader"></div>
 
-onclick="selectMode('Pickup')"
+    <!-- Loader -->
+    <div id="loading" class="loader">
+        🔍 Searching Order...
+    </div>
 
->
+    <!-- Result -->
+    <div id="resultCard" class="card">
 
-Pickup
+        <div class="label">AWB</div>
+        <div id="awbText" class="value">-</div>
 
-</button>
+        <div class="label">Order ID</div>
+        <div id="orderText" class="value">-</div>
 
-<button
+        <div class="buttonArea">
 
-id="returnBtn"
+            <button
+                class="saveBtn"
+                type="button"
+                onclick="saveScan()">
+                ✅
+            </button>
 
-class="modeBtn"
+            <button
+                class="cancelBtn"
+                type="button"
+                onclick="cancelScan()">
+                ❌
+            </button>
 
-onclick="selectMode('Return')"
+        </div>
 
->
-
-Return
-
-</button>
-
-</div>
-
-<div id="reader"></div>
-
-<div
-
-id="loading"
-
-class="loader"
-
->
-
-Searching Order...
-
-</div>
-
-<div
-
-id="resultCard"
-
-class="card"
-
->
-
-<div class="label">
-
-AWB
-
-</div>
-
-<div
-
-id="awbText"
-
-class="value"
-
->
-
--
+    </div>
 
 </div>
 
-<div class="label">
+<!-- Manual Order Popup -->
 
-Order ID
+<div id="manualPopup" class="popup">
 
-</div>
+    <div class="popupBox">
 
-<div
+        <h2>Order ID Not Found</h2>
 
-id="orderText"
+        <input
+            id="manualOrder"
+            type="text"
+            placeholder="Enter Order ID"
+            autocomplete="off"
+        >
 
-class="value"
+        <button
+            type="button"
+            onclick="submitManual()">
+            Save Order ID
+        </button>
 
->
-
--
-
-</div>
-
-<div class="buttonArea">
-
-<button
-
-class="saveBtn"
-
-onclick="saveScan()"
-
->
-
-✅
-
-</button>
-
-<button
-
-class="cancelBtn"
-
-onclick="cancelScan()"
-
->
-
-❌
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<div
-
-id="manualPopup"
-
-class="popup"
-
->
-
-<div class="popupBox">
-
-<h2>
-
-Order ID Not Found
-
-</h2>
-
-<input
-
-id="manualOrder"
-
-placeholder="Enter Order ID"
-
-autocomplete="off"
-
->
-
-<button
-
-onclick="submitManual()"
-
->
-
-Save Order ID
-
-</button>
-
-</div>
+    </div>
 
 </div>
 
 <script>
 
-const API_URL="https://script.google.com/macros/s/AKfycbyGz6vImuL_1b5mtfzimwR--Scj7AwWgBuMV8uQk8fpUr6WX6j-sfh5u9QMGi9TkwGg/exec";
+const API_URL="https://script.google.com/macros/s/AKfycbzmxpCxKgqfupyKrYS-ONDf_Mlz5wjZWTFljg0-4VEY-iAxE6voMhIyq0WFoaIA0apq/exec";
 
-let scanner;
+let scanner=null;
+let cameraRunning=false;
 
 let currentType="";
-
 let currentAWB="";
-
 let currentOrder="";
 
-let cameraRunning=false;
+/* ==========================================
+   MODE SELECT
+========================================== */
 
 function selectMode(type){
 
-currentType=type;
+    currentType=type;
 
-document
+    document.getElementById("pickupBtn").classList.remove("active");
+    document.getElementById("returnBtn").classList.remove("active");
 
-.getElementById("pickupBtn")
+    if(type==="Pickup"){
+        document.getElementById("pickupBtn").classList.add("active");
+    }else{
+        document.getElementById("returnBtn").classList.add("active");
+    }
 
-.classList
-
-.remove("active");
-
-document
-
-.getElementById("returnBtn")
-
-.classList
-
-.remove("active");
-
-if(type=="Pickup"){
-
-document
-
-.getElementById("pickupBtn")
-
-.classList
-
-.add("active");
-
-}else{
-
-document
-
-.getElementById("returnBtn")
-
-.classList
-
-.add("active");
-
+    startCamera();
 }
 
-startCamera();
+/* ==========================================
+   START CAMERA
+========================================== */
 
-}
+async function startCamera(){
 
-function startCamera(){
+    if(cameraRunning){
+        return;
+    }
 
-if(cameraRunning){
+    document.getElementById("reader").style.display="block";
 
-return;
+    scanner=new Html5Qrcode("reader");
 
-}
+    try{
 
-document
+        await scanner.start(
+            { facingMode:"environment" },
+            {
+                fps:10,
+                qrbox:250
+            },
+            onScanSuccess
+        );
 
-.getElementById("reader")
+        cameraRunning=true;
 
-.style.display="block";
+    }catch(err){
 
-scanner=new Html5Qrcode("reader");
-
-scanner.start(
-
-{
-
-facingMode:"environment"
-
-},
-
-{
-
-fps:10,
-
-qrbox:250
-
-},
-
-onScanSuccess
-
-);
-
-cameraRunning=true;
-
-}
-
-async function onScanSuccess(decodedText){
-
-  if(!cameraRunning){
-    return;
-  }
-
-  // Stop camera immediately after successful scan
-  stopCamera();
-
-  currentAWB = decodedText.trim();
-
-  document.getElementById("loading").style.display = "block";
-  document.getElementById("resultCard").style.display = "none";
-
-  try{
-
-    const response = await fetch(
-
-      API_URL +
-      "?action=track&awb=" +
-      encodeURIComponent(currentAWB)
-
-    );
-
-    const data = await response.json();
-
-    document.getElementById("loading").style.display = "none";
-
-    /* -------------------------
-       ORDER FOUND
-    --------------------------*/
-
-    if(data.success){
-
-      currentOrder = data.orderId || "";
-
-      document.getElementById("awbText").innerText =
-      currentAWB;
-
-      document.getElementById("orderText").innerText =
-      currentOrder;
-
-      document.getElementById("resultCard").style.display =
-      "block";
-
-      return;
+        alert("Camera Start Failed");
+        console.error(err);
 
     }
 
-    /* -------------------------
-       NOT FOUND
-    --------------------------*/
+}
 
-    openManualPopup();
+/* ==========================================
+   SCAN SUCCESS
+========================================== */
 
-  }
+async function onScanSuccess(decodedText){
 
-  catch(err){
+    if(!cameraRunning){
+        return;
+    }
 
-    document.getElementById("loading").style.display="none";
+    await stopCamera();
 
-    alert("Network Error");
+    currentAWB=decodedText.trim();
 
-  }
+    document.getElementById("loading").style.display="block";
+    document.getElementById("resultCard").style.display="none";
+
+    try{
+
+        /* Duplicate Check First */
+
+        const dupResponse=await fetch(
+            API_URL+
+            "?action=duplicate&awb="+
+            encodeURIComponent(currentAWB)+
+            "&type="+
+            encodeURIComponent(currentType)
+        );
+
+        const dupData=await dupResponse.json();
+
+        if(dupData.found){
+
+            document.getElementById("loading").style.display="none";
+
+            alert(
+                "Duplicate Found\n\n"+
+                "Order ID : "+dupData.orderId+
+                "\nDate : "+dupData.date
+            );
+
+            resetScanner();
+            return;
+        }
+
+        /* Tracking */
+
+        const response=await fetch(
+            API_URL+
+            "?action=track&awb="+
+            encodeURIComponent(currentAWB)
+        );
+
+        const data=await response.json();
+
+        document.getElementById("loading").style.display="none";
+
+        if(data.success){
+
+            currentOrder=data.orderId || "";
+
+            document.getElementById("awbText").innerText=currentAWB;
+            document.getElementById("orderText").innerText=currentOrder;
+
+            document.getElementById("resultCard").style.display="block";
+
+            return;
+        }
+
+        openManualPopup();
+
+    }catch(err){
+
+        document.getElementById("loading").style.display="none";
+
+        console.error(err);
+
+        alert("Network Error");
+
+        resetScanner();
+
+    }
 
 }
 
-/* =====================================================
+/* ==========================================
    MANUAL POPUP
-===================================================== */
+========================================== */
 
 function openManualPopup(){
 
-  document.getElementById("manualOrder").value="";
+    document.getElementById("manualOrder").value="";
 
-  document.getElementById("manualPopup").style.display="flex";
+    document.getElementById("manualPopup").style.display="flex";
 
-  setTimeout(function(){
-
-    document.getElementById("manualOrder").focus();
-
-  },100);
+    setTimeout(()=>{
+        document.getElementById("manualOrder").focus();
+    },100);
 
 }
 
 function submitManual(){
 
-  const value =
-
-    document.getElementById("manualOrder")
-
+    const value=document
+    .getElementById("manualOrder")
     .value
-
     .trim();
 
-  if(value==""){
+    if(value===""){
 
-    alert("Enter Order ID");
+        alert("Enter Order ID");
+        return;
 
-    return;
+    }
 
-  }
+    currentOrder=value;
 
-  currentOrder = value;
+    document.getElementById("manualPopup").style.display="none";
 
-  document.getElementById("manualPopup").style.display="none";
+    document.getElementById("awbText").innerText=currentAWB;
+    document.getElementById("orderText").innerText=currentOrder;
 
-  document.getElementById("awbText").innerText =
-  currentAWB;
-
-  document.getElementById("orderText").innerText =
-  currentOrder;
-
-  document.getElementById("resultCard").style.display =
-  "block";
+    document.getElementById("resultCard").style.display="block";
 
 }
 
-/* =====================================================
+/* ==========================================
    SAVE
-===================================================== */
+========================================== */
 
 async function saveScan(){
 
-  if(currentType==""){
+    if(currentType===""){
 
-    alert("Select Pickup or Return");
+        alert("Select Pickup / Return");
+        return;
 
-    return;
+    }
 
-  }
+    const selectedDate=
+    document.getElementById("entryDate").value;
 
-  const payload={
+    const payload={
 
-    action:"save",
+        action:"save",
+        type:currentType,
+        awb:currentAWB,
+        orderId:currentOrder,
+        date:selectedDate
 
-    type:currentType,
+    };
 
-    awb:currentAWB,
+    try{
 
-    orderId:currentOrder
+        const response=await fetch(
+            API_URL,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(payload)
+            }
+        );
 
-  };
+        const result=await response.json();
 
-  try{
+        if(result.success){
 
-    const response=
+            alert("Saved Successfully");
 
-      await fetch(
-
-        API_URL,
-
-        {
-
-          method:"POST",
-
-          headers:{
-
-            "Content-Type":"application/json"
-
-          },
-
-          body:JSON.stringify(payload)
+            resetScanner();
+            return;
 
         }
 
-      );
+        if(result.duplicate){
 
-    const result=
+            alert(
+                "Duplicate Found\n\n"+
+                "Order ID : "+result.orderId+
+                "\nDate : "+result.date
+            );
 
-      await response.json();
+            resetScanner();
+            return;
 
-    if(result.success){
+        }
 
-      alert("Saved Successfully");
+        if(result.manual){
 
-      resetScanner();
+            openManualPopup();
+            return;
 
-      return;
+        }
 
-    }
+        alert(result.message);
 
-    if(result.duplicate){
+    }catch(err){
 
-      alert(result.message);
+        console.error(err);
 
-      resetScanner();
-
-      return;
-
-    }
-
-    if(result.manual){
-
-      openManualPopup();
-
-      return;
+        alert("Save Failed");
 
     }
-
-    alert(result.message);
-
-  }
-
-  catch(err){
-
-    alert("Save Failed");
-
-  }
 
 }
 
-/* =====================================================
+/* ==========================================
    CANCEL
-===================================================== */
+========================================== */
 
 function cancelScan(){
 
-  resetScanner();
+    resetScanner();
 
 }
 
-/* =====================================================
-   RESET
-===================================================== */
-
-function resetScanner(){
-
-  currentAWB="";
-
-  currentOrder="";
-
-  document.getElementById("awbText").innerText="-";
-
-  document.getElementById("orderText").innerText="-";
-
-  document.getElementById("resultCard").style.display="none";
-
-  document.getElementById("manualPopup").style.display="none";
-
-  document.getElementById("loading").style.display="none";
-
-  document.getElementById("pickupBtn").classList.remove("active");
-
-  document.getElementById("returnBtn").classList.remove("active");
-
-  currentType="";
-
-  stopCamera();
-
-}
-
-/* =====================================================
+/* ==========================================
    STOP CAMERA
-===================================================== */
+========================================== */
 
-function stopCamera(){
+async function stopCamera(){
 
-  if(!cameraRunning){
+    if(!cameraRunning || !scanner){
+        return;
+    }
 
-    return;
+    try{
 
-  }
+        await scanner.stop();
+        await scanner.clear();
 
-  try{
+    }catch(e){
+        console.log(e);
+    }
 
-    scanner.stop()
+    cameraRunning=false;
 
-    .then(function(){
-
-      scanner.clear();
-
-    });
-
-  }
-
-  catch(e){
-
-  }
-
-  cameraRunning=false;
-
-  document.getElementById("reader").style.display="none";
+    document.getElementById("reader").style.display="none";
 
 }
 
-/* =====================================================
+/* ==========================================
+   RESET
+========================================== */
+
+async function resetScanner(){
+
+    currentAWB="";
+    currentOrder="";
+
+    document.getElementById("awbText").innerText="-";
+    document.getElementById("orderText").innerText="-";
+
+    document.getElementById("loading").style.display="none";
+    document.getElementById("resultCard").style.display="none";
+    document.getElementById("manualPopup").style.display="none";
+
+    document.getElementById("pickupBtn").classList.remove("active");
+    document.getElementById("returnBtn").classList.remove("active");
+
+    currentType="";
+
+    await stopCamera();
+
+}
+
+/* ==========================================
    PAGE LOAD
-===================================================== */
+========================================== */
 
 window.onload=function(){
 
-  currentType="";
+    const today=new Date();
 
-  currentAWB="";
+    const yyyy=today.getFullYear();
+    const mm=String(today.getMonth()+1).padStart(2,"0");
+    const dd=String(today.getDate()).padStart(2,"0");
 
-  currentOrder="";
-
-  document.getElementById("reader").style.display="none";
-
-  document.getElementById("resultCard").style.display="none";
-
-  document.getElementById("manualPopup").style.display="none";
+    document.getElementById("entryDate").value=
+    `${yyyy}-${mm}-${dd}`;
 
 };
 
