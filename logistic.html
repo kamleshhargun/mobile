@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shopify Tracking Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+:root{
+ --bg:#0f172a;
+ --card:#1e293b;
+ --card2:#334155;
+ --text:#f8fafc;
+ --muted:#94a3b8;
+ --success:#22c55e;
+ --warning:#f59e0b;
+ --danger:#ef4444;
+ --info:#3b82f6;
+}
+
+body{
+ background:var(--bg);
+ color:var(--text);
+ min-height:100vh;
+}
+
+.navbar{
+ background:#020617;
+}
+
+.glass{
+ background:rgba(255,255,255,.05);
+ backdrop-filter:blur(12px);
+ border:1px solid rgba(255,255,255,.08);
+ border-radius:16px;
+}
+
+.stat-card{
+ padding:20px;
+ border-radius:16px;
+ text-align:center;
+}
+
+.stat-number{
+ font-size:28px;
+ font-weight:700;
+}
+
+.table{
+ color:white;
+}
+
+.table thead{
+ background:#111827;
+}
+
+.form-control,
+.form-select{
+ background:#0f172a;
+ color:white;
+ border:1px solid #334155;
+}
+
+.form-control:focus,
+.form-select:focus{
+ background:#0f172a;
+ color:white;
+}
+
+.badge-status{
+ font-size:12px;
+}
+
+#loader{
+ display:none;
+}
+
+.result-box{
+ white-space:pre-wrap;
+}
+
+.small-muted{
+ color:#94a3b8;
+ font-size:12px;
+}
+
+</style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-dark mb-4">
+<div class="container-fluid">
+<span class="navbar-brand mb-0 h1">
+📦 Shopify Tracking Dashboard
+</span>
+
+<button class="btn btn-outline-light btn-sm"
+onclick="toggleTheme()">
+🌙 Theme </button>
+
+</div>
+</nav>
+
+<div class="container-fluid">
+
+<div class="row g-3 mb-3">
+
+<div class="col-md-2">
+<div class="glass stat-card">
+<div class="stat-number" id="total">0</div>
+<div>Total</div>
+</div>
+</div>
+
+<div class="col-md-2">
+<div class="glass stat-card">
+<div class="stat-number text-success" id="delivered">0</div>
+<div>Delivered</div>
+</div>
+</div>
+
+<div class="col-md-2">
+<div class="glass stat-card">
+<div class="stat-number text-info" id="transit">0</div>
+<div>Transit</div>
+</div>
+</div>
+
+<div class="col-md-2">
+<div class="glass stat-card">
+<div class="stat-number text-warning" id="ofd">0</div>
+<div>OFD</div>
+</div>
+</div>
+
+<div class="col-md-2">
+<div class="glass stat-card">
+<div class="stat-number text-danger" id="rto">0</div>
+<div>RTO</div>
+</div>
+</div>
+
+<div class="col-md-2">
+<div class="glass stat-card">
+<div class="stat-number" id="pending">0</div>
+<div>Pending</div>
+</div>
+</div>
+
+</div>
+
+<div class="glass p-3 mb-3">
+
+<div class="row g-2">
+
+<div class="col-md-2">
+<select class="form-select" id="type">
+<option value="Pickup">Pickup</option>
+<option value="Return">Return</option>
+</select>
+</div>
+
+<div class="col-md-4">
+<input
+type="text"
+class="form-control"
+id="awb"
+placeholder="Enter AWB Number">
+</div>
+
+<div class="col-md-6 d-grid gap-2 d-md-flex">
+
+<button class="btn btn-primary"
+onclick="searchAWB()">
+Search </button>
+
+<button class="btn btn-success"
+onclick="saveAWB()">
+Save / Update </button>
+
+<button class="btn btn-warning"
+onclick="refreshAWB()">
+Refresh </button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="glass p-3 mb-3">
+
+<h5>Bulk Update</h5>
+
+<div class="row g-2">
+
+<div class="col-md-4">
+<input type="date"
+class="form-control"
+id="bulkDate">
+</div>
+
+<div class="col-md-8">
+
+<button
+class="btn btn-primary"
+onclick="bulkPickup()">
+Bulk Pickup Update </button>
+
+<button
+class="btn btn-danger"
+onclick="bulkReturn()">
+Bulk Return Update </button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="glass p-3 mb-3">
+
+<h5>Shipment Details</h5>
+
+<div id="shipmentResult"
+class="result-box">
+
+No Shipment Loaded
+
+</div>
+
+</div>
+
+<div class="glass p-3 mb-3">
+
+<div class="row">
+
+<div class="col-md-6">
+<h5>Recent History</h5>
+</div>
+
+<div class="col-md-6">
+<input
+type="text"
+class="form-control"
+id="searchLocal"
+placeholder="Search Local History"
+onkeyup="searchLocalData()">
+</div>
+
+</div>
+
+<hr>
+
+<div class="table-responsive">
+
+<table class="table table-dark table-striped align-middle">
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Type</th>
+<th>AWB</th>
+<th>Order</th>
+<th>Courier</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="historyBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<div id="loader"
+class="text-center mt-3">
+
+<div class="spinner-border text-light"></div>
+
+</div>
+
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+<div class="toast" id="toast">
+
+<div class="toast-body"
+id="toastText">
+
+Done
+
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbz_rhmfQ7wM0DoWfjuvqCIxGgX3qM3oqCKOSe4vpAgBCWmkPE1LSbhlyQdykRNGG6WX/exec";
+
+let historyCache=[];
+
+function showLoader(v){
+
+document.getElementById("loader")
+.style.display=v?"block":"none";
+
+}
+
+function toast(msg){
+
+document.getElementById("toastText")
+.innerText=msg;
+
+new bootstrap.Toast(
+document.getElementById("toast")
+).show();
+
+}
+
+async function api(data){
+
+showLoader(true);
+
+try{
+
+const r=await fetch(API_URL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify(data)
+
+});
+
+return await r.json();
+
+}
+
+finally{
+
+showLoader(false);
+
+}
+
+}
+
+async function loadStats(){
+
+try{
+
+const d=
+await api({
+action:"stats"
+});
+
+document.getElementById("total").innerText=d.total||0;
+document.getElementById("delivered").innerText=d.delivered||0;
+document.getElementById("transit").innerText=d.transit||0;
+document.getElementById("ofd").innerText=d.ofd||0;
+document.getElementById("rto").innerText=d.rto||0;
+document.getElementById("pending").innerText=d.pending||0;
+
+}catch(e){}
+
+}
+
+async function searchAWB(){
+
+const awb=
+document.getElementById("awb")
+.value.trim();
+
+if(!awb){
+
+toast("Enter AWB");
+return;
+
+}
+
+const r=
+await api({
+
+action:"search",
+awb:awb
+
+});
+
+if(!r.success){
+
+document
+.getElementById("shipmentResult")
+.innerHTML=r.message;
+
+return;
+
+}
+
+const s=r.shipment;
+
+document
+.getElementById("shipmentResult")
+.innerHTML=`
+
+Courier : ${s.courier}
+AWB : ${s.awb}
+Order : ${s.orderId}
+Status : ${s.status}
+Location : ${s.location}
+Status Time : ${s.statusTime}
+Customer : ${s.customer}
+Phone : ${s.phone}
+COD : ${s.cod}
+Payment : ${s.payment}
+Attempts : ${s.attempts}
+Remarks : ${s.remarks}
+
+`;
+
+}
+
+async function saveAWB(){
+
+const awb=
+document.getElementById("awb")
+.value.trim();
+
+const type=
+document.getElementById("type")
+.value;
+
+if(!awb){
+
+toast("Enter AWB");
+return;
+
+}
+
+const r=
+await api({
+
+action:"save",
+awb:awb,
+type:type
+
+});
+
+if(r.success){
+
+toast(
+r.updated
+?
+"Updated"
+:
+"Saved"
+);
+
+loadStats();
+loadHistory();
+
+}
+
+}
+
+async function refreshAWB(){
+
+const awb=
+document.getElementById("awb")
+.value.trim();
+
+if(!awb){
+
+toast("Enter AWB");
+return;
+
+}
+
+await api({
+
+action:"refresh",
+awb:awb
+
+});
+
+toast("Refreshed");
+
+loadStats();
+loadHistory();
+
+}
+
+async function bulkPickup(){
+
+const date=
+document.getElementById("bulkDate")
+.value;
+
+if(!date){
+
+toast("Select Date");
+return;
+
+}
+
+const r=
+await api({
+
+action:"pickup",
+date:date
+
+});
+
+toast(
+"Updated : "+
+(r.updated||0)
+);
+
+loadHistory();
+loadStats();
+
+}
+
+async function bulkReturn(){
+
+const date=
+document.getElementById("bulkDate")
+.value;
+
+if(!date){
+
+toast("Select Date");
+return;
+
+}
+
+const r=
+await api({
+
+action:"return",
+date:date
+
+});
+
+toast(
+"Updated : "+
+(r.updated||0)
+);
+
+loadHistory();
+loadStats();
+
+}
+
+async function loadHistory(){
+
+const rows=
+await api({
+
+action:"history"
+
+});
+
+historyCache=rows||[];
+
+renderHistory(
+historyCache
+);
+
+}
+
+function renderHistory(rows){
+
+let html="";
+
+(rows||[])
+.slice()
+.reverse()
+.forEach(r=>{
+
+html+=`
+
+<tr>
+
+<td>${r[0]||""}</td>
+<td>${r[1]||""}</td>
+<td>${r[2]||""}</td>
+<td>${r[3]||""}</td>
+<td>${r[4]||""}</td>
+<td>${r[5]||""}</td>
+
+</tr>
+
+`;
+
+});
+
+document
+.getElementById("historyBody")
+.innerHTML=html;
+
+}
+
+async function searchLocalData(){
+
+const k=
+document.getElementById(
+"searchLocal"
+).value.toLowerCase();
+
+if(!k){
+
+renderHistory(historyCache);
+return;
+
+}
+
+const filtered=
+historyCache.filter(r=>
+JSON.stringify(r)
+.toLowerCase()
+.includes(k)
+);
+
+renderHistory(filtered);
+
+}
+
+function toggleTheme(){
+
+document.body.classList.toggle(
+"light"
+);
+
+}
+
+loadStats();
+loadHistory();
+
+</script>
+
+</body>
+</html>
