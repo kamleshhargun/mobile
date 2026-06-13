@@ -1,0 +1,4196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Tracking Hub Pro Max</title>
+
+
+<!-- Bootstrap -->
+<link 
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet">
+
+
+<!-- Barcode Scanner -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+
+<style>
+
+/* ==================================================
+   ROOT VARIABLES
+================================================== */
+
+:root{
+
+    --bg:#0f172a;
+    --sidebar:#111827;
+    --card:#1e293b;
+    --hover:#2563eb;
+    --text:#ffffff;
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --info:#3b82f6;
+
+}
+
+
+/* ==================================================
+   GLOBAL
+================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:
+    "Segoe UI",
+    sans-serif;
+}
+
+
+body{
+
+    background:var(--bg);
+    color:var(--text);
+    overflow:hidden;
+
+}
+
+
+/* ==================================================
+   SIDEBAR
+================================================== */
+
+.sidebar{
+
+    width:260px;
+    height:100vh;
+    background:var(--sidebar);
+
+    position:fixed;
+    top:0;
+    left:0;
+
+    padding:20px;
+    z-index:1000;
+
+    transition:.3s;
+
+}
+
+
+.logo{
+
+    text-align:center;
+    font-size:24px;
+    font-weight:700;
+
+    margin-bottom:25px;
+
+}
+
+
+.menu-btn{
+
+    width:100%;
+    padding:14px;
+
+    margin-bottom:12px;
+
+    border:none;
+    border-radius:14px;
+
+    background:#1f2937;
+    color:white;
+
+    text-align:left;
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+
+.menu-btn:hover,
+.menu-btn.active{
+
+    background:var(--hover);
+
+}
+
+
+/* ==================================================
+   MAIN
+================================================== */
+
+.main{
+
+    margin-left:260px;
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+}
+
+
+/* ==================================================
+   TOP BAR
+================================================== */
+
+.topbar{
+
+    background:#111827;
+
+    padding:14px 20px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border-bottom:
+    1px solid #334155;
+
+}
+
+
+.mobile-toggle{
+
+    display:none;
+
+}
+
+
+/* ==================================================
+   DASHBOARD CARDS
+================================================== */
+
+.cards{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(6,1fr);
+
+    gap:15px;
+
+    padding:15px;
+
+}
+
+
+.card-box{
+
+    background:var(--card);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    text-align:center;
+
+    box-shadow:
+    0 8px 25px rgba(0,0,0,.3);
+
+}
+
+
+.card-title{
+
+    font-size:13px;
+    opacity:.7;
+
+}
+
+
+.card-value{
+
+    font-size:26px;
+    font-weight:700;
+
+    margin-top:8px;
+
+}
+
+
+.green{
+
+    color:var(--success);
+
+}
+
+
+.blue{
+
+    color:var(--info);
+
+}
+
+
+.yellow{
+
+    color:var(--warning);
+
+}
+
+
+.red{
+
+    color:var(--danger);
+
+}
+
+
+/* ==================================================
+   CONTENT AREA
+================================================== */
+
+
+.content{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:15px;
+
+}
+
+
+/* Module */
+.module{
+
+    display:none;
+
+}
+
+
+.module.active{
+
+    display:block;
+
+}
+
+
+/* Glass Card */
+
+.glass{
+
+    background:var(--card);
+
+    padding:20px;
+
+    border-radius:18px;
+
+    margin-bottom:15px;
+
+}
+
+
+/* Inputs */
+
+input,
+select{
+
+    width:100%;
+
+    height:45px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:12px;
+
+    padding:10px;
+
+}
+
+
+
+/* Buttons */
+
+.btn-pro{
+
+    border:none;
+
+    height:45px;
+
+    border-radius:12px;
+
+    padding:0 20px;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+
+.primary{
+
+    background:#2563eb;
+
+}
+
+
+.success{
+
+    background:#16a34a;
+
+}
+
+
+.warning{
+
+    background:#f59e0b;
+
+}
+
+
+.danger{
+
+    background:#dc2626;
+
+}
+
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+
+@media(max-width:768px){
+
+
+.sidebar{
+
+    left:-260px;
+
+}
+
+
+.sidebar.show{
+
+    left:0;
+
+}
+
+
+.main{
+
+    margin-left:0;
+
+}
+
+
+.mobile-toggle{
+
+    display:block;
+
+}
+
+
+.cards{
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+}
+
+
+}
+
+
+/* Loader */
+
+.loader{
+
+display:none;
+
+text-align:center;
+
+padding:20px;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==============================
+     SIDEBAR
+================================ -->
+
+
+<div class="sidebar" id="sidebar">
+
+
+<div class="logo">
+
+🚚 TRACKING HUB
+
+</div>
+
+
+<button 
+class="menu-btn active"
+onclick="openModule('dashboard',this)">
+
+🏠 Dashboard
+
+</button>
+
+
+<button 
+class="menu-btn"
+onclick="openModule('scanner',this)">
+
+📷 AWB Scanner
+
+</button>
+
+
+<button 
+class="menu-btn"
+onclick="openModule('shipment',this)">
+
+📦 Shipment Manager
+
+</button>
+
+
+<button 
+class="menu-btn"
+onclick="openModule('bulk',this)">
+
+⚡ Bulk Update
+
+</button>
+
+
+<button 
+class="menu-btn"
+onclick="openModule('history',this)">
+
+📜 History
+
+</button>
+
+
+<button 
+class="menu-btn"
+onclick="openModule('system',this)">
+
+⚙ System
+
+</button>
+
+
+</div>
+
+
+
+<!-- ==============================
+     MAIN PANEL
+================================ -->
+
+
+<div class="main">
+
+
+<!-- TOP BAR -->
+
+
+<div class="topbar">
+
+
+<button 
+class="btn btn-primary mobile-toggle"
+onclick="toggleSidebar()">
+
+☰
+
+</button>
+
+
+<h5>
+
+Tracking Hub Pro Max
+
+</h5>
+
+
+<span id="pageTitle">
+
+Dashboard
+
+</span>
+
+
+</div>
+
+
+<!-- DASHBOARD STATS -->
+
+
+<div class="cards">
+
+
+<div class="card-box">
+
+<div class="card-title">
+
+Total
+
+</div>
+
+<div 
+class="card-value"
+id="total">
+
+0
+
+</div>
+
+</div>
+
+
+
+<div class="card-box">
+
+<div class="card-title">
+
+Delivered
+
+</div>
+
+<div 
+class="card-value green"
+id="delivered">
+
+0
+
+</div>
+
+</div>
+
+
+
+<div class="card-box">
+
+<div class="card-title">
+
+Transit
+
+</div>
+
+<div 
+class="card-value blue"
+id="transit">
+
+0
+
+</div>
+
+</div>
+
+
+
+<div class="card-box">
+
+<div class="card-title">
+
+OFD
+
+</div>
+
+<div 
+class="card-value yellow"
+id="ofd">
+
+0
+
+</div>
+
+</div>
+
+
+
+<div class="card-box">
+
+<div class="card-title">
+
+RTO
+
+</div>
+
+<div 
+class="card-value red"
+id="rto">
+
+0
+
+</div>
+
+</div>
+
+
+
+<div class="card-box">
+
+<div class="card-title">
+
+Pending
+
+</div>
+
+<div 
+class="card-value"
+id="pending">
+
+0
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- =============================
+     CONTENT START
+============================= -->
+
+
+<div class="content">
+
+
+<!-- Dashboard Module -->
+
+
+<div 
+class="module active"
+id="dashboard">
+
+
+<div class="glass">
+
+
+<h3>
+
+🚀 Welcome to Tracking Hub Pro Max
+
+</h3>
+
+
+<br>
+
+
+<p>
+
+All your logistics tools are now integrated into a single dashboard.
+
+</p>
+
+
+<p>
+
+✔ AWB Scanner  
+<br>
+
+✔ Delhivery Tracking  
+<br>
+
+✔ BoxD Tracking  
+<br>
+
+✔ Pickup / Return Management  
+<br>
+
+✔ Bulk Updates  
+<br>
+
+✔ History & Analytics
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+<!-- Remaining modules
+will be added in PART 2 onwards -->
+<!-- =================================================
+     AWB SCANNER MODULE
+================================================== -->
+
+<div class="module" id="scanner">
+
+
+<!-- Scanner Dashboard -->
+
+
+<div class="glass">
+
+
+<h3>
+📷 AWB Scanner Pro Max
+</h3>
+
+<br>
+
+
+<div class="row g-3">
+
+
+<!-- Camera -->
+
+
+<div class="col-md-6">
+
+
+<button 
+class="btn-pro success w-100"
+onclick="startScanner()">
+
+📷 Start Camera
+
+</button>
+
+
+</div>
+
+
+<!-- Torch -->
+
+
+<div class="col-md-6">
+
+
+<button 
+class="btn-pro warning w-100"
+id="flashBtn"
+onclick="toggleFlash()">
+
+🔦 Flash ON
+
+</button>
+
+
+</div>
+
+
+<!-- Manual Input -->
+
+
+<div class="col-md-12">
+
+
+<input 
+type="text"
+id="scanInput"
+placeholder="Enter AWB / Order ID">
+
+</div>
+
+
+<div class="col-md-12">
+
+
+<button 
+class="btn-pro primary w-100"
+onclick="manualScan()">
+
+🔍 Search AWB
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Camera Reader -->
+
+
+<div class="glass">
+
+
+<h4>
+📸 Camera View
+</h4>
+
+
+<div id="reader"
+style="
+width:100%;
+border-radius:15px;
+overflow:hidden;
+">
+
+</div>
+
+
+</div>
+
+
+
+<!-- Today Counts -->
+
+
+<div class="glass">
+
+
+<h4>
+📊 Today Scan Summary
+</h4>
+
+
+<div class="row">
+
+
+<div class="col">
+
+
+<h5>
+Pickup
+</h5>
+
+
+<h2 id="todayPickup">
+
+0
+
+</h2>
+
+
+</div>
+
+
+<div class="col">
+
+
+<h5>
+Return
+</h5>
+
+
+<h2 id="todayReturn">
+
+0
+
+</h2>
+
+
+</div>
+
+
+<div class="col">
+
+
+<h5>
+Total
+</h5>
+
+
+<h2 id="todayTotal">
+
+0
+
+</h2>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Scanner Result -->
+
+
+<div 
+class="glass"
+id="scanResultBox"
+style="display:none;">
+
+
+<h4>
+
+📦 Shipment Result
+
+</h4>
+
+
+<hr>
+
+
+<div class="row mb-2">
+
+<div class="col-4">
+Date
+</div>
+
+<div class="col-8"
+id="resultDate">
+
+-
+
+</div>
+
+</div>
+
+
+
+<div class="row mb-2">
+
+
+<div class="col-4">
+Type
+</div>
+
+
+<div class="col-8"
+id="resultType">
+
+-
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="row mb-2">
+
+
+<div class="col-4">
+AWB
+</div>
+
+
+<div class="col-8"
+id="resultAWB">
+
+-
+
+</div>
+
+
+</div>
+
+
+
+
+<div class="row mb-2">
+
+
+<div class="col-4">
+Order ID
+</div>
+
+
+<div class="col-8"
+id="resultOrder">
+
+-
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<!-- =================================================
+     PART 2 END
+================================================== --><!-- =================================================
+     SHIPMENT MANAGER MODULE
+================================================== -->
+
+<div class="module" id="shipment">
+
+
+<!-- Search & Save Panel -->
+
+
+<div class="glass">
+
+
+<h3>
+📦 Shipment Manager
+</h3>
+
+<br>
+
+
+<div class="row g-3">
+
+
+<!-- Shipment Type -->
+
+
+<div class="col-md-3">
+
+
+<select id="shipType">
+
+
+<option value="Pickup">
+
+Pickup
+
+</option>
+
+
+<option value="Return">
+
+Return
+
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+<!-- AWB Input -->
+
+
+<div class="col-md-5">
+
+
+<input 
+type="text"
+id="shipAWB"
+placeholder="Enter AWB Number">
+
+
+</div>
+
+
+
+<!-- Search Button -->
+
+
+<div class="col-md-4">
+
+
+<button 
+class="btn-pro primary w-100"
+onclick="searchShipment()">
+
+🔍 Search AWB
+
+</button>
+
+
+</div>
+
+
+
+<!-- Save -->
+
+
+<div class="col-md-4">
+
+
+<button 
+class="btn-pro success w-100"
+onclick="saveShipment()">
+
+💾 Save / Update
+
+</button>
+
+
+</div>
+
+
+
+<!-- Refresh -->
+
+
+<div class="col-md-4">
+
+
+<button 
+class="btn-pro warning w-100"
+onclick="refreshShipmentData()">
+
+🔄 Refresh Status
+
+</button>
+
+
+</div>
+
+
+
+<!-- Clear -->
+
+
+<div class="col-md-4">
+
+
+<button 
+class="btn-pro danger w-100"
+onclick="clearShipment()">
+
+❌ Clear
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Shipment Details -->
+
+
+<div class="glass">
+
+
+<h3>
+🚚 Live Tracking Details
+</h3>
+
+
+<hr>
+
+
+<div class="row gy-3">
+
+
+<div class="col-md-6">
+
+<b>Courier:</b><br>
+
+<span id="sCourier">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>AWB Number:</b><br>
+
+
+<span id="sAWB">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Order ID:</b><br>
+
+
+<span id="sOrder">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Status:</b><br>
+
+
+<span id="sStatus">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Status Time:</b><br>
+
+
+<span id="sTime">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Current Location:</b><br>
+
+
+<span id="sLocation">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Customer Name:</b><br>
+
+
+<span id="sCustomer">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Phone Number:</b><br>
+
+
+<span id="sPhone">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>COD Amount:</b><br>
+
+
+<span id="sCOD">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Payment Mode:</b><br>
+
+
+<span id="sPayment">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Delivery Attempts:</b><br>
+
+
+<span id="sAttempts">
+
+-
+
+</span>
+
+
+</div>
+
+
+
+<div class="col-md-6">
+
+
+<b>Remarks:</b><br>
+
+
+<span id="sRemarks">
+
+-
+
+</span>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Quick Status Cards -->
+
+
+<div class="row g-3">
+
+
+<div class="col-md-3">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Courier
+</h6>
+
+
+<h4 id="quickCourier">
+
+-
+
+</h4>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="col-md-3">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Shipment Status
+</h6>
+
+
+<h4 id="quickStatus">
+
+-
+
+</h4>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="col-md-3">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Order ID
+</h6>
+
+
+<h4 id="quickOrder">
+
+-
+
+</h4>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="col-md-3">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Last Updated
+</h6>
+
+
+<h4 id="quickUpdated">
+
+-
+
+</h4>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<!-- =================================================
+     PART 3 END
+================================================== --><!-- =================================================
+     BULK UPDATE MODULE
+================================================== -->
+
+<div class="module" id="bulk">
+
+
+<!-- Bulk Control Panel -->
+
+<div class="glass">
+
+
+<h3>
+⚡ Bulk Shipment Update
+</h3>
+
+<p>
+Select a date and refresh all Pickup or Return shipments.
+</p>
+
+
+<br>
+
+
+<div class="row g-3">
+
+
+<!-- Date Selection -->
+
+<div class="col-md-4">
+
+
+<label>
+📅 Select Date
+</label>
+
+
+<input 
+type="date"
+id="bulkDate">
+
+
+</div>
+
+
+
+<!-- Pickup Update -->
+
+<div class="col-md-4">
+
+
+<label>
+🚚 Pickup Update
+</label>
+
+
+<button 
+class="btn-pro success w-100"
+onclick="bulkPickupUpdate()">
+
+Update Pickups
+
+</button>
+
+
+</div>
+
+
+
+<!-- Return Update -->
+
+<div class="col-md-4">
+
+
+<label>
+↩ Return Update
+</label>
+
+
+<button 
+class="btn-pro danger w-100"
+onclick="bulkReturnUpdate()">
+
+Update Returns
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Bulk Progress -->
+
+<div class="glass">
+
+
+<h4>
+📈 Update Progress
+</h4>
+
+
+<br>
+
+
+<div class="progress"
+style="height:25px;">
+
+
+<div 
+id="bulkProgressBar"
+
+class="progress-bar progress-bar-striped progress-bar-animated"
+
+style="
+width:0%;
+font-weight:bold;
+">
+
+0%
+
+</div>
+
+
+</div>
+
+
+<br>
+
+
+<div id="bulkStatus">
+
+
+Ready to start bulk update.
+
+</div>
+
+
+</div>
+
+
+
+<!-- Bulk Summary -->
+
+<div class="row g-3">
+
+
+<div class="col-md-4">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Updated Records
+</h6>
+
+
+<h2 id="bulkUpdated">
+
+0
+
+</h2>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="col-md-4">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Selected Date
+</h6>
+
+
+<h5 id="bulkSelectedDate">
+
+Not Selected
+
+</h5>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="col-md-4">
+
+
+<div class="glass text-center">
+
+
+<h6>
+Last Action
+</h6>
+
+
+<h5 id="bulkAction">
+
+None
+
+</h5>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Bulk Log -->
+
+<div class="glass">
+
+
+<h4>
+📜 Bulk Update Activity Log
+</h4>
+
+
+<hr>
+
+
+<div 
+
+id="bulkLog"
+
+style="
+height:220px;
+overflow-y:auto;
+background:#0b1220;
+padding:15px;
+border-radius:12px;
+font-family:monospace;
+font-size:14px;
+">
+
+System Ready...
+
+</div>
+
+
+</div>
+
+
+
+<!-- Safety Warning -->
+
+<div class="glass">
+
+
+<h5>
+⚠ Important Notes
+</h5>
+
+
+<ul>
+
+<li>
+Bulk update may take some time depending on number of AWBs.
+</li>
+
+
+<li>
+Please keep the browser open until process completes.
+</li>
+
+
+<li>
+Delhivery and BoxD API limits may apply.
+</li>
+
+
+<li>
+Only shipments matching selected date will be refreshed.
+</li>
+
+
+<li>
+Existing shipment records will be updated automatically.
+</li>
+
+
+</ul>
+
+
+</div>
+
+
+
+</div>
+
+
+<!-- =================================================
+     PART 4 END
+================================================== --><!-- =================================================
+     HISTORY & ANALYTICS MODULE
+================================================== -->
+
+<div class="module" id="history">
+
+
+<!-- Header -->
+
+<div class="glass">
+
+<h3>
+📜 Shipment History & Analytics
+</h3>
+
+<p>
+Search, filter, export and monitor all shipment records.
+</p>
+
+</div>
+
+
+<!-- Analytics Cards -->
+
+<div class="row g-3">
+
+
+<div class="col-md-3">
+
+<div class="glass text-center">
+
+<h6>
+📦 Total Records
+</h6>
+
+<h2 id="historyTotal">
+0
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="col-md-3">
+
+<div class="glass text-center">
+
+<h6>
+🚚 Pickup
+</h6>
+
+<h2 id="historyPickup">
+0
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="col-md-3">
+
+<div class="glass text-center">
+
+<h6>
+↩ Return
+</h6>
+
+<h2 id="historyReturn">
+0
+</h2>
+
+</div>
+
+</div>
+
+
+<div class="col-md-3">
+
+<div class="glass text-center">
+
+<h6>
+🕒 Last Sync
+</h6>
+
+<h6 id="historySync">
+
+Never
+
+</h6>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- Search & Filters -->
+
+<div class="glass">
+
+
+<div class="row g-3">
+
+
+<div class="col-md-4">
+
+<input 
+type="text"
+id="historySearch"
+placeholder="🔍 Search AWB / Order / Status"
+onkeyup="filterHistory()">
+
+</div>
+
+
+
+<div class="col-md-3">
+
+<select 
+id="historyType"
+onchange="filterHistory()">
+
+
+<option value="">
+All Type
+</option>
+
+
+<option value="pickup">
+Pickup
+</option>
+
+
+<option value="return">
+Return
+</option>
+
+
+</select>
+
+</div>
+
+
+
+<div class="col-md-3">
+
+<input 
+type="date"
+id="historyDate"
+onchange="filterHistory()">
+
+</div>
+
+
+
+<div class="col-md-2">
+
+
+<button 
+class="btn-pro warning w-100"
+onclick="clearHistoryFilter()">
+
+Clear
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Action Buttons -->
+
+
+<div class="glass">
+
+
+<div class="row g-3">
+
+
+<div class="col-md-3">
+
+
+<button 
+class="btn-pro primary w-100"
+onclick="loadHistory()">
+
+🔄 Refresh History
+
+</button>
+
+
+</div>
+
+
+
+<div class="col-md-3">
+
+
+<button 
+class="btn-pro success w-100"
+onclick="exportHistoryCSV()">
+
+📤 Export CSV
+
+</button>
+
+
+</div>
+
+
+
+<div class="col-md-3">
+
+
+<button 
+class="btn-pro warning w-100"
+onclick="printHistory()">
+
+🖨 Print
+
+</button>
+
+
+</div>
+
+
+
+<div class="col-md-3">
+
+
+<button 
+class="btn-pro danger w-100"
+onclick="scrollHistoryTop()">
+
+⬆ Top
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- History Table -->
+
+
+<div class="glass">
+
+
+<div class="table-responsive">
+
+
+<table 
+class="table table-dark table-striped table-hover align-middle">
+
+
+<thead>
+
+
+<tr>
+
+<th>
+Date
+</th>
+
+
+<th>
+Type
+</th>
+
+
+<th>
+AWB
+</th>
+
+
+<th>
+Order ID
+</th>
+
+
+<th>
+Courier
+</th>
+
+
+<th>
+Status
+</th>
+
+
+<th>
+Location
+</th>
+
+
+<th>
+Updated
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+<tbody id="historyTable">
+
+
+<tr>
+
+
+<td colspan="8" class="text-center">
+
+No Data Available
+
+
+</td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- Live Activity -->
+
+<div class="glass">
+
+
+<h4>
+
+📡 Live Activity Monitor
+
+</h4>
+
+
+<hr>
+
+
+<div 
+
+id="activityLog"
+
+style="
+height:220px;
+overflow-y:auto;
+background:#0b1220;
+padding:15px;
+border-radius:12px;
+font-family:monospace;
+font-size:14px;
+">
+
+Waiting for activity...
+
+</div>
+
+
+</div>
+
+
+
+<!-- Auto Refresh Settings -->
+
+
+<div class="glass">
+
+
+<h5>
+
+⚙ History Auto Refresh
+
+</h5>
+
+
+<div class="row g-3">
+
+
+<div class="col-md-6">
+
+
+<select 
+id="autoRefreshTime">
+
+
+<option value="0">
+Disabled
+</option>
+
+
+<option value="30">
+Every 30 Seconds
+</option>
+
+
+<option value="60">
+Every 1 Minute
+</option>
+
+
+<option value="300">
+Every 5 Minutes
+</option>
+
+
+</select>
+
+
+</div>
+
+
+<div class="col-md-6">
+
+
+<button 
+class="btn-pro success w-100"
+onclick="setHistoryAutoRefresh()">
+
+
+▶ Apply Auto Refresh
+
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+<!-- =================================================
+     PART 5 END
+================================================== --><!-- =================================================
+     SYSTEM MODULE START
+================================================== -->
+
+<div class="module" id="system">
+
+
+<div class="glass">
+
+<h3>
+⚙ System Settings
+</h3>
+
+<br>
+
+
+<div class="row g-3">
+
+
+<div class="col-md-12">
+
+
+<label>
+Google Apps Script API URL
+</label>
+
+
+<input 
+type="text"
+id="apiUrl"
+placeholder="https://script.google.com/macros/s/AKfycby99NJIv_btL4owQisrSBn5QOoDCIW0OKRYq8ICt02yLeAzCCrJx6db40TecpB3wtKY/exec">
+
+
+</div>
+
+
+<div class="col-md-6">
+
+
+<button 
+class="btn-pro success w-100"
+onclick="saveAPI()">
+
+💾 Save API URL
+
+</button>
+
+
+</div>
+
+
+<div class="col-md-6">
+
+
+<button 
+class="btn-pro primary w-100"
+onclick="checkAPI()">
+
+🔍 Test Connection
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="glass">
+
+
+<h4>
+📡 System Status
+</h4>
+
+
+<hr>
+
+
+<p>
+
+API Status:
+<b id="apiStatus">
+Not Connected
+</b>
+
+</p>
+
+
+<p>
+
+Last Sync:
+<b id="lastSync">
+Never
+</b>
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- LOADER -->
+
+<div 
+id="loader"
+class="loader">
+
+<h3>
+⏳ Loading...
+</h3>
+
+</div>
+
+
+
+<!-- TOAST MESSAGE -->
+
+
+<div 
+id="toast"
+
+style="
+position:fixed;
+bottom:25px;
+right:25px;
+background:#16a34a;
+color:white;
+padding:15px 25px;
+border-radius:12px;
+display:none;
+z-index:99999;
+">
+
+Done
+
+</div>
+
+
+
+<!-- =================================================
+     JAVASCRIPT START
+================================================== -->
+
+
+<script>
+
+
+/* =================================================
+   API CONFIGURATION
+================================================== */
+
+
+let API_URL =
+localStorage.getItem("TRACK_API")
+|| "";
+
+
+/* =================================================
+   SAVE API URL
+================================================== */
+
+
+function saveAPI(){
+
+API_URL =
+document.getElementById("apiUrl")
+.value.trim();
+
+
+if(!API_URL){
+
+showToast(
+"Enter API URL"
+);
+
+return;
+
+}
+
+
+localStorage.setItem(
+"TRACK_API",
+API_URL
+);
+
+
+showToast(
+"API Saved Successfully"
+);
+
+
+}
+
+
+/* =================================================
+   SHOW LOADER
+================================================== */
+
+
+function showLoader(status){
+
+document
+.getElementById("loader")
+.style.display =
+status
+?
+"block"
+:
+"none";
+
+}
+
+
+/* =================================================
+   TOAST MESSAGE
+================================================== */
+
+
+function showToast(message){
+
+const box =
+document.getElementById("toast");
+
+
+box.innerText =
+message;
+
+
+box.style.display =
+"block";
+
+
+setTimeout(function(){
+
+box.style.display =
+"none";
+
+},2500);
+
+}
+
+
+
+/* =================================================
+   UNIVERSAL API REQUEST
+================================================== */
+
+
+async function api(data){
+
+
+if(!API_URL){
+
+showToast(
+"API URL Missing"
+);
+
+return {
+success:false
+};
+
+}
+
+
+showLoader(true);
+
+
+try{
+
+
+const response =
+await fetch(API_URL,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json"
+
+},
+
+
+body:
+JSON.stringify(data)
+
+});
+
+
+return await response.json();
+
+
+}
+
+
+catch(err){
+
+
+showToast(
+"Server Error"
+);
+
+
+return {
+
+success:false,
+
+message:
+err.toString()
+
+};
+
+
+}
+
+
+finally{
+
+
+showLoader(false);
+
+
+}
+
+
+}
+
+
+
+/* =================================================
+   API HEALTH CHECK
+================================================== */
+
+
+async function checkAPI(){
+
+
+if(!API_URL){
+
+showToast(
+"Save API First"
+);
+
+return;
+
+}
+
+
+showLoader(true);
+
+
+try{
+
+
+const response =
+await fetch(
+
+API_URL +
+"?action=health"
+
+);
+
+
+const data =
+await response.json();
+
+
+if(data.success){
+
+
+document
+.getElementById("apiStatus")
+.innerText =
+"ONLINE ✅";
+
+
+showToast(
+"Connection Successful"
+);
+
+
+}
+else{
+
+
+document
+.getElementById("apiStatus")
+.innerText =
+"OFFLINE ❌";
+
+
+}
+
+
+}
+
+
+catch(e){
+
+
+document
+.getElementById("apiStatus")
+.innerText =
+"ERROR ❌";
+
+
+}
+
+
+showLoader(false);
+
+
+}
+
+
+
+/* =================================================
+   LOAD DASHBOARD STATS
+================================================== */
+
+
+async function loadDashboard(){
+
+
+const stats =
+await api({
+
+action:"stats"
+
+});
+
+
+if(!stats)
+return;
+
+
+
+document
+.getElementById("total")
+.innerText =
+stats.total || 0;
+
+
+document
+.getElementById("delivered")
+.innerText =
+stats.delivered || 0;
+
+
+document
+.getElementById("transit")
+.innerText =
+stats.transit || 0;
+
+
+document
+.getElementById("ofd")
+.innerText =
+stats.ofd || 0;
+
+
+document
+.getElementById("rto")
+.innerText =
+stats.rto || 0;
+
+
+document
+.getElementById("pending")
+.innerText =
+stats.pending || 0;
+
+
+
+document
+.getElementById("lastSync")
+.innerText =
+new Date()
+.toLocaleString();
+
+
+}
+
+
+
+/* =================================================
+   AWB SCANNER SEARCH
+================================================== */
+
+
+async function searchScannedAWB(value){
+
+
+const result =
+await api({
+
+action:"scanner",
+
+awb:value
+
+});
+
+
+return result;
+
+
+}
+
+
+
+/* =================================================
+   SHIPMENT SEARCH
+================================================== */
+
+
+async function searchShipmentAPI(awb){
+
+
+return await api({
+
+action:"search",
+
+awb:awb
+
+});
+
+
+}
+
+
+
+/* =================================================
+   SAVE SHIPMENT
+================================================== */
+
+
+async function saveShipmentAPI(type,awb){
+
+
+return await api({
+
+action:"save",
+
+type:type,
+
+awb:awb
+
+});
+
+
+}
+
+
+
+/* =================================================
+   REFRESH SHIPMENT
+================================================== */
+
+
+async function refreshShipmentAPI(awb){
+
+
+return await api({
+
+action:"refresh",
+
+awb:awb
+
+});
+
+
+}
+
+
+
+/* =================================================
+   BULK UPDATE API
+================================================== */
+
+
+async function bulkAPI(type,date){
+
+
+return await api({
+
+action:type,
+
+date:date
+
+});
+
+
+}
+
+
+
+/* =================================================
+   HISTORY API
+================================================== */
+
+
+async function historyAPI(){
+
+
+return await api({
+
+action:"history"
+
+});
+
+
+}
+
+
+
+/* =================================================
+   AUTO LOAD
+================================================== */
+
+
+window.onload = function(){
+
+
+document
+.getElementById("apiUrl")
+.value = API_URL;
+
+
+if(API_URL){
+
+
+checkAPI();
+
+
+loadDashboard();
+
+
+}
+
+
+};
+
+
+
+</script><!-- =================================================
+     SCANNER POPUP
+================================================== -->
+
+<div class="popup" id="scannerPopup">
+
+
+<div class="popup-box">
+
+
+<h3>
+📷 AWB Scanner Pro Max
+</h3>
+
+
+<button 
+class="btn-pro success"
+onclick="startScanner()">
+
+📸 Start Camera
+
+</button>
+
+
+<button 
+class="btn-pro warning"
+id="flashBtn"
+onclick="toggleFlash()">
+
+🔦 Flash ON
+
+</button>
+
+
+<button 
+class="btn-pro danger"
+onclick="closeScanner()">
+
+❌ Close
+
+</button>
+
+
+<br><br>
+
+
+<div id="reader">
+</div>
+
+
+<input
+type="text"
+id="manualAWB"
+class="input"
+placeholder="Enter AWB Manually"
+onkeypress="manualEnter(event)">
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- =================================================
+     SCANNER SCRIPT
+================================================== -->
+
+
+<script>
+
+
+let scanner = null;
+
+let cameraRunning = false;
+
+let flashStatus = false;
+
+
+
+/* =================================================
+   OPEN SCANNER
+================================================== */
+
+
+function openScanner(){
+
+document
+.getElementById("scannerPopup")
+.style.display="flex";
+
+}
+
+
+
+/* =================================================
+   CLOSE SCANNER
+================================================== */
+
+
+async function closeScanner(){
+
+
+await stopScanner();
+
+
+document
+.getElementById("scannerPopup")
+.style.display="none";
+
+
+}
+
+
+
+/* =================================================
+   START CAMERA
+================================================== */
+
+
+async function startScanner(){
+
+
+if(cameraRunning){
+
+return;
+
+}
+
+
+document
+.getElementById("reader")
+.innerHTML="";
+
+
+scanner =
+new Html5Qrcode("reader");
+
+
+try{
+
+
+await scanner.start(
+
+{
+
+facingMode:{
+exact:"environment"
+}
+
+},
+
+{
+
+fps:10,
+
+qrbox:{
+width:280,
+height:120
+},
+
+aspectRatio:1.77
+
+},
+
+
+function(decodedText){
+
+
+beep();
+
+
+vibratePhone();
+
+
+handleScan(decodedText);
+
+
+}
+
+
+);
+
+
+cameraRunning = true;
+
+
+}
+
+
+catch(e){
+
+
+try{
+
+
+await scanner.start(
+
+{
+
+facingMode:"environment"
+
+},
+
+{
+
+fps:10,
+
+qrbox:{
+width:280,
+height:120
+}
+
+},
+
+
+function(decodedText){
+
+
+beep();
+
+
+vibratePhone();
+
+
+handleScan(decodedText);
+
+
+}
+
+
+);
+
+
+cameraRunning=true;
+
+
+}
+
+
+catch(err){
+
+
+showToast(
+"Camera Failed"
+);
+
+
+}
+
+
+}
+
+
+}
+
+
+
+
+/* =================================================
+   STOP CAMERA
+================================================== */
+
+
+async function stopScanner(){
+
+
+if(!scanner){
+
+return;
+
+}
+
+
+try{
+
+
+await scanner.stop();
+
+
+await scanner.clear();
+
+
+}
+
+catch(e){}
+
+
+cameraRunning=false;
+
+
+flashStatus=false;
+
+
+document
+.getElementById("flashBtn")
+.innerText="🔦 Flash ON";
+
+
+}
+
+
+
+
+/* =================================================
+   FLASH CONTROL
+================================================== */
+
+
+async function toggleFlash(){
+
+
+if(!scanner){
+
+showToast("Start Camera First");
+
+return;
+
+}
+
+
+try{
+
+
+if(!flashStatus){
+
+
+await scanner.applyVideoConstraints({
+
+advanced:[
+{
+torch:true
+}
+]
+
+});
+
+
+flashStatus=true;
+
+
+document
+.getElementById("flashBtn")
+.innerText="🔦 Flash OFF";
+
+
+}
+
+
+else{
+
+
+await scanner.applyVideoConstraints({
+
+advanced:[
+{
+torch:false
+}
+]
+
+});
+
+
+flashStatus=false;
+
+
+document
+.getElementById("flashBtn")
+.innerText="🔦 Flash ON";
+
+
+}
+
+
+}
+
+
+catch(err){
+
+
+showToast(
+"Torch Not Supported"
+);
+
+
+}
+
+
+}
+
+
+
+
+/* =================================================
+   BEEP SOUND
+================================================== */
+
+
+function beep(){
+
+
+try{
+
+
+let audio =
+new Audio(
+"https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+);
+
+
+audio.play();
+
+
+}
+
+catch(e){}
+
+
+}
+
+
+
+/* =================================================
+   VIBRATION
+================================================== */
+
+
+function vibratePhone(){
+
+
+if(navigator.vibrate){
+
+
+navigator.vibrate(150);
+
+
+}
+
+
+}
+
+
+
+/* =================================================
+   MANUAL AWB ENTER
+================================================== */
+
+
+function manualEnter(e){
+
+
+if(e.key==="Enter"){
+
+
+let value =
+document
+.getElementById("manualAWB")
+.value
+.trim();
+
+
+if(value){
+
+
+handleScan(value);
+
+
+}
+
+
+}
+
+
+}
+
+
+
+/* =================================================
+   HANDLE SCANNED DATA
+================================================== */
+
+
+async function handleScan(value){
+
+
+if(!value){
+
+return;
+
+}
+
+
+await stopScanner();
+
+
+closeScanner();
+
+
+showToast(
+"Searching AWB..."
+);
+
+
+
+const result =
+await searchShipmentAPI(value);
+
+
+
+if(!result.success){
+
+
+showToast(
+"Shipment Not Found"
+);
+
+
+return;
+
+
+}
+
+
+showShipment(result);
+
+
+}
+
+
+
+/* =================================================
+   SHOW SHIPMENT DETAILS
+================================================== */
+
+
+function showShipment(data){
+
+
+let s =
+data.shipment || data;
+
+
+let html = `
+
+
+<b>Courier:</b>
+${s.courier || "-"}<br>
+
+<b>AWB:</b>
+${s.awb || "-"}<br>
+
+<b>Order ID:</b>
+${s.orderId || "-"}<br>
+
+<b>Status:</b>
+${s.status || "-"}<br>
+
+<b>Location:</b>
+${s.location || "-"}<br>
+
+<b>Status Time:</b>
+${s.statusTime || "-"}<br>
+
+<b>Customer:</b>
+${s.customer || "-"}<br>
+
+<b>Phone:</b>
+${s.phone || "-"}<br>
+
+<b>COD:</b>
+${s.cod || "-"}<br>
+
+<b>Payment:</b>
+${s.payment || "-"}<br>
+
+<b>Attempts:</b>
+${s.attempts || "-"}<br>
+
+<b>Remarks:</b>
+${s.remarks || "-"}
+
+`;
+
+
+document
+.getElementById("shipmentResult")
+.innerHTML = html;
+
+
+showToast(
+"Shipment Loaded"
+);
+
+
+}
+
+
+
+/* =================================================
+   MODULE SWITCHING
+================================================== */
+
+
+function openModule(id){
+
+
+document
+.querySelectorAll(".module")
+.forEach(function(box){
+
+box.style.display="none";
+
+});
+
+
+document
+.getElementById(id)
+.style.display="block";
+
+
+document
+.querySelectorAll(".menu-btn")
+.forEach(function(btn){
+
+btn.classList.remove("active");
+
+});
+
+
+event.target.classList.add("active");
+
+
+}
+
+
+
+/* =================================================
+   MOBILE SIDEBAR
+================================================== */
+
+
+function toggleSidebar(){
+
+
+document
+.getElementById("sidebar")
+.classList.toggle("show");
+
+
+}
+
+
+
+/* =================================================
+   PREVENT DOUBLE TOUCH ZOOM
+================================================== */
+
+
+let lastTouch = 0;
+
+
+document.addEventListener(
+"touchend",
+function(e){
+
+let now =
+new Date().getTime();
+
+
+if(now-lastTouch <= 300){
+
+e.preventDefault();
+
+}
+
+
+lastTouch = now;
+
+
+},
+false
+);
+
+
+
+/* =================================================
+   INTERNET STATUS
+================================================== */
+
+
+window.addEventListener(
+"offline",
+function(){
+
+showToast(
+"❌ No Internet Connection"
+);
+
+}
+);
+
+
+window.addEventListener(
+"online",
+function(){
+
+showToast(
+"✅ Internet Connected"
+);
+
+
+loadDashboard();
+
+
+}
+);
+
+
+</script><!-- =================================================
+     FINAL SYSTEM SCRIPT
+================================================== -->
+
+<script>
+
+
+/* =================================================
+   THEME SYSTEM
+================================================== */
+
+
+function toggleTheme(){
+
+
+document.body.classList.toggle("light-mode");
+
+
+let mode =
+document.body.classList.contains("light-mode")
+?
+"light"
+:
+"dark";
+
+
+localStorage.setItem(
+"TRACK_THEME",
+mode
+);
+
+
+showToast(
+"Theme Changed"
+);
+
+
+}
+
+
+
+function loadTheme(){
+
+
+let saved =
+localStorage.getItem(
+"TRACK_THEME"
+);
+
+
+if(saved==="light"){
+
+
+document.body.classList.add(
+"light-mode"
+);
+
+
+}
+
+
+}
+
+
+
+/* =================================================
+   AUTO REFRESH SYSTEM
+================================================== */
+
+
+let autoRefreshTimer = null;
+
+
+function startAutoRefresh(){
+
+
+if(autoRefreshTimer){
+
+clearInterval(
+autoRefreshTimer
+);
+
+}
+
+
+autoRefreshTimer =
+setInterval(function(){
+
+
+if(API_URL){
+
+
+loadDashboard();
+
+
+loadHistory();
+
+
+}
+
+
+},30000);
+
+
+}
+
+
+
+/* =================================================
+   HISTORY TABLE RENDER
+================================================== */
+
+
+let historyCache = [];
+
+
+async function loadHistory(){
+
+
+const rows =
+await historyAPI();
+
+
+historyCache =
+rows || [];
+
+
+renderHistory(
+historyCache
+);
+
+
+}
+
+
+
+function renderHistory(data){
+
+
+let html = "";
+
+
+data
+.slice()
+.reverse()
+.forEach(function(row){
+
+
+html += `
+
+<tr>
+
+<td>${row[0] || ""}</td>
+
+<td>${row[1] || ""}</td>
+
+<td>${row[2] || ""}</td>
+
+<td>${row[3] || ""}</td>
+
+<td>${row[4] || ""}</td>
+
+<td>${row[5] || ""}</td>
+
+</tr>
+
+`;
+
+
+});
+
+
+document
+.getElementById("historyBody")
+.innerHTML = html;
+
+
+}
+
+
+
+/* =================================================
+   LOCAL HISTORY SEARCH
+================================================== */
+
+
+function searchHistory(){
+
+
+let keyword =
+document
+.getElementById("searchLocal")
+.value
+.toLowerCase();
+
+
+if(!keyword){
+
+
+renderHistory(
+historyCache
+);
+
+
+return;
+
+
+}
+
+
+let filtered =
+historyCache.filter(function(row){
+
+
+return JSON.stringify(row)
+.toLowerCase()
+.includes(keyword);
+
+
+});
+
+
+renderHistory(filtered);
+
+
+}
+
+
+
+/* =================================================
+   KEYBOARD SHORTCUTS
+================================================== */
+
+
+document.addEventListener(
+"keydown",
+function(e){
+
+
+/*
+CTRL + K
+Open Scanner
+*/
+
+
+if(e.ctrlKey && e.key==="k"){
+
+
+e.preventDefault();
+
+
+openScanner();
+
+
+}
+
+
+
+/*
+CTRL + R
+Refresh Dashboard
+*/
+
+
+if(e.ctrlKey && e.key==="r"){
+
+
+e.preventDefault();
+
+
+loadDashboard();
+
+
+loadHistory();
+
+
+showToast(
+"Dashboard Refreshed"
+);
+
+
+}
+
+
+
+/*
+ESC
+Close Scanner Popup
+*/
+
+
+if(e.key==="Escape"){
+
+
+closeScanner();
+
+
+}
+
+
+});
+
+
+/* =================================================
+   PAGE VISIBILITY CONTROL
+================================================== */
+
+
+document.addEventListener(
+"visibilitychange",
+function(){
+
+
+if(
+document.hidden
+){
+
+
+if(autoRefreshTimer){
+
+
+clearInterval(
+autoRefreshTimer
+);
+
+
+}
+
+
+}
+
+
+else{
+
+
+startAutoRefresh();
+
+
+loadDashboard();
+
+
+}
+
+
+});
+
+
+/* =================================================
+   GLOBAL ERROR HANDLER
+================================================== */
+
+
+window.addEventListener(
+"error",
+function(event){
+
+
+console.error(
+"System Error:",
+event.message
+);
+
+
+showToast(
+"Something went wrong"
+);
+
+
+});
+
+
+/* =================================================
+   SAFE FETCH CHECK
+================================================== */
+
+
+window.addEventListener(
+"unhandledrejection",
+function(event){
+
+
+console.error(
+"Promise Error:",
+event.reason
+);
+
+
+showToast(
+"Network Request Failed"
+);
+
+
+});
+
+
+/* =================================================
+   STARTUP INITIALIZATION
+================================================== */
+
+
+function initializeApp(){
+
+
+/* Load Theme */
+loadTheme();
+
+
+/* Load API URL */
+let savedApi =
+localStorage.getItem(
+"TRACK_API"
+);
+
+
+if(savedApi){
+
+
+API_URL = savedApi;
+
+
+let box =
+document.getElementById(
+"apiUrl"
+);
+
+
+if(box){
+
+box.value = savedApi;
+
+}
+
+
+/* Check Server */
+checkAPI();
+
+
+/* Load Data */
+loadDashboard();
+
+
+loadHistory();
+
+
+/* Start Refresh */
+startAutoRefresh();
+
+
+}
+
+
+/* Hide All Modules Except Dashboard */
+
+
+let modules =
+document.querySelectorAll(
+".module"
+);
+
+
+modules.forEach(function(m){
+
+
+m.style.display = "none";
+
+
+});
+
+
+if(
+document.getElementById("dashboard")
+){
+
+
+document
+.getElementById("dashboard")
+.style.display =
+"block";
+
+
+}
+
+
+showToast(
+"Tracking Hub Ready 🚀"
+);
+
+
+}
+
+
+
+/* =================================================
+   DOM READY
+================================================== */
+
+
+document.addEventListener(
+"DOMContentLoaded",
+function(){
+
+
+initializeApp();
+
+
+});
+
+
+</script>
