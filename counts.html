@@ -1,280 +1,1209 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AWB Scanner Pro Max</title>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
-body{
-  font-family:Arial;
-  margin:0;
-  background:#f4f6f9;
-  padding:20px;
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',Arial,sans-serif;
 }
 
-h2{text-align:center;}
+body{
+
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+
+    min-height:100vh;
+
+    padding:15px;
+
+    color:#fff;
+
+}
+
+/* HEADER */
+
+.header{
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+}
+
+.header h2{
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+.header p{
+
+    opacity:.8;
+
+    margin-top:5px;
+
+}
 
 /* STATS */
+
 .stats{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:15px;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:12px;
+
+    margin-bottom:12px;
+
 }
 
 .card{
-  background:white;
-  padding:10px;
-  width:120px;
-  border-radius:10px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(10px);
+
+    border-radius:18px;
+
+    padding:14px;
+
+    text-align:center;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+
 }
 
-.num{font-size:20px;font-weight:bold;}
+.card h3{
 
-/* BOX */
-.box{
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  text-align:center;
-  max-width:400px;
-  margin:auto;
-  cursor:pointer;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    font-size:14px;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+}
+
+.num{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+}
+
+/* DAILY */
+
+.daily{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:12px;
+
+    margin-bottom:18px;
+
+}
+
+.daily .card{
+
+    background:rgba(34,197,94,.18);
+
+}
+
+/* SEARCH BOX */
+
+.scanBox{
+
+    background:rgba(255,255,255,.15);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:22px;
+
+    padding:30px;
+
+    text-align:center;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+
+}
+
+.scanBox:hover{
+
+    transform:translateY(-3px);
+
+}
+
+.scanBox h3{
+
+    font-size:24px;
+
+}
+
+.scanBox p{
+
+    margin-top:8px;
+
+    opacity:.8;
+
 }
 
 /* POPUP */
+
 .popup{
-  position:fixed;
-  top:0;left:0;
-  width:100%;height:100%;
-  background:rgba(0,0,0,0.6);
-  display:none;
-  justify-content:center;
-  align-items:center;
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:rgba(0,0,0,.65);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999;
+
 }
 
 .popup-content{
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  width:320px;
-  text-align:center;
+
+    width:95%;
+
+    max-width:420px;
+
+    background:#fff;
+
+    color:#222;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    animation:pop .25s;
+
 }
 
-button{
-  padding:10px;
-  margin:5px;
-  width:100%;
-  border:none;
-  border-radius:6px;
+@keyframes pop{
+
+    from{
+
+        transform:scale(.8);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
 }
 
-.cam{background:#2ecc71;color:white;}
-.man{background:#3498db;color:white;}
-.close{background:red;color:white;}
+#reader{
+
+    width:100%;
+
+    margin-top:12px;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+}
+
+/* BUTTON */
+
+.btn{
+
+    width:100%;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:12px;
+
+    margin-top:10px;
+
+    color:#fff;
+
+    font-size:16px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.cam{
+
+    background:#16a34a;
+
+}
+
+.manual{
+
+    background:#2563eb;
+
+}
+
+.flash{
+
+    background:#f59e0b;
+
+}
+
+.close{
+
+    background:#dc2626;
+
+}
+
+/* INPUT */
 
 input{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
+
+    width:100%;
+
+    height:48px;
+
+    margin-top:12px;
+
+    padding:0 12px;
+
+    border:2px solid #ddd;
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-size:16px;
+
+}
+
+input:focus{
+
+    border-color:#2563eb;
+
 }
 
 /* RESULT */
+
 .result{
-  margin-top:20px;
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  max-width:500px;
-  margin:auto;
-  transition:0.4s;
+
+    display:none;
+
+    margin-top:20px;
+
+    background:#fff;
+
+    color:#111;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+
 }
 
-/* HIGHLIGHT ANIMATION */
-.highlight{
-  animation: glow 1s ease-in-out;
-}
+.result h3{
 
-@keyframes glow{
-  0%{box-shadow:0 0 0px #2ecc71;}
-  50%{box-shadow:0 0 20px #2ecc71;}
-  100%{box-shadow:0 0 0px #2ecc71;}
+    margin-bottom:10px;
+
 }
 
 .row{
-  margin:8px 0;
-  padding:8px;
-  border-bottom:1px solid #eee;
+
+    padding:10px 0;
+
+    border-bottom:1px solid #eee;
+
 }
 
-.label{font-weight:bold;}
+.label{
+
+    font-weight:bold;
+
+}
+
+/* LOADER */
+
+.loader{
+
+    display:none;
+
+    text-align:center;
+
+    margin-top:12px;
+
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.stats{
+
+grid-template-columns:1fr 1fr 1fr;
+
+}
+
+.daily{
+
+grid-template-columns:1fr 1fr 1fr;
+
+}
+
+.scanBox{
+
+padding:20px;
+
+}
+
+.header h2{
+
+font-size:24px;
+
+}
+
+.num{
+
+font-size:22px;
+
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
 
+<div class="header">
+
 <h2>📦 AWB Scanner Pro Max</h2>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="card">Pickup<div class="num" id="pickup">0</div></div>
-  <div class="card">Return<div class="num" id="return">0</div></div>
-  <div class="card">Total<div class="num" id="total">0</div></div>
+<p>Professional Pickup / Return Dashboard</p>
+
 </div>
 
-<div class="box" onclick="openPopup()">
-  Click to Scan / Search AWB
+<!-- OVERALL -->
+
+<div class="stats">
+
+<div class="card">
+
+<h3>Pickup</h3>
+
+<div class="num" id="pickup">0</div>
+
+</div>
+
+<div class="card">
+
+<h3>Return</h3>
+
+<div class="num" id="return">0</div>
+
+</div>
+
+<div class="card">
+
+<h3>Total</h3>
+
+<div class="num" id="total">0</div>
+
+</div>
+
+</div>
+
+<!-- DAILY -->
+
+<div class="daily">
+
+<div class="card">
+
+<h3>Today Pickup</h3>
+
+<div class="num" id="todayPickup">0</div>
+
+</div>
+
+<div class="card">
+
+<h3>Today Return</h3>
+
+<div class="num" id="todayReturn">0</div>
+
+</div>
+
+<div class="card">
+
+<h3>Today Total</h3>
+
+<div class="num" id="todayTotal">0</div>
+
+</div>
+
+</div>
+
+<!-- CLICK BOX -->
+
+<div class="scanBox" onclick="openPopup()">
+
+<h3>📷 Scan / Search AWB</h3>
+
+<p>Tap Here To Open Scanner</p>
+
 </div>
 
 <!-- POPUP -->
+
 <div class="popup" id="popup">
-  <div class="popup-content">
 
-    <button class="cam" onclick="startCamera()">📷 Camera Scan</button>
-    <button class="man" onclick="showManual()">⌨ Manual Entry</button>
-    <button class="close" onclick="closePopup()">Close</button>
+<div class="popup-content">
 
-    <div id="reader"></div>
+<button class="btn cam" onclick="startCamera()">
 
-    <input id="manualInput"
-      placeholder="Enter AWB / Order ID"
-      style="display:none"
-      onkeypress="handleEnter(event)">
+📷 Start Camera
 
-  </div>
+</button>
+
+<button class="btn flash" id="flashBtn" onclick="toggleFlash()">
+
+🔦 Flash ON
+
+</button>
+
+<button class="btn manual" onclick="showManual()">
+
+⌨ Manual Search
+
+</button>
+
+<button class="btn close" onclick="closePopup()">
+
+❌ Close
+
+</button>
+
+<div id="reader"></div>
+
+<input
+
+id="manualInput"
+
+placeholder="Enter AWB / Order ID"
+
+style="display:none"
+
+onkeypress="handleEnter(event)">
+
+<div class="loader" id="loader">
+
+Searching...
+
+</div>
+
+</div>
+
 </div>
 
 <!-- RESULT -->
-<div class="result" id="resultBox" style="display:none;">
-  <div class="row"><span class="label">Date:</span> <span id="rDate"></span></div>
-  <div class="row"><span class="label">Type:</span> <span id="rType"></span></div>
-  <div class="row"><span class="label">AWB:</span> <span id="rAwb"></span></div>
-  <div class="row"><span class="label">Order ID:</span> <span id="rOrder"></span></div>
+
+<div class="result" id="resultBox">
+
+<h3>Shipment Details</h3>
+
+<div class="row">
+
+<span class="label">Date :</span>
+
+<span id="rDate"></span>
+
 </div>
 
+<div class="row">
+
+<span class="label">Type :</span>
+
+<span id="rType"></span>
+
+</div>
+
+<div class="row">
+
+<span class="label">AWB :</span>
+
+<span id="rAwb"></span>
+
+</div>
+
+<div class="row">
+
+<span class="label">Order ID :</span>
+
+<span id="rOrder"></span>
+
+</div>
+
+</div>
+  
 <script>
 
-const API_URL = "https://script.google.com/macros/s/AKfycby_oCiGW-EetxRtGOtyavwnl1OxbCuV24YroM0PVzV5J77CQ41d3VSk7Kd7PHtilpqO/exec";
+const API_URL="https://script.google.com/macros/s/AKfycby_oCiGW-EetxRtGOtyavwnl1OxbCuV24YroM0PVzV5J77CQ41d3VSk7Kd7PHtilpqO/exec";
 
-let scanner;
+let scanner=null;
+let flashOn=false;
+let cameraRunning=false;
 
-/* 🔊 BEEP SOUND */
-function beep(){
-  const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-  audio.play();
-}
+/* ===========================
+   OPEN / CLOSE
+=========================== */
 
-/* POPUP */
 function openPopup(){
-  document.getElementById("popup").style.display="flex";
+
+    document.getElementById("popup").style.display="flex";
+
 }
 
 function closePopup(){
-  document.getElementById("popup").style.display="none";
-  stopCamera();
+
+    document.getElementById("popup").style.display="none";
+
+    stopCamera();
+
 }
 
-/* MANUAL */
+/* ===========================
+   BEEP
+=========================== */
+
+function beep(){
+
+    try{
+
+        const audio=new Audio(
+        "https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+
+        audio.play();
+
+    }catch(e){}
+
+}
+
+/* ===========================
+   VIBRATION
+=========================== */
+
+function vibrate(){
+
+    if(navigator.vibrate){
+
+        navigator.vibrate(150);
+
+    }
+
+}
+
+/* ===========================
+   MANUAL
+=========================== */
+
 function showManual(){
-  document.getElementById("manualInput").style.display="block";
-  document.getElementById("manualInput").focus();
+
+    document.getElementById("manualInput").style.display="block";
+
+    document.getElementById("manualInput").focus();
+
 }
 
 function handleEnter(e){
-  if(e.key==="Enter"){
-    search(e.target.value);
-    closePopup();
-  }
-}
 
-/* 📷 CAMERA (BACK CAMERA FIX) */
-function startCamera(){
+    if(e.key==="Enter"){
 
-  document.getElementById("reader").innerHTML="";
+        search(
+            document.getElementById("manualInput").value.trim()
+        );
 
-  scanner = new Html5Qrcode("reader");
-
-  Html5Qrcode.getCameras().then(devices => {
-
-    scanner.start(
-      { facingMode: "environment" }, // ✅ BACK CAMERA FIX
-      { fps: 10,
-    qrbox: { width: 280, height: 120 } // ✅ RECTANGLE MODE },
-      (decodedText) => {
-
-        beep(); // 🔊 SOUND
-
-        search(decodedText);
-
-        stopCamera();
         closePopup();
 
-      }
-    );
-
-  });
+    }
 
 }
 
-function stopCamera(){
-  if(scanner){
-    scanner.stop().then(()=>scanner.clear());
-  }
+/* ===========================
+   CAMERA
+=========================== */
+
+async function startCamera(){
+
+    if(cameraRunning){
+
+        return;
+
+    }
+
+    document.getElementById("reader").innerHTML="";
+
+    scanner=new Html5Qrcode("reader");
+
+    try{
+
+        await scanner.start(
+
+            {
+
+                facingMode:{
+                    exact:"environment"
+                }
+
+            },
+
+            {
+
+                fps:10,
+
+                qrbox:{
+                    width:280,
+                    height:120
+                },
+
+                aspectRatio:1.77
+
+            },
+
+            function(decodedText){
+
+                beep();
+
+                vibrate();
+
+                search(decodedText);
+
+                stopCamera();
+
+                closePopup();
+
+            }
+
+        );
+
+        cameraRunning=true;
+
+    }catch(err){
+
+        console.log(err);
+
+        try{
+
+            await scanner.start(
+
+                {
+
+                    facingMode:"environment"
+
+                },
+
+                {
+
+                    fps:10,
+
+                    qrbox:{
+                        width:280,
+                        height:120
+                    }
+
+                },
+
+                function(decodedText){
+
+                    beep();
+
+                    vibrate();
+
+                    search(decodedText);
+
+                    stopCamera();
+
+                    closePopup();
+
+                }
+
+            );
+
+            cameraRunning=true;
+
+        }catch(e){
+
+            alert("Camera Start Failed");
+
+        }
+
+    }
+
 }
 
-/* SEARCH */
+/* ===========================
+   STOP CAMERA
+=========================== */
+
+async function stopCamera(){
+
+    if(!scanner){
+
+        return;
+
+    }
+
+    try{
+
+        await scanner.stop();
+
+        await scanner.clear();
+
+    }catch(e){}
+
+    cameraRunning=false;
+
+    flashOn=false;
+
+    document.getElementById("flashBtn").innerText="🔦 Flash ON";
+
+}
+
+/* ===========================
+   FLASH
+=========================== */
+
+async function toggleFlash(){
+
+    if(!scanner){
+
+        return;
+
+    }
+
+    try{
+
+        if(!flashOn){
+
+            await scanner.applyVideoConstraints({
+
+                advanced:[
+                    {
+                        torch:true
+                    }
+                ]
+
+            });
+
+            flashOn=true;
+
+            document.getElementById("flashBtn").innerText="🔦 Flash OFF";
+
+        }else{
+
+            await scanner.applyVideoConstraints({
+
+                advanced:[
+                    {
+                        torch:false
+                    }
+                ]
+
+            });
+
+            flashOn=false;
+
+            document.getElementById("flashBtn").innerText="🔦 Flash ON";
+
+        }
+
+    }catch(err){
+
+        alert("Torch Not Supported");
+
+    }
+
+}
+
+/* ===========================
+   SEARCH
+=========================== */
+
 async function search(value){
 
-  const res = await fetch(API_URL);
-  const data = await res.json();
+    if(value==""){
 
-  const found = data.rows.find(r =>
-    (r.awb && r.awb == value) ||
-    (r.orderId && r.orderId == value)
-  );
+        return;
 
-  if(found){
+    }
 
-    beep(); // 🔊 SUCCESS SOUND
+    document.getElementById("loader").style.display="block";
 
-    document.getElementById("resultBox").style.display="block";
-    document.getElementById("resultBox").classList.remove("highlight");
-    void document.getElementById("resultBox").offsetWidth;
-    document.getElementById("resultBox").classList.add("highlight");
+    try{
 
-    document.getElementById("rDate").innerText =
-      new Date(found.date).toLocaleDateString("en-GB");
+        const res=await fetch(API_URL);
 
-    document.getElementById("rType").innerText = found.type;
-    document.getElementById("rAwb").innerText = found.awb;
-    document.getElementById("rOrder").innerText = found.orderId;
+        const data=await res.json();
 
-  } else {
-    alert("Not Found ❌");
-  }
+        document.getElementById("loader").style.display="none";
+
+        const found=data.rows.find(r=>
+
+            r.awb==value ||
+
+            r.orderId==value
+
+        );
+
+        if(found){
+
+            beep();
+
+            vibrate();
+
+            document.getElementById("resultBox").style.display="block";
+
+            document.getElementById("resultBox").classList.remove("highlight");
+
+            void document.getElementById("resultBox").offsetWidth;
+
+            document.getElementById("resultBox").classList.add("highlight");
+
+            document.getElementById("rDate").innerText=
+
+            new Date(found.date).toLocaleDateString("en-GB");
+
+            document.getElementById("rType").innerText=found.type;
+
+            document.getElementById("rAwb").innerText=found.awb;
+
+            document.getElementById("rOrder").innerText=found.orderId;
+
+        }else{
+
+            alert("Record Not Found");
+
+        }
+
+    }catch(err){
+
+        document.getElementById("loader").style.display="none";
+
+        alert("Server Error");
+
+    }
+
 }
 
-/* LOAD STATS */
+/* ===========================
+   LOAD STATS
+=========================== */
+
 async function loadStats(){
-  const res = await fetch(API_URL);
-  const data = await res.json();
 
-  document.getElementById("pickup").innerText = data.pickup;
-  document.getElementById("return").innerText = data.returnCount;
-  document.getElementById("total").innerText = data.total;
+    try{
+
+        const res = await fetch(API_URL);
+
+        const data = await res.json();
+
+        /* Overall */
+
+        document.getElementById("pickup").innerText =
+            data.pickup || 0;
+
+        document.getElementById("return").innerText =
+            data.returnCount || 0;
+
+        document.getElementById("total").innerText =
+            data.total || 0;
+
+        /* Daily Counts */
+
+        let todayPickup = 0;
+        let todayReturn = 0;
+        let todayTotal = 0;
+
+        const today = new Date().toISOString().split("T")[0];
+
+        if(data.rows){
+
+            data.rows.forEach(row=>{
+
+                if(!row.date){
+                    return;
+                }
+
+                const rowDate =
+                    new Date(row.date)
+                    .toISOString()
+                    .split("T")[0];
+
+                if(rowDate===today){
+
+                    todayTotal++;
+
+                    if(
+                        String(row.type)
+                        .toLowerCase()
+                        .includes("pickup")
+                    ){
+
+                        todayPickup++;
+
+                    }else{
+
+                        todayReturn++;
+
+                    }
+
+                }
+
+            });
+
+        }
+
+        document.getElementById("todayPickup").innerText =
+            todayPickup;
+
+        document.getElementById("todayReturn").innerText =
+            todayReturn;
+
+        document.getElementById("todayTotal").innerText =
+            todayTotal;
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
 }
 
-loadStats();
+/* ===========================
+   AUTO REFRESH
+=========================== */
+
+setInterval(function(){
+
+    loadStats();
+
+},30000);
+
+/* ===========================
+   PAGE LOAD
+=========================== */
+
+window.onload=function(){
+
+    loadStats();
+
+};
+
+/* ===========================
+   RESULT ANIMATION
+=========================== */
+
+function animateResult(){
+
+    const box =
+        document.getElementById("resultBox");
+
+    box.style.transform="scale(.96)";
+
+    setTimeout(function(){
+
+        box.style.transform="scale(1)";
+
+    },150);
+
+}
+
+/* ===========================
+   SEARCH OVERRIDE
+=========================== */
+
+const oldSearch = search;
+
+search = async function(value){
+
+    await oldSearch(value);
+
+    animateResult();
+
+    loadStats();
+
+};
+
+/* ===========================
+   CLICK SOUND
+=========================== */
+
+document.addEventListener("click",function(e){
+
+    if(e.target.tagName==="BUTTON"){
+
+        try{
+
+            const ctx =
+                new(window.AudioContext||
+                window.webkitAudioContext)();
+
+            const osc =
+                ctx.createOscillator();
+
+            const gain =
+                ctx.createGain();
+
+            osc.connect(gain);
+
+            gain.connect(ctx.destination);
+
+            osc.frequency.value=700;
+
+            osc.start();
+
+            gain.gain.exponentialRampToValueAtTime(
+                0.0001,
+                ctx.currentTime+0.08
+            );
+
+            osc.stop(
+                ctx.currentTime+0.08
+            );
+
+        }catch(err){}
+
+    }
+
+});
+
+/* ===========================
+   PREVENT DOUBLE TAP
+=========================== */
+
+let lastTouchEnd=0;
+
+document.addEventListener(
+
+    "touchend",
+
+    function(event){
+
+        const now =
+            new Date().getTime();
+
+        if(
+            now-lastTouchEnd<=300
+        ){
+
+            event.preventDefault();
+
+        }
+
+        lastTouchEnd=now;
+
+    },
+
+    false
+
+);
+
+/* ===========================
+   NETWORK STATUS
+=========================== */
+
+window.addEventListener(
+
+    "offline",
+
+    function(){
+
+        alert("No Internet Connection");
+
+    }
+
+);
+
+window.addEventListener(
+
+    "online",
+
+    function(){
+
+        loadStats();
+
+    }
+
+);
+
+/* ===========================
+   AUTO FOCUS
+=========================== */
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    function(){
+
+        const input =
+            document.getElementById("manualInput");
+
+        if(input){
+
+            input.value="";
+
+        }
+
+    }
+
+);
 
 </script>
 
 </body>
 </html>
+
+
