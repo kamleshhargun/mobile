@@ -14,31 +14,28 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Segoe UI', Arial, sans-serif;
+    font-family:'Segoe UI',Arial,sans-serif;
 }
 
 body{
-    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    background:linear-gradient(135deg,#0f172a,#1d4ed8);
     min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
     padding:10px;
-    overflow:hidden;
 }
-
 
 .container{
+    position:relative;
     width:100%;
     max-width:650px;
-    height:96vh;
-    background:rgba(255,255,255,0.12);
-    backdrop-filter:blur(12px);
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(14px);
     border-radius:22px;
-    padding:16px;
+    padding:18px;
     box-shadow:0 15px 40px rgba(0,0,0,.35);
 }
-
 
 /* Date */
 
@@ -46,7 +43,6 @@ body{
     width:100%;
     margin-bottom:12px;
 }
-
 
 /* Pickup Return */
 
@@ -56,109 +52,110 @@ body{
     margin-bottom:12px;
 }
 
-
 .modeBtn{
     flex:1;
     height:55px;
     border:none;
-    border-radius:16px;
-    background:#ffffff50;
-    color:#ffffff;
+    border-radius:14px;
+    background:rgba(255,255,255,.18);
+    color:#fff;
     font-size:18px;
     font-weight:700;
     cursor:pointer;
-    transition:.25s;
+    transition:.3s;
 }
 
+.modeBtn:hover{
+    transform:translateY(-2px);
+}
 
 .modeBtn.active{
     background:#22c55e;
-    box-shadow:0 6px 18px rgba(34,197,94,.5);
+    box-shadow:0 0 18px rgba(34,197,94,.5);
 }
-
 
 /* Camera */
 
 #reader{
     width:100%;
-    height:230px;
+    height:280px;
     background:#000;
     border-radius:18px;
     overflow:hidden;
-    box-shadow:0 8px 25px rgba(0,0,0,.4);
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
 }
 
-
-/* Flash */
+/* Flash Button */
 
 #flashBtn{
-    display:none;
-    width:100%;
-    height:48px;
-    margin-top:10px;
+    position:absolute;
+    top:92px;
+    right:28px;
+    width:135px;
+    height:42px;
     border:none;
-    border-radius:14px;
+    border-radius:12px;
     background:#f59e0b;
     color:#fff;
-    font-size:17px;
-    font-weight:700;
+    font-size:15px;
+    font-weight:bold;
     cursor:pointer;
+    z-index:9999;
+    transition:.25s;
 }
 
+#flashBtn:hover{
+    transform:scale(1.05);
+}
 
-/* Loading */
+/* Loader */
 
 .loader{
     display:none;
     text-align:center;
-    color:#ffffff;
+    color:#fff;
     font-size:17px;
-    font-weight:700;
-    margin:12px 0;
+    font-weight:bold;
+    margin:14px 0;
 }
-
 
 /* Card */
 
 .card{
-    background:#ffffff;
-    margin-top:15px;
-    padding:20px;
+    margin-top:18px;
+    background:#fff;
     border-radius:20px;
-    box-shadow:0 8px 25px rgba(0,0,0,.18);
+    padding:20px;
+    box-shadow:0 8px 22px rgba(0,0,0,.15);
 }
-
 
 /* Label */
 
 .label{
+    margin-top:12px;
+    margin-bottom:5px;
     color:#475569;
-    font-size:14px;
     font-weight:600;
-    margin-top:10px;
+    font-size:14px;
 }
 
-
-/* Inputs */
+/* Input */
 
 .inputBox{
     width:100%;
-    height:55px;
-    margin-top:6px;
-    padding:0 15px;
+    height:54px;
     border:2px solid #e2e8f0;
     border-radius:14px;
-    font-size:18px;
+    padding:0 14px;
+    font-size:17px;
     outline:none;
     transition:.2s;
 }
-
 
 .inputBox:focus{
     border-color:#2563eb;
     box-shadow:0 0 0 4px rgba(37,99,235,.15);
 }
-
 
 /* Buttons */
 
@@ -168,97 +165,88 @@ body{
     margin-top:22px;
 }
 
-
 .buttonArea button{
     flex:1;
-    height:60px;
+    height:58px;
     border:none;
-    border-radius:16px;
+    border-radius:14px;
     color:#fff;
     font-size:28px;
-    font-weight:700;
     cursor:pointer;
+    transition:.25s;
 }
 
+.buttonArea button:hover{
+    transform:translateY(-2px);
+}
 
 .saveBtn{
     background:#16a34a;
 }
 
-
 .cancelBtn{
     background:#dc2626;
 }
-
 
 /* Mobile */
 
 @media(max-width:600px){
 
-    body{
-        padding:6px;
-    }
-
     .container{
-        height:98vh;
         padding:12px;
-        border-radius:18px;
     }
-
 
     #reader{
-        height:200px;
+        height:220px;
     }
 
+    #flashBtn{
+        top:84px;
+        right:18px;
+        width:115px;
+        height:38px;
+        font-size:13px;
+    }
 
     .modeBtn{
-        height:50px;
-        font-size:16px;
+        height:48px;
+        font-size:15px;
     }
-
 
     .inputBox{
-        height:50px;
-        font-size:16px;
+        height:48px;
+        font-size:15px;
     }
 
-
     .buttonArea button{
-        height:55px;
-        font-size:24px;
+        height:52px;
+        font-size:22px;
     }
 
 }
 
 </style>
-
-
 </head>
 
 <body>
 
 <div class="container">
 
-    <!-- Date -->
-    <input 
+    <input
         type="date"
         id="entryDate"
         class="inputBox">
 
-
-    <!-- Pickup / Return -->
-
     <div class="header">
 
-        <button 
+        <button
             id="pickupBtn"
             class="modeBtn"
             onclick="selectMode('Pickup')">
             📦 Pickup
         </button>
 
-
-        <button 
+        <button
             id="returnBtn"
             class="modeBtn"
             onclick="selectMode('Return')">
@@ -267,39 +255,25 @@ body{
 
     </div>
 
-
-    <!-- Camera -->
-
     <div id="reader"></div>
 
-
-    <!-- Flash -->
-
-    <button 
+    <button
         id="flashBtn"
         onclick="toggleFlash()">
-        🔦 Flash ON
+        🔦 Flash
     </button>
-
-
-    <!-- Loading -->
 
     <div id="loading" class="loader">
         🔍 Searching Order...
     </div>
 
-
-    <!-- Entry Card -->
-
     <div id="entryCard" class="card">
-
 
         <div class="label">
             AWB Number
         </div>
 
-
-        <input 
+        <input
             id="awbInput"
             class="inputBox"
             type="text"
@@ -307,24 +281,18 @@ body{
             autocomplete="off"
             onkeypress="checkAWBEnter(event)">
 
-
-
         <div class="label">
             Order ID
         </div>
 
-
-        <input 
+        <input
             id="orderInput"
             class="inputBox"
             type="text"
             placeholder="Auto Fetch or Enter Order ID"
             autocomplete="off">
 
-
-
         <div class="buttonArea">
-
 
             <button
                 class="saveBtn"
@@ -333,7 +301,6 @@ body{
                 ✅
             </button>
 
-
             <button
                 class="cancelBtn"
                 type="button"
@@ -341,27 +308,24 @@ body{
                 ❌
             </button>
 
-
         </div>
 
-
     </div>
-
 
 </div>
 
 </body>
-
 <script>
 
-const API_URL="https://script.google.com/macros/s/AKfycbwgdYaVNKNXbZw_QVYpIs-y37Fczf7Es7uc-sM7icEZLDc4U8_msZRDWK1tBGWh10Ly/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby_oCiGW-EetxRtGOtyavwnl1OxbCuV24YroM0PVzV5J77CQ41d3VSk7Kd7PHtilpqO/exec";
 
-let scanner=null;
-let cameraRunning=false;
+let scanner = null;
+let cameraRunning = false;
 let flashOn = false;
-let currentType="";
-let currentAWB="";
-let currentOrder="";
+let currentType = "";
+let currentAWB = "";
+let currentOrder = "";
+let torchSupported = false;
 
 /* ==========================================
    MODE SELECT
@@ -369,7 +333,7 @@ let currentOrder="";
 
 function selectMode(type){
 
-    currentType=type;
+    currentType = type;
 
     document.getElementById("pickupBtn").classList.remove("active");
     document.getElementById("returnBtn").classList.remove("active");
@@ -381,6 +345,7 @@ function selectMode(type){
     }
 
     startCamera();
+
 }
 
 /* ==========================================
@@ -393,32 +358,192 @@ async function startCamera(){
         return;
     }
 
-    scanner=new Html5Qrcode("reader");
-
     try{
 
+        document.getElementById("reader").innerHTML="";
+
+        scanner = new Html5Qrcode("reader");
+
         await scanner.start(
-            { facingMode:"environment" },
+
             {
-                fps:10,
-                qrbox:250
+                facingMode:{
+                    exact:"environment"
+                }
             },
+
+            {
+
+                fps:10,
+
+                qrbox:{
+                    width:280,
+                    height:120
+                },
+
+                aspectRatio:1.777
+
+            },
+
             onScanSuccess
+
         );
 
-        cameraRunning=true;
-        document.getElementById("flashBtn").style.display="block";
+        cameraRunning = true;
+
+        flashOn = false;
+
+        document.getElementById("flashBtn").innerText="🔦 Flash ON";
+
+        try{
+
+            if(scanner.getRunningTrackSettings){
+
+                torchSupported = true;
+
+            }else{
+
+                torchSupported = false;
+
+            }
+
+        }catch(e){
+
+            torchSupported = false;
+
+        }
 
     }catch(err){
 
-        alert("Camera Start Failed");
-        console.error(err);
+        console.log(err);
+
+        try{
+
+            await scanner.start(
+
+                {facingMode:"environment"},
+
+                {
+
+                    fps:10,
+
+                    qrbox:{
+                        width:280,
+                        height:120
+                    }
+
+                },
+
+                onScanSuccess
+
+            );
+
+            cameraRunning=true;
+
+        }catch(e){
+
+            alert("Camera Start Failed");
+
+            console.log(e);
+
+        }
 
     }
 
 }
 
 /* ==========================================
+   FLASH
+========================================== */
+
+async function toggleFlash(){
+
+    if(!cameraRunning || !scanner){
+
+        alert("Camera not running");
+
+        return;
+
+    }
+
+    try{
+
+        if(!flashOn){
+
+            await scanner.applyVideoConstraints({
+
+                advanced:[
+                    {
+                        torch:true
+                    }
+                ]
+
+            });
+
+            flashOn=true;
+
+            document.getElementById("flashBtn").innerText="🔦 Flash OFF";
+
+        }else{
+
+            await scanner.applyVideoConstraints({
+
+                advanced:[
+                    {
+                        torch:false
+                    }
+                ]
+
+            });
+
+            flashOn=false;
+
+            document.getElementById("flashBtn").innerText="🔦 Flash ON";
+
+        }
+
+    }catch(err){
+
+        console.log(err);
+
+        alert("Torch not supported on this device/browser");
+
+    }
+
+}
+
+/* ==========================================
+   STOP CAMERA
+========================================== */
+
+async function stopCamera(){
+
+    if(!cameraRunning || !scanner){
+        return;
+    }
+
+    try{
+
+        await scanner.stop();
+
+        await scanner.clear();
+
+    }catch(e){
+
+        console.log(e);
+
+    }
+
+    cameraRunning=false;
+
+    flashOn=false;
+
+    document.getElementById("flashBtn").innerText="🔦 Flash ON";
+
+    scanner=null;
+
+}
+    /* ==========================================
    SCAN SUCCESS
 ========================================== */
 
@@ -439,17 +564,17 @@ async function onScanSuccess(decodedText){
 
     try{
 
-        // Direct Tracking (Duplicate Check Removed)
         const response = await fetch(
+
             API_URL +
             "?action=track&awb=" +
             encodeURIComponent(currentAWB)
+
         );
 
         const data = await response.json();
 
         document.getElementById("loading").style.display = "none";
-
 
         if(data.success){
 
@@ -459,21 +584,17 @@ async function onScanSuccess(decodedText){
 
         }else{
 
-            // Order ID not found, manual entry allowed
             document.getElementById("orderInput").focus();
 
         }
 
-
     }catch(err){
+
+        console.log(err);
 
         document.getElementById("loading").style.display = "none";
 
-        console.error(err);
-
-        alert(
-            "Tracking Failed\n\nEnter Order ID Manually"
-        );
+        alert("Tracking Failed\nEnter Order ID Manually");
 
         document.getElementById("orderInput").focus();
 
@@ -488,11 +609,13 @@ async function onScanSuccess(decodedText){
 async function saveScan(){
 
     if(currentType===""){
+
         alert("Select Pickup / Return");
+
         return;
+
     }
 
-    // AWB और Order ID Input Box से Value लो
     currentAWB = document
         .getElementById("awbInput")
         .value
@@ -504,129 +627,112 @@ async function saveScan(){
         .trim();
 
     if(currentAWB===""){
+
         alert("AWB Number Missing");
+
         return;
+
     }
 
     if(currentOrder===""){
+
         alert("Enter Order ID");
+
         return;
+
     }
 
-    const selectedDate =
-        document.getElementById("entryDate").value;
+    const payload={
 
-    const payload = {
-        action: "save",
-        type: currentType,
-        awb: currentAWB,
-        orderId: currentOrder,
-        date: selectedDate
+        action:"save",
+
+        type:currentType,
+
+        awb:currentAWB,
+
+        orderId:currentOrder,
+
+        date:document.getElementById("entryDate").value
+
     };
 
     try{
 
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify(payload)
-        });
+        document.getElementById("loading").style.display="block";
 
-        const text = await response.text();
+        const response = await fetch(
 
-        console.log("SERVER RESPONSE:", text);
+            API_URL,
 
-        let result;
+            {
 
-        try{
-            result = JSON.parse(text);
-        }catch(e){
-            alert("Invalid Server Response\n\n" + text);
-            return;
-        }
+                method:"POST",
 
+                headers:{
+
+                    "Content-Type":"text/plain;charset=utf-8"
+
+                },
+
+                body:JSON.stringify(payload)
+
+            }
+
+        );
+
+        const result = await response.json();
+
+        document.getElementById("loading").style.display="none";
 
         if(result.success){
 
-            resetScanner();
+            alert("Saved Successfully");
+
+            await resetScanner();
 
             return;
-        }
 
+        }
 
         if(result.duplicate){
 
             alert(
+
                 "Duplicate Found\n\n" +
+
                 "Order ID : " + result.orderId +
+
                 "\nDate : " + result.date
+
             );
 
-            resetScanner();
+            await resetScanner();
 
             return;
+
         }
 
-
-        alert(
-            result.message || "Save Failed"
-        );
-
+        alert(result.message || "Save Failed");
 
     }catch(err){
 
-        console.error("SAVE ERROR:", err);
+        document.getElementById("loading").style.display="none";
 
-        alert(
-            "Save Failed\n\n" +
-            err.message
-        );
+        console.log(err);
+
+        alert("Save Failed");
 
     }
 
 }
-
-
 
 /* ==========================================
    CANCEL
 ========================================== */
 
-function cancelScan(){
+async function cancelScan(){
 
-    resetScanner();
-
-}
-
-/* ==========================================
-   STOP CAMERA
-========================================== */
-
-async function stopCamera(){
-
-    if(!cameraRunning || !scanner){
-        return;
-    }
-
-    try{
-
-        await scanner.stop();
-        await scanner.clear();
-
-    }catch(e){
-        console.log(e);
-    }
-
-    cameraRunning=false;
-
-    document.getElementById("reader").innerHTML="";
-    flashOn=false;
-
-document.getElementById("flashBtn").style.display="none";
-
-document.getElementById("flashBtn").innerText="🔦 Flash ON";
+    await resetScanner();
 
 }
 
@@ -637,72 +743,51 @@ document.getElementById("flashBtn").innerText="🔦 Flash ON";
 async function resetScanner(){
 
     currentAWB="";
+
     currentOrder="";
 
+    flashOn=false;
+
     document.getElementById("awbInput").value="";
+
     document.getElementById("orderInput").value="";
 
     document.getElementById("loading").style.display="none";
-    if(currentType !== ""){
-    startCamera();
-    }
+
+    document.getElementById("flashBtn").innerText="🔦 Flash ON";
+
     await stopCamera();
 
-}
-/* ==========================================
-   STOP CAMERA
-========================================== */
+    if(currentType!==""){
 
-async function stopCamera(){
+        setTimeout(()=>{
 
-    if(!cameraRunning || !scanner){
-        return;
-    }
+            startCamera();
 
-    try{
-
-        await scanner.stop();
-        await scanner.clear();
-
-    }catch(e){
-
-        console.log(e);
+        },300);
 
     }
 
-    cameraRunning = false;
-
-
-    /* Flash Reset */
-
-    flashOn = false;
-
-    document.getElementById("flashBtn").style.display = "none";
-
-    document.getElementById("flashBtn").innerText = "🔦 Flash ON";
-
-
-    /* Camera object reset */
-
-    scanner = null;
-
 }
-/* ==========================================
+    /* ==========================================
    PAGE LOAD
 ========================================== */
 
-window.onload=function(){
+window.onload = function(){
 
-    const today=new Date();
+    const today = new Date();
 
-    const yyyy=today.getFullYear();
-    const mm=String(today.getMonth()+1).padStart(2,"0");
-    const dd=String(today.getDate()).padStart(2,"0");
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2,"0");
+    const dd = String(today.getDate()).padStart(2,"0");
 
-    document.getElementById("entryDate").value=
-    `${yyyy}-${mm}-${dd}`;
+    document.getElementById("entryDate").value =
+        `${yyyy}-${mm}-${dd}`;
+
+    document.getElementById("flashBtn").innerText = "🔦 Flash ON";
 
 };
+
 /* ==========================================
    MANUAL AWB SEARCH
 ========================================== */
@@ -713,54 +798,44 @@ async function checkAWBEnter(event){
         return;
     }
 
-
-    /* Check Pickup / Return Selection */
-
     if(currentType === ""){
 
         alert("Please Select Pickup or Return First");
 
-        document.getElementById("awbInput").value = "";
+        document.getElementById("awbInput").value="";
 
         return;
-    }
 
+    }
 
     const awb = document
         .getElementById("awbInput")
         .value
         .trim();
 
-
-    if(awb === ""){
+    if(awb===""){
         return;
     }
 
-
     currentAWB = awb;
 
+    document.getElementById("orderInput").value="";
 
-    document.getElementById("orderInput").value = "";
-
-    document.getElementById("loading").style.display = "block";
-
+    document.getElementById("loading").style.display="block";
 
     try{
 
-        /* Tracking Search */
-
         const response = await fetch(
+
             API_URL +
             "?action=track&awb=" +
             encodeURIComponent(currentAWB)
-        );
 
+        );
 
         const data = await response.json();
 
-
-        document.getElementById("loading").style.display = "none";
-
+        document.getElementById("loading").style.display="none";
 
         if(data.success){
 
@@ -776,12 +851,11 @@ async function checkAWBEnter(event){
 
         }
 
-
     }catch(err){
 
-        document.getElementById("loading").style.display = "none";
+        console.log(err);
 
-        console.error(err);
+        document.getElementById("loading").style.display="none";
 
         alert("Tracking Failed");
 
@@ -791,9 +865,119 @@ async function checkAWBEnter(event){
 
 }
 
+/* ==========================================
+   OPTIONAL BEEP SOUND
+========================================== */
+
+function playBeep(){
+
+    try{
+
+        const audio = new Audio(
+            "data:audio/wav;base64,UklGRlQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSAAAAA="
+        );
+
+        audio.play();
+
+    }catch(e){}
+
+}
+
+/* ==========================================
+   OPTIONAL VIBRATION
+========================================== */
+
+function vibratePhone(){
+
+    if(navigator.vibrate){
+
+        navigator.vibrate(150);
+
+    }
+
+}
+
+/* ==========================================
+   OPTIONAL FOCUS AWB
+========================================== */
+
+function focusAWB(){
+
+    document.getElementById("awbInput").focus();
+
+}
+
+/* ==========================================
+   RESTART CAMERA
+========================================== */
+
+async function restartCamera(){
+
+    await stopCamera();
+
+    setTimeout(()=>{
+
+        if(currentType !== ""){
+
+            startCamera();
+
+        }
+
+    },300);
+
+}
+
+/* ==========================================
+   CLEAR ENTRY
+========================================== */
+
+function clearFields(){
+
+    currentAWB="";
+
+    currentOrder="";
+
+    document.getElementById("awbInput").value="";
+
+    document.getElementById("orderInput").value="";
+
+}
+
+/* ==========================================
+   AUTO FOCUS AFTER SAVE
+========================================== */
+
+document.addEventListener("click",function(){
+
+    if(currentType!=="" && !cameraRunning){
+
+        focusAWB();
+
+    }
+
+});
+
+/* ==========================================
+   PREVENT DOUBLE TAP ZOOM
+========================================== */
+
+let lastTouchEnd = 0;
+
+document.addEventListener("touchend",function(event){
+
+    const now = (new Date()).getTime();
+
+    if(now - lastTouchEnd <= 300){
+
+        event.preventDefault();
+
+    }
+
+    lastTouchEnd = now;
+
+},false);
+
 </script>
 
 </body>
-
 </html>
- 
