@@ -3,11 +3,9 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>
-Harsidhi Ventures Pickup Return System V2
-</title>
+<title>Harsidhi Ventures Pickup Return System V2</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -16,277 +14,34 @@ Harsidhi Ventures Pickup Return System V2
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Inter,sans-serif;
-}
-
-body{
-    background:#f2f5fb;
-    color:#1f2937;
-}
-
-
-/* Header */
-
-.header{
-    height:60px;
-    background:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:20px;
-    font-weight:700;
-    color:#2563eb;
-    border-bottom:1px solid #ddd;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
-
-
-/* Tabs */
-
-.tabs{
-    display:flex;
-    gap:8px;
-    padding:10px;
-    background:#fff;
-    position:sticky;
-    top:0;
-    z-index:100;
-    border-bottom:1px solid #e5e7eb;
-}
-
-
-.tab-btn{
-    flex:1;
-    border:none;
-    padding:12px;
-    border-radius:12px;
-    background:#e5e7eb;
-    font-weight:600;
-    cursor:pointer;
-    transition:.2s;
-}
-
-
-.tab-btn.active{
-    background:#2563eb;
-    color:#fff;
-}
-
-
-
-/* Main Container */
-
-.container{
-    padding:12px;
-}
-
-
-.page{
-    display:none;
-}
-
-
-.page.active{
-    display:block;
-}
-
-
-
-/* Card Design */
-
-.card{
-    background:#fff;
-    border-radius:16px;
-    padding:15px;
-    margin-bottom:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,.06);
-    border:1px solid #e5e7eb;
-}
-
-
-.card-title{
-    font-size:16px;
-    font-weight:700;
-    margin-bottom:12px;
-}
-
-
-
-/* Buttons */
-
-.btn{
-    width:100%;
-    border:none;
-    padding:12px;
-    border-radius:12px;
-    margin-top:8px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-}
-
-
-.blue{
-    background:#2563eb;
-    color:#fff;
-}
-
-
-.green{
-    background:#10b981;
-    color:#fff;
-}
-
-
-.red{
-    background:#ef4444;
-    color:#fff;
-}
-
-
-.gray{
-    background:#475569;
-    color:#fff;
-}
-
-
-
-/* Inputs */
-
-.input{
-    width:100%;
-    height:45px;
-    padding:10px 12px;
-    border:1px solid #d1d5db;
-    border-radius:12px;
-    margin-top:8px;
-    outline:none;
-}
-
-
-.input:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.15);
-}
-
-
-
-/* QR Reader */
-
-#reader{
-    width:100%;
-    margin-top:10px;
-    overflow:hidden;
-    border-radius:12px;
-}
-
-
-
-/* Dashboard */
-
-.dashboard{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-    gap:10px;
-}
-
-
-.stat{
-    background:#f8fbff;
-    border:1px solid #dbeafe;
-    text-align:center;
-    padding:15px;
-    border-radius:14px;
-}
-
-
-.stat h2{
-    color:#2563eb;
-    margin-top:8px;
-}
-
-
-
-/* Result Area */
-
-.result{
-    margin-top:10px;
-    font-size:13px;
-    line-height:1.7;
-}
-
-
-
-/* Loader */
-
-.loader{
-
-    display:none;
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(255,255,255,.8);
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:22px;
-
-    font-weight:700;
-
-    color:#2563eb;
-
-    z-index:9999;
-
-}
-
-
-/* Toast */
-
-.toast{
-    position:fixed;
-    bottom:20px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#111827;
-    color:#fff;
-    padding:12px 18px;
-    border-radius:12px;
-    z-index:10000;
-}
-
-
-/* Mobile Optimization */
-
-@media(max-width:600px){
-
-.header{
-    font-size:15px;
-    text-align:center;
-    padding:5px;
-}
-
-.tab-btn{
-    font-size:13px;
-    padding:10px;
-}
-
-.card{
-    padding:12px;
-}
-
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
+body{background:#f2f5fb;color:#1f2937}
+.header{height:60px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#2563eb;border-bottom:1px solid #ddd;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:8px;padding:10px;background:#fff;position:sticky;top:0;z-index:100;border-bottom:1px solid #e5e7eb}
+.tab-btn{flex:1;border:0;padding:12px;border-radius:12px;background:#e5e7eb;font-weight:600;cursor:pointer}
+.tab-btn.active{background:#2563eb;color:#fff}
+.container{padding:12px}
+.page{display:none}
+.page.active{display:block}
+.card{background:#fff;padding:15px;border-radius:16px;margin-bottom:12px;border:1px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card-title{font-size:16px;font-weight:700;margin-bottom:12px}
+.btn{width:100%;border:0;padding:12px;border-radius:12px;margin-top:8px;font-size:14px;font-weight:600;cursor:pointer}
+.blue{background:#2563eb;color:#fff}
+.green{background:#10b981;color:#fff}
+.red{background:#ef4444;color:#fff}
+.gray{background:#475569;color:#fff}
+.input{width:100%;height:45px;padding:10px 12px;margin-top:8px;border:1px solid #d1d5db;border-radius:12px;outline:none}
+.input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+#reader{width:100%;margin-top:10px;border-radius:12px;overflow:hidden}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{background:#f8fbff;border:1px solid #dbeafe;padding:15px;border-radius:14px;text-align:center}
+.stat h2{color:#2563eb;margin-top:8px}
+.result{margin-top:10px;font-size:13px;line-height:1.7}
+.loader{display:none;position:fixed;inset:0;background:rgba(255,255,255,.8);justify-content:center;align-items:center;font-size:22px;font-weight:700;color:#2563eb;z-index:9999}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:12px;z-index:10000}
+@media(max-width:600px){.header{font-size:15px;text-align:center;padding:5px}.tab-btn{font-size:13px;padding:10px}.card{padding:12px}}
 
 </style>
-
 
 </head>
 
@@ -297,88 +52,61 @@ body{
 <!-- HEADER -->
 
 <div class="header">
-
 HARSIDHI VENTURES SYSTEM V2
-
 </div>
-
 
 
 <!-- TOP MENU -->
 
 <div class="tabs">
 
-
 <button class="tab-btn active"
 onclick="openPage('pickupPage',this)">
-
 🚚 Pickup / Return
-
 </button>
 
 
 <button class="tab-btn"
 onclick="openPage('dashboardPage',this)">
-
 📊 Dashboard
-
 </button>
 
 
 <button class="tab-btn"
 onclick="openPage('searchPage',this)">
-
 🔍 Search
-
 </button>
 
 
 <button class="tab-btn"
 onclick="openPage('inventoryPage',this)">
-
 📦 Inventory
-
 </button>
 
-
 </div>
-
-
 
 
 <div class="container">
+    <!-- =========================
+PICKUP / RETURN PAGE
+========================= -->
 
-
-<!-- =====================
-PICKUP RETURN PAGE
-====================== -->
-
-
-<div id="pickupPage"
-class="page active">
+<div id="pickupPage" class="page active">
 
 
 <div class="card">
 
-
 <div class="card-title">
-
 Select Work Type
-
 </div>
 
-
-<button id="pickupBtn"
-class="btn blue">
+<button id="pickupBtn" class="btn blue">
 🚚 Pickup
 </button>
 
-
-<button id="returnBtn"
-class="btn gray">
+<button id="returnBtn" class="btn gray">
 ↩ Return
 </button>
-
 
 </div>
 
@@ -386,22 +114,17 @@ class="btn gray">
 
 <div class="card">
 
-
 <div class="card-title">
-
 Scan AWB
-
 </div>
 
 
-<button id="cameraBtn"
-class="btn blue">
+<button id="cameraBtn" class="btn blue">
 📷 Open Camera
 </button>
 
 
-<button id="manualBtn"
-class="btn gray">
+<button id="manualBtn" class="btn gray">
 ⌨ Manual Scanner
 </button>
 
@@ -409,34 +132,40 @@ class="btn gray">
 <div id="reader"></div>
 
 
-<input id="awbInput"
+<input 
+id="awbInput"
 class="input"
 placeholder="Scan AWB Number">
 
 
-<input id="orderInput"
+<input 
+id="orderInput"
 class="input"
 placeholder="Order ID (Optional)">
 
 
-
-<div id="trackingResult"
-class="result">
+<div id="trackingResult" class="result">
 
 Waiting for Scan...
 
 </div>
 
 
-<button id="saveBtn"
+<button 
+id="saveBtn"
 class="btn green">
+
 ✅ Save & Next
+
 </button>
 
 
-<button id="stopBtn"
+<button 
+id="stopBtn"
 class="btn red">
+
 ❌ Stop
+
 </button>
 
 
@@ -447,90 +176,24 @@ class="btn red">
 
 
 
-<!-- DASHBOARD PAGE -->
 
-<div id="dashboardPage"
-class="page">
+<!-- =========================
+DASHBOARD PAGE
+========================= -->
 
 
-<div class="dashboard"
-id="dashboardArea">
+<div id="dashboardPage" class="page">
 
+
+<div 
+id="dashboardArea"
+class="dashboard">
 
 </div>
+
 
 
 <div id="recentArea">
-<div class="card">
-
-    <div class="card-title">
-        Bulk Status Update
-    </div>
-
-    <input 
-        id="bulkDate"
-        type="date"
-        class="input">
-
-    <div style="margin-top:10px">
-        Pickup :
-        <span id="pickupCount">0</span>
-        <br>
-        Return :
-        <span id="returnCount">0</span>
-    </div>
-
-    <button 
-        class="btn blue"
-        onclick="loadBulkCounts()">
-
-        Load Counts
-
-    </button>
-
-
-    <button 
-        id="bulkPickupBtn"
-        class="btn green"
-        onclick="startBulkUpdate('Pickup')">
-
-        Update Pickup
-
-    </button>
-
-
-    <button 
-        id="bulkReturnBtn"
-        class="btn green"
-        onclick="startBulkUpdate('Return')">
-
-        Update Return
-
-    </button>
-
-
-    <div id="bulkProgress"
-    class="result">
-
-    Waiting...
-
-    </div>
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-
-<!-- SEARCH PAGE -->
-
-
-<div id="searchPage"
-class="page">
 
 
 <div class="card">
@@ -538,92 +201,141 @@ class="page">
 
 <div class="card-title">
 
-Find Order
+Bulk Status Update
 
 </div>
 
 
 <input 
-id="searchInput"
-class="input"
-placeholder="AWB / Order ID">
+type="date"
+id="bulkDate"
+class="input">
+
+
+<div class="result">
+
+Pickup :
+<span id="pickupCount">0</span>
+
+<br>
+
+Return :
+<span id="returnCount">0</span>
+
+</div>
+
 
 
 <button 
-id="searchBtn"
-class="btn blue">
+class="btn blue"
+onclick="loadBulkCounts()">
 
-Search
+Load Counts
 
 </button>
 
 
-<div id="searchResult"
+
+<button 
+id="bulkPickupBtn"
+class="btn green"
+onclick="startBulkUpdate('Pickup')">
+
+Update Pickup
+
+</button>
+
+
+
+<button 
+id="bulkReturnBtn"
+class="btn green"
+onclick="startBulkUpdate('Return')">
+
+Update Return
+
+</button>
+
+
+<div 
+id="bulkProgress"
 class="result">
 
+Waiting...
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+<!-- =========================
+SEARCH PAGE
+========================= -->
+
+<div id="searchPage" class="page">
+
+<div class="card">
+
+<div class="card-title">
+Find Order
+</div>
+
+<input id="searchInput" class="input" placeholder="AWB / Order ID">
+
+<button id="searchBtn" class="btn blue">
+🔍 Search
+</button>
+
+<div id="searchResult" class="result">
 No Search Yet
+</div>
+
+</div>
 
 </div>
 
 
-</div>
 
+<!-- =========================
+INVENTORY PAGE
+========================= -->
 
-</div>
-
-
-
-
-
-<!-- INVENTORY PAGE -->
-
-
-<div id="inventoryPage"
-class="page">
+<div id="inventoryPage" class="page">
 
 
 <div class="card">
 
-
 <div class="card-title">
-
 Inventory Dashboard
-
 </div>
 
 
 <div id="inventoryDashboard">
-
 Loading Inventory...
-
 </div>
 
 
 </div>
+
 
 
 <div class="card">
 
-
 <div class="card-title">
-
 Search SKU
-
 </div>
 
 
-<input
-id="skuSearch"
-class="input"
-placeholder="Enter SKU">
+<input id="skuSearch" class="input" placeholder="Enter SKU">
 
 
-<button 
-id="skuSearchBtn"
-class="btn blue">
-
+<button id="skuSearchBtn" class="btn blue">
 Search SKU
-
 </button>
 
 
@@ -633,42 +345,27 @@ Search SKU
 
 <div class="card">
 
-
 <div class="card-title">
-
 Stock Update
-
 </div>
 
 
-<input
-id="skuUpdate"
-class="input"
-placeholder="SKU">
+<input id="skuUpdate" class="input" placeholder="SKU">
 
 
-<input
-id="stockQty"
-class="input"
-placeholder="Quantity">
+<input id="stockQty" class="input" placeholder="Quantity">
 
 
-<button 
-id="stockUpdateBtn"
-class="btn green">
-
+<button id="stockUpdateBtn" class="btn green">
 Update Stock
-
 </button>
 
 
 </div>
 
 
-<div id="lowStockArea">
 
-
-</div>
+<div id="lowStockArea"></div>
 
 
 </div>
@@ -676,1082 +373,764 @@ Update Stock
 
 
 </div>
+<!-- Container End -->
 
 
-<!-- Loader -->
 
+<!-- =========================
+GLOBAL LOADER
+========================= -->
 
-<div id="loader"
-class="loader">
-
+<div id="loader" class="loader">
 Loading...
-
 </div>
 
 
-</body>
-  <script>
 
-/* =================================
-   CONFIG
-================================= */
+<!-- =========================
+JAVASCRIPT START
+========================= -->
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycby00URNBBmXCnQM7fWHZZvqVrCcvNwEJXQbDm8O35BnZp8w6f9Jkdu006yRPquRP0MQ/exec";
+<script>
+    /* =========================
+CONFIG & GLOBAL
+========================= */
 
+const API_URL="https://script.google.com/macros/s/AKfycbwzKW15XfTj3emaWH8MHe_sCvHGvskr9naPk71vDuQTWZUPOebetTVaruUTGbgjOW0_/exec",
+$=id=>document.getElementById(id);
 
-/* =================================
-   FAST DOM SELECTOR
-================================= */
+let currentType="",
+currentTracking=null,
+html5QrCode=null,
+bulkRunning=false;
 
-const $ = id => document.getElementById(id);
-
-
-/* =================================
-   GLOBAL VARIABLES
-================================= */
-
-let currentType = "";
-let currentTracking = null;
-let latestTracking = null;
-let html5QrCode = null;
-let bulkRunning = false;
+const beep=new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
 
 
-/* =================================
-   SOUND
-================================= */
+/* =========================
+TAB SYSTEM
+========================= */
 
-const beep = new Audio(
-"https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
-);
-
-
-/* =================================
-   PAGE TAB SYSTEM
-================================= */
-
-function openPage(pageId, btn){
-
-    // Hide all pages
-    document
-    .querySelectorAll(".page")
-    .forEach(page =>
-        page.classList.remove("active")
-    );
+function openPage(page,btn){
+ document.querySelectorAll(".page").forEach(e=>e.classList.remove("active"));
+ document.querySelectorAll(".tab-btn").forEach(e=>e.classList.remove("active"));
+ $(page).classList.add("active");
+ btn.classList.add("active");
+}
 
 
-    // Remove active button
-    document
-    .querySelectorAll(".tab-btn")
-    .forEach(button =>
-        button.classList.remove("active")
-    );
+/* =========================
+LOADER
+========================= */
+
+const showLoader=()=>$("loader").style.display="flex",
+hideLoader=()=>$("loader").style.display="none";
 
 
-    // Open selected page
-    $(pageId)
-    .classList.add("active");
+/* =========================
+TOAST MESSAGE
+========================= */
+
+function toast(msg){
+ let t=document.createElement("div");
+ t.className="toast";
+ t.innerText=msg;
+ document.body.appendChild(t);
+ setTimeout(()=>t.remove(),2000);
+}
 
 
-    // Highlight selected tab
-    btn
-    .classList.add("active");
+/* =========================
+API FUNCTIONS
+========================= */
+
+async function apiGet(action,params={}){
+ let url=API_URL+"?action="+action;
+
+ Object.keys(params).forEach(k=>{
+  url+="&"+k+"="+encodeURIComponent(params[k]);
+ });
+
+ let res=await fetch(url);
+ return await res.json();
+}
+
+
+async function apiPost(action,data){
+
+ let res=await fetch(API_URL,{
+  method:"POST",
+  headers:{
+   "Content-Type":"text/plain;charset=utf-8"
+  },
+  body:JSON.stringify({
+   action:action,
+   payload:data
+  })
+ });
+
+ return await res.json();
 
 }
 
 
-/* =================================
-   LOADER
-================================= */
-
-
-function showLoader(){
-
-    $("loader")
-    .style.display = "flex";
-
-}
-
-
-function hideLoader(){
-
-    $("loader")
-    .style.display = "none";
-
-}
-
-
-/* =================================
-   TOAST MESSAGE
-================================= */
-
-
-function toast(message){
-
-    const box =
-    document.createElement("div");
-
-
-    box.className = "toast";
-
-
-    box.innerText = message;
-
-
-    document.body.appendChild(box);
-
-
-    setTimeout(() => {
-
-        box.remove();
-
-    },2000);
-
-}
-
-
-/* =================================
-   COMMON API GET
-================================= */
-
-
-async function apiGet(action, params = {}){
-
-
-    let url =
-    API_URL +
-    "?action=" +
-    action;
-
-
-    Object.keys(params)
-    .forEach(key => {
-
-        url +=
-        "&" +
-        key +
-        "=" +
-        encodeURIComponent(
-            params[key]
-        );
-
-    });
-
-
-    const response =
-    await fetch(url);
-
-
-    return await response.json();
-
-}
-
-
-
-/* =================================
-   COMMON API POST
-================================= */
-
-
-async function apiPost(action, data){
-
-
-    const response =
-    await fetch(
-        API_URL,
-        {
-
-        method:"POST",
-
-        headers:{
-        "Content-Type":
-        "text/plain;charset=utf-8"
-        },
-
-
-        body: JSON.stringify({
-
-            action: action,
-
-            payload: data
-
-        })
-
-    });
-
-
-    return await response.json();
-
-}
-
-
-/* =================================
-   PLAY SUCCESS SOUND
-================================= */
-
+/* =========================
+COMMON FUNCTIONS
+========================= */
 
 function successSound(){
-
-    try{
-
-        beep.currentTime = 0;
-
-        beep.play();
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
+ try{
+  beep.currentTime=0;
+  beep.play();
+ }catch(e){
+  console.log(e);
+ }
 }
-
-
-/* =================================
-   RESET SCAN FORM
-================================= */
 
 
 function clearScan(){
 
-    currentTracking = null;
+ currentTracking=null;
 
+ $("awbInput").value="";
+ $("orderInput").value="";
 
-    if($("awbInput"))
-    $("awbInput").value = "";
-
-
-    if($("orderInput"))
-    $("orderInput").value = "";
-
-
-    if($("trackingResult"))
-    $("trackingResult").innerHTML =
-    "Waiting for Scan...";
-
+ $("trackingResult").innerHTML=
+ "Waiting for Scan...";
 
 }
 
 
-
-/* =================================
-   AUTO FOCUS
-================================= */
-
-
-function focusAWB(){
-
-    if($("awbInput")){
-
-        $("awbInput").focus();
-
-    }
-
-}
+const focusAWB=()=>{
+ $("awbInput").focus();
+};
 
 
-/* =================================
-   ERROR HANDLER
-================================= */
+function handleError(err){
 
+ console.log("System Error:",err);
 
-function handleError(error){
+ hideLoader();
 
-    console.log(
-        "System Error:",
-        error
-    );
-
-    hideLoader();
-
-    toast(
-        "Something went wrong"
-    );
+ toast("Something Went Wrong");
 
 }
 
 
-/* =================================
-   INITIAL LOAD
-================================= */
+/* =========================
+INITIAL LOAD
+========================= */
+
+window.onload=()=>{
+
+ $("pickupBtn").onclick=()=>selectType("Pickup");
+
+ $("returnBtn").onclick=()=>selectType("Return");
+
+ $("cameraBtn").onclick=startCamera;
+
+ $("manualBtn").onclick=focusAWB;
+
+ $("saveBtn").onclick=saveEntry;
+
+ $("stopBtn").onclick=stopWork;
+
+ $("searchBtn").onclick=searchOrder;
+
+ $("skuSearchBtn").onclick=searchSKU;
+
+ $("stockUpdateBtn").onclick=updateStock;
 
 
-window.onload = function(){
+ loadDashboard();
 
-    console.log(
-        "Harsidhi System V2 Loaded"
-    );
+ loadInventory();
 
 
-    $("pickupBtn").onclick = () =>
-        selectType("Pickup");
-
-
-    $("returnBtn").onclick = () =>
-        selectType("Return");
-
-
-    $("cameraBtn").onclick =
-        startCamera;
-
-
-    $("manualBtn").onclick =
-        focusAWB;
-
-
-    $("saveBtn").onclick =
-        saveEntry;
-
-
-    $("stopBtn").onclick =
-        stopWork;
-    $("searchBtn").onclick =
-        searchOrder;
-$("skuSearchBtn").onclick = searchSKU;
-
-$("stockUpdateBtn").onclick = updateStock;
-    focusAWB();
+ focusAWB();
 
 };
-loadDashboard();
-loadRecent();
-loadInventory();
-setInterval(();
-loadDashboard();
 
+
+/* Dashboard Auto Refresh */
+
+setInterval(()=>{
+ loadDashboard();
 },30000);
-/* =================================
-   PICKUP / RETURN SELECT
-================================= */
+    /* =========================
+PICKUP / RETURN MODE
+========================= */
 
 function selectType(type){
 
-    currentType = type;
+ currentType=type;
 
-    if(type === "Pickup"){
+ $("pickupBtn").className=
+ type=="Pickup"?"btn blue":"btn gray";
 
-    $("pickupBtn").className =
-    "btn blue";
+ $("returnBtn").className=
+ type=="Return"?"btn green":"btn gray";
 
-    $("returnBtn").className =
-    "btn gray";
+ clearScan();
 
-}
-else{
+ toast(type+" Mode Started");
 
-    $("pickupBtn").className =
-    "btn gray";
-
-    $("returnBtn").className =
-    "btn green";
+ focusAWB();
 
 }
 
-    clearScan();
 
-    toast(type + " Mode Started");
-
-    focusAWB();
-}
-
-
-/* =================================
-   BUTTON EVENTS
-================================= */
-
-window.addEventListener("load", () => {
-
-    $("pickupBtn").onclick = () => selectType("Pickup");
-    $("returnBtn").onclick = () => selectType("Return");
-
-}); 
-/* =================================
-   CAMERA START
-================================= */
+/* =========================
+QR CAMERA START
+========================= */
 
 async function startCamera(){
 
-    try{
+ try{
 
-        if(html5QrCode){
-            await stopCamera();
-        }
+  if(html5QrCode)
+   await stopCamera();
 
-        $("reader").style.display = "block";
+  $("reader").style.display="block";
 
-        html5QrCode = new Html5Qrcode("reader");
+  html5QrCode=new Html5Qrcode("reader");
 
-        await html5QrCode.start(
 
-            { facingMode:"environment" },
+  await html5QrCode.start(
 
-            {
-                fps:20,
-                qrbox:{
-                    width:250,
-                    height:120
-                }
-            },
+   {facingMode:"environment"},
 
-            decodedText => {
-
-                $("awbInput").value = decodedText;
-
-                beep.currentTime = 0;
-                beep.play();
-
-                stopCamera();
-
-                trackShipment();
-
-            }
-
-        );
-
-    } catch(error){
-
-        console.log(error);
-
-        toast("Camera Error");
-
+   {
+    fps:20,
+    qrbox:{
+     width:250,
+     height:120
     }
+   },
 
-}
 
+   text=>{
 
-/* =================================
-   STOP CAMERA
-================================= */
+    $("awbInput").value=text;
 
-async function stopCamera(){
-
-    try{
-
-        if(html5QrCode){
-
-            await html5QrCode.stop();
-            await html5QrCode.clear();
-
-            html5QrCode = null;
-
-        }
-
-    }catch(e){}
-
-    $("reader").style.display = "none";
-
-} 
-/* =================================
-   AWB ENTER AUTO TRACK
-================================= */
-
-$("awbInput").addEventListener(
-"keydown",
-
-function(e){
-
-    if(e.key === "Enter"){
-
-        e.preventDefault();
-
-        trackShipment();
-
-    }
-
-}); 
-/* =================================
-   TRACK SHIPMENT
-================================= */
-
-async function trackShipment(){
-
-    let awb = $("awbInput").value.trim();
-
-    if(!awb){
-
-        toast("Scan AWB First");
-
-        return;
-    }
-
-    try{
-
-        showLoader();
-
-        let data = await apiGet(
-            "trackShipment",
-            {awb:awb}
-        );
-
-        hideLoader();
-
-        if(!data.success){
-
-            $("trackingResult").innerHTML =
-            "Tracking Not Found<br>Enter Order ID";
-
-            $("orderInput").focus();
-
-            return;
-        }
-
-        currentTracking = data;
-
-        $("trackingResult").innerHTML = `
-        AWB: ${data.awb}<br>
-        Order: ${data.orderId}<br>
-        Status: ${data.status}<br>
-        Courier: ${data.courier}<br>
-        Name: ${data.customerName}<br>
-        City: ${data.city}
-        `;
-
-    }
-    catch(error){
-
-        handleError(error);
-
-    }
-
-} 
-/* =================================
-   SAVE ENTRY
-================================= */
-
-async function saveEntry(){
-
-    if(!currentType){
-
-        toast("Select Pickup / Return");
-
-        return;
-    }
-
-    let payload = {
-
-        type: currentType,
-
-        awb: $("awbInput").value.trim(),
-
-        orderId: $("orderInput").value.trim(),
-
-        courier: currentTracking?.courier || "",
-
-        status: currentTracking?.status || "",
-
-        customer: currentTracking?.customerName || "",
-
-        city: currentTracking?.city || ""
-
-    };
-
-    if(!payload.awb){
-
-        toast("AWB Missing");
-
-        return;
-
-    }
-
-    try{
-
-        showLoader();
-
-        let result = await apiPost(
-            "saveEntry",
-            payload
-        );
-
-        hideLoader();
-
-        if(result.duplicate){
-
-            toast("Duplicate AWB");
-
-            return;
-        }
-
-        if(result.success){
-
-            successSound();
-
-            toast("Saved Successfully");
-
-            clearScan();
-
-            focusAWB();
-
-        }else{
-
-            toast(result.message || "Save Failed");
-
-        }
-
-    }
-    catch(error){
-
-        handleError(error);
-
-    }
-
-}
-
-
-/* =================================
-   STOP WORK
-================================= */
-
-function stopWork(){
+    successSound();
 
     stopCamera();
 
-    currentType = "";
+    trackShipment();
 
-    clearScan();
+   }
 
-    toast("Work Stopped");
+  );
+
+ }catch(e){
+
+  console.log(e);
+
+  toast("Camera Error");
+
+ }
 
 }
-/* ===============================
-   LOAD DASHBOARD
-================================ */
+
+
+/* =========================
+STOP CAMERA
+========================= */
+
+async function stopCamera(){
+
+ try{
+
+  if(html5QrCode){
+
+   await html5QrCode.stop();
+
+   await html5QrCode.clear();
+
+   html5QrCode=null;
+
+  }
+
+ }catch(e){}
+
+
+ $("reader").style.display="none";
+
+}
+
+
+/* =========================
+AWB ENTER AUTO TRACK
+========================= */
+
+$("awbInput").addEventListener(
+ "keydown",
+ e=>{
+  if(e.key=="Enter"){
+   e.preventDefault();
+   trackShipment();
+  }
+ }
+);
+
+
+/* =========================
+TRACK SHIPMENT
+========================= */
+
+async function trackShipment(){
+
+ let awb=$("awbInput").value.trim();
+
+ if(!awb)
+  return toast("Scan AWB First");
+
+
+ try{
+
+  showLoader();
+
+
+  let data=await apiGet(
+   "trackShipment",
+   {awb}
+  );
+
+
+  hideLoader();
+
+
+  if(!data.success){
+
+   $("trackingResult").innerHTML=
+   "Tracking Not Found<br>Enter Order ID";
+
+   return $("orderInput").focus();
+
+  }
+
+
+  currentTracking=data;
+
+
+  $("trackingResult").innerHTML=`
+
+  AWB : ${data.awb}<br>
+  Order : ${data.orderId}<br>
+  Status : ${data.status}<br>
+  Courier : ${data.courier}<br>
+  Name : ${data.customerName}<br>
+  City : ${data.city}
+
+  `;
+
+
+ }catch(e){
+
+  handleError(e);
+
+ }
+
+}
+
+
+/* =========================
+SAVE PICKUP / RETURN ENTRY
+========================= */
+
+async function saveEntry(){
+
+
+ if(!currentType)
+  return toast("Select Pickup / Return");
+
+
+ let payload={
+
+  type:currentType,
+
+  awb:$("awbInput").value.trim(),
+
+  orderId:$("orderInput").value.trim(),
+
+  courier:currentTracking?.courier||"",
+
+  status:currentTracking?.status||"",
+
+  customer:currentTracking?.customerName||"",
+
+  city:currentTracking?.city||""
+
+ };
+
+
+ if(!payload.awb)
+  return toast("AWB Missing");
+
+
+ try{
+
+
+  showLoader();
+
+
+  let result=await apiPost(
+   "saveEntry",
+   payload
+  );
+
+
+  hideLoader();
+
+
+  if(result.duplicate)
+   return toast("Duplicate AWB");
+
+
+  if(result.success){
+
+
+   successSound();
+
+
+   toast("Saved Successfully");
+
+
+   clearScan();
+
+
+   focusAWB();
+
+
+  }else{
+
+
+   toast(
+    result.message||
+    "Save Failed"
+   );
+
+
+  }
+
+
+ }catch(e){
+
+  handleError(e);
+
+ }
+
+
+}
+
+
+/* =========================
+STOP WORK
+========================= */
+
+function stopWork(){
+
+ stopCamera();
+
+ currentType="";
+
+ clearScan();
+
+ toast("Work Stopped");
+
+}
+    /* =========================
+DASHBOARD
+========================= */
 
 async function loadDashboard(){
 
-    try{
+ try{
 
-        let data =
-        await apiGet(
-            "getDashboardCounts"
-        );
+  let d=await apiGet("getDashboardCounts");
 
-        $("dashboardArea").innerHTML = `
+  $("dashboardArea").innerHTML=`
+  <div class="stat">Today Pickup<h2>${d.todayPickup||0}</h2></div>
+  <div class="stat">Today Return<h2>${d.todayReturn||0}</h2></div>
+  <div class="stat">Yesterday Pickup<h2>${d.yesterdayPickup||0}</h2></div>
+  <div class="stat">Yesterday Return<h2>${d.yesterdayReturn||0}</h2></div>
+  <div class="stat">${d.monthName||""} Pickup<h2>${d.monthPickup||0}</h2></div>
+  <div class="stat">${d.monthName||""} Return<h2>${d.monthReturn||0}</h2></div>`;
 
-        <div class="stat">
-            Today Pickup
-            <h2>${data.todayPickup || 0}</h2>
-        </div>
-
-        <div class="stat">
-            Today Return
-            <h2>${data.todayReturn || 0}</h2>
-        </div>
-
-
-        <div class="stat">
-            Yesterday Pickup
-            <h2>${data.yesterdayPickup || 0}</h2>
-        </div>
-
-
-        <div class="stat">
-            Yesterday Return
-            <h2>${data.yesterdayReturn || 0}</h2>
-        </div>
-
-
-        <div class="stat">
-            ${data.monthName || ""}
-            Pickup
-
-            <h2>
-            ${data.monthPickup || 0}
-            </h2>
-
-        </div>
-
-
-        <div class="stat">
-
-            ${data.monthName || ""}
-            Return
-
-            <h2>
-            ${data.monthReturn || 0}
-            </h2>
-
-        </div>
-
-        `;
-
-
-    }catch(error){
-
-        console.log(error);
-
-    }
+ }catch(e){
+  console.log(e);
+ }
 
 }
-    async function loadRecent(){
+
+
+/* =========================
+SEARCH ORDER
+========================= */
 
 async function searchOrder(){
 
-    let keyword =
-    $("searchInput").value.trim();
+ let keyword=$("searchInput").value.trim();
+
+ if(!keyword)
+  return toast("Enter AWB / Order ID");
+
+ $("searchResult").innerHTML="Searching...";
 
 
-    if(!keyword){
+ try{
 
-        toast("Enter AWB / Order ID");
+  let d=await apiGet("searchOrder",{keyword});
 
-        return;
-
-    }
-
-
-    $("searchResult").innerHTML =
-    "Searching...";
+  if(!d.success)
+   return $("searchResult").innerHTML="No Record Found";
 
 
-    try{
+ $("searchResult").innerHTML=`
 
-        let data =
-        await apiGet(
-            "searchOrder",
-            {
-                keyword: keyword
-            }
-        );
+ <b>AWB:</b> ${d.awb}<br>
+ <b>Order:</b> ${d.orderId}<br>
+ <b>Status:</b> ${d.status}<br>
+ <b>Type:</b> ${d.type}<br>
+ <b>Courier:</b> ${d.courier}<br><br>
 
+ <button class="btn green"
+ onclick="updateSingleAWB('${d.awb}')">
+ Update Current Status
+ </button>`;
 
-        if(!data.success){
+ }catch(e){
 
-            $("searchResult").innerHTML =
-            "No Record Found";
+  handleError(e);
 
-            return;
-        }
-
-
-        $("searchResult").innerHTML = `
-
-        <b>AWB:</b>
-        ${data.awb}<br>
-
-        <b>Order:</b>
-        ${data.orderId}<br>
-
-        <b>Status:</b>
-        ${data.status}<br>
-
-        <b>Type:</b>
-        ${data.type}<br>
-
-        <b>Courier:</b>
-        ${data.courier}
-
-        <br><br>
-
-        <button 
-        class="btn green"
-        onclick="updateSingleAWB('${data.awb}')">
-
-        Update Current Status
-
-        </button>
-
-        `;
-
-
-    }catch(error){
-
-        handleError(error);
-
-    }
+ }
 
 }
-      async function updateSingleAWB(awb){
-
-    try{
-
-        showLoader();
 
 
-        let result =
-        await apiGet(
-            "updateSingleAWB",
-            {
-                awb: awb
-            }
-        );
+/* =========================
+UPDATE SINGLE AWB
+========================= */
 
+async function updateSingleAWB(awb){
 
-        hideLoader();
+ try{
 
+  showLoader();
 
-        if(result.success){
+  let r=await apiGet(
+   "updateSingleAWB",
+   {awb}
+  );
 
-            toast("Status Updated");
+  hideLoader();
 
-            searchOrder();
+  if(r.success){
 
-        }else{
+   toast("Status Updated");
 
-            toast(
-            result.message ||
-            "Update Failed"
-            );
+   searchOrder();
 
-        }
+  }else{
 
+   toast(r.message||"Update Failed");
 
-    }catch(error){
+  }
 
-        handleError(error);
+ }catch(e){
 
-    }
+  handleError(e);
+
+ }
 
 }
-/* ==============================
-   INVENTORY DASHBOARD
-============================== */
+
+
+/* =========================
+INVENTORY DASHBOARD
+========================= */
 
 async function loadInventory(){
 
-    try{
+ try{
 
-        let data = await apiGet(
-            "getInventoryDashboard"
-        );
+  let d=await apiGet("getInventoryDashboard");
 
+  $("inventoryDashboard").innerHTML=`
+  <div class="dashboard">
+  <div class="stat">Total SKU<h2>${d.totalSku||0}</h2></div>
+  <div class="stat">Total Stock<h2>${d.totalStock||0}</h2></div>
+  <div class="stat">Low Stock<h2>${d.lowStock||0}</h2></div>
+  </div>`;
 
-        $("inventoryDashboard").innerHTML = `
+  loadLowStock();
 
-        <div class="dashboard">
+ }catch(e){
 
-            <div class="stat">
-                Total SKU
-                <h2>
-                ${data.totalSku || 0}
-                </h2>
-            </div>
+  console.log(e);
 
-
-            <div class="stat">
-                Total Stock
-                <h2>
-                ${data.totalStock || 0}
-                </h2>
-            </div>
-
-
-            <div class="stat">
-                Low Stock
-                <h2>
-                ${data.lowStock || 0}
-                </h2>
-            </div>
-
-        </div>
-
-        `;
-
-
-        loadLowStock();
-
-
-    }catch(error){
-
-        console.log(error);
-
-    }
+ }
 
 }
-      async function searchSKU(){
-
-    let sku =
-    $("skuSearch").value.trim();
 
 
-    if(!sku){
+/* =========================
+SEARCH SKU
+========================= */
 
-        toast("Enter SKU");
+async function searchSKU(){
 
-        return;
-    }
+ let sku=$("skuSearch").value.trim();
 
-
-    try{
-
-        showLoader();
-
-
-        let data =
-        await apiGet(
-            "searchSKU",
-            {
-                sku: sku
-            }
-        );
+ if(!sku)
+  return toast("Enter SKU");
 
 
-        hideLoader();
+ try{
+
+  showLoader();
+
+  let d=await apiGet("searchSKU",{sku});
+
+  hideLoader();
 
 
-        if(!data.success){
-
-            toast("SKU Not Found");
-
-            return;
-        }
+  if(!d.success)
+   return toast("SKU Not Found");
 
 
-        $("inventoryDashboard")
-        .innerHTML += `
+ $("inventoryDashboard").innerHTML+=`
+ <div class="card">
+ <b>SKU:</b> ${d.sku}<br>
+ <b>Product:</b> ${d.name}<br>
+ <b>Stock:</b> ${d.stock}
+ </div>`;
 
-        <div class="card">
+ }catch(e){
 
-        <b>SKU :</b>
-        ${data.sku}<br>
+  handleError(e);
 
-        <b>Product :</b>
-        ${data.name}<br>
-
-        <b>Stock :</b>
-        ${data.stock}
-
-        </div>
-
-        `;
-
-
-    }catch(error){
-
-        handleError(error);
-
-    }
+ }
 
 }
-      async function updateStock(){
-
-    let sku =
-    $("skuUpdate").value.trim();
 
 
-    let qty =
-    $("stockQty").value.trim();
+/* =========================
+UPDATE STOCK
+========================= */
+
+async function updateStock(){
+
+ let sku=$("skuUpdate").value.trim(),
+ qty=$("stockQty").value.trim();
+
+ if(!sku || !qty)
+  return toast("Enter SKU & Quantity");
 
 
-    if(!sku || !qty){
+ try{
 
-        toast("Enter SKU & Quantity");
+  showLoader();
 
-        return;
+  let r=await apiPost(
+   "updateStock",
+   {
+    sku,
+    quantity:qty
+   }
+  );
 
-    }
-
-
-    try{
-
-        showLoader();
-
-
-        let result =
-        await apiPost(
-            "updateStock",
-            {
-                sku: sku,
-                quantity: qty
-            }
-        );
+  hideLoader();
 
 
-        hideLoader();
+  if(r.success){
+
+   successSound();
+
+   toast("Stock Updated");
+
+   $("skuUpdate").value="";
+   $("stockQty").value="";
+
+   loadInventory();
+
+  }else{
+
+   toast(r.message||"Update Failed");
+
+  }
 
 
-        if(result.success){
+ }catch(e){
 
-            successSound();
+  handleError(e);
 
-            toast("Stock Updated");
-
-            $("skuUpdate").value="";
-            $("stockQty").value="";
-
-
-            loadInventory();
-
-
-        }else{
-
-            toast(
-            result.message ||
-            "Update Failed"
-            );
-
-        }
-
-
-    }catch(error){
-
-        handleError(error);
-
-    }
+ }
 
 }
-      async function loadLowStock(){
-
-    try{
-
-        let data =
-        await apiGet(
-            "getLowStock"
-        );
 
 
-        let html =
-        `<div class="card">
+/* =========================
+LOW STOCK ALERT
+========================= */
 
-        <div class="card-title">
-        Low Stock Alert
-        </div>`;
+async function loadLowStock(){
 
+ try{
 
-        data.rows.forEach(item=>{
+  let d=await apiGet("getLowStock");
 
-            html += `
-
-            <div class="result">
-
-            <b>
-            ${item.sku}
-            </b>
-
-            <br>
-
-            ${item.name}
-
-            <br>
-
-            Stock :
-            ${item.stock}
-
-            <hr>
-
-            </div>
-
-            `;
-
-        });
+  let html=`<div class="card">
+  <div class="card-title">
+  Low Stock Alert
+  </div>`;
 
 
-        html += "</div>";
+  d.rows.forEach(i=>{
+
+   html+=`
+   <div class="result">
+   <b>${i.sku}</b><br>
+   ${i.name}<br>
+   Stock: ${i.stock}
+   <hr>
+   </div>`;
+
+  });
 
 
-        $("lowStockArea").innerHTML =
-        html;
+  $("lowStockArea").innerHTML=
+  html+"</div>";
 
 
-    }catch(error){
+ }catch(e){
 
-        console.log(error);
+  console.log(e);
 
-    }
+ }
 
 }
+
+
+/* =========================
+BULK UPDATE PLACEHOLDER
+========================= */
+
+async function loadBulkCounts(){
+ toast("Connect Code.gs Bulk Function");
+}
+
+async function startBulkUpdate(type){
+ toast(type+" Bulk Update Start");
+}
+
+
+/* =========================
+END
+========================= */
+
 </script>
 
+</body>
 </html>
