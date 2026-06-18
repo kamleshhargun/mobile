@@ -1,1798 +1,1757 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
-
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>
-Harsidhi Ventures Pickup Return System
+Harsidhi Ventures Pickup Return System V2
 </title>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:#f3f6fb;height:100vh;overflow:hidden;color:#1f2937}
-.header{height:60px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#2563eb;border-bottom:1px solid #e5e7eb;box-shadow:0 1px 8px rgba(0,0,0,.05)}
-.main{height:calc(100vh - 60px);display:grid;grid-template-columns:280px 1fr 340px;gap:12px;padding:12px}
-.panel{background:#fff;border:1px solid #e5e7eb;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 15px rgba(0,0,0,.05)}
-.panel-header{padding:14px 16px;font-weight:700;font-size:15px;background:#fafbfc;border-bottom:1px solid #eef2f7}
-.left-content,.right-content{padding:12px;overflow:auto}
-  #dashboardArea{display:grid;gap:10px;margin-bottom:10px}
-.center-content{padding:15px;display:flex;flex-direction:column;gap:12px}
-.mode-row,.action-row{display:flex;gap:10px}
-.mode-btn{flex:1;height:50px;border-radius:12px;border:2px solid;font-weight:700;background:#fff;cursor:pointer;transition:.2s}
-.pickup{border-color:#2563eb;color:#2563eb}
-.return{border-color:#14b8a6;color:#14b8a6}
-.active-pickup{background:#2563eb;color:#fff}
-.active-return{background:#14b8a6;color:#fff}
-.scan-panel{display:none;flex-direction:column;gap:10px;padding:14px;border:1px solid #e5e7eb;border-radius:14px;background:#fafcff}
-.input{height:46px;padding:0 14px;border:1px solid #dbe2ea;border-radius:12px;outline:none;background:#fff}
-.input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-#reader{display:none;width:100%;overflow:hidden;border-radius:12px}
-.result-card,.card{padding:14px;border:1px solid #e5e7eb;border-radius:14px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.03)}
-.result-card{display:none;font-size:13px}
-.btn{border:none;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
-.btn:hover{transform:translateY(-1px);opacity:.95}
-.btn-camera{background:#2563eb;color:#fff}
-.btn-manual{background:#475569;color:#fff}
-.btn-save{background:#10b981;color:#fff}
-.btn-stop{background:#ef4444;color:#fff}
-.search-box{display:flex;flex-direction:column;gap:10px;height:100%}
-.search-result{flex:1;overflow:auto;font-size:13px}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 16px;border-radius:12px;z-index:9999;box-shadow:0 8px 20px rgba(0,0,0,.2)}
-.small-btn{padding:8px 12px;font-size:12px;min-height:34px;width:auto}
-#loadingOverlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);z-index:99999;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#2563eb}
-@media(max-width:900px){body{overflow:auto}.main{grid-template-columns:1fr;height:auto}.panel{min-height:350px}}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Inter,sans-serif;
+}
+
+body{
+    background:#f2f5fb;
+    color:#1f2937;
+}
+
+
+/* Header */
+
+.header{
+    height:60px;
+    background:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+    font-weight:700;
+    color:#2563eb;
+    border-bottom:1px solid #ddd;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+
+/* Tabs */
+
+.tabs{
+    display:flex;
+    gap:8px;
+    padding:10px;
+    background:#fff;
+    position:sticky;
+    top:0;
+    z-index:100;
+    border-bottom:1px solid #e5e7eb;
+}
+
+
+.tab-btn{
+    flex:1;
+    border:none;
+    padding:12px;
+    border-radius:12px;
+    background:#e5e7eb;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+
+.tab-btn.active{
+    background:#2563eb;
+    color:#fff;
+}
+
+
+
+/* Main Container */
+
+.container{
+    padding:12px;
+}
+
+
+.page{
+    display:none;
+}
+
+
+.page.active{
+    display:block;
+}
+
+
+
+/* Card Design */
+
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:15px;
+    margin-bottom:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,.06);
+    border:1px solid #e5e7eb;
+}
+
+
+.card-title{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+
+
+/* Buttons */
+
+.btn{
+    width:100%;
+    border:none;
+    padding:12px;
+    border-radius:12px;
+    margin-top:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+
+.blue{
+    background:#2563eb;
+    color:#fff;
+}
+
+
+.green{
+    background:#10b981;
+    color:#fff;
+}
+
+
+.red{
+    background:#ef4444;
+    color:#fff;
+}
+
+
+.gray{
+    background:#475569;
+    color:#fff;
+}
+
+
+
+/* Inputs */
+
+.input{
+    width:100%;
+    height:45px;
+    padding:10px 12px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    margin-top:8px;
+    outline:none;
+}
+
+
+.input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.15);
+}
+
+
+
+/* QR Reader */
+
+#reader{
+    width:100%;
+    margin-top:10px;
+    overflow:hidden;
+    border-radius:12px;
+}
+
+
+
+/* Dashboard */
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+    gap:10px;
+}
+
+
+.stat{
+    background:#f8fbff;
+    border:1px solid #dbeafe;
+    text-align:center;
+    padding:15px;
+    border-radius:14px;
+}
+
+
+.stat h2{
+    color:#2563eb;
+    margin-top:8px;
+}
+
+
+
+/* Result Area */
+
+.result{
+    margin-top:10px;
+    font-size:13px;
+    line-height:1.7;
+}
+
+
+
+/* Loader */
+
+.loader{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(255,255,255,.8);
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#2563eb;
+
+    z-index:9999;
+
+}
+
+
+/* Toast */
+
+.toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#111827;
+    color:#fff;
+    padding:12px 18px;
+    border-radius:12px;
+    z-index:10000;
+}
+
+
+/* Mobile Optimization */
+
+@media(max-width:600px){
+
+.header{
+    font-size:15px;
+    text-align:center;
+    padding:5px;
+}
+
+.tab-btn{
+    font-size:13px;
+    padding:10px;
+}
+
+.card{
+    padding:12px;
+}
+
+}
+
+
 </style>
+
 
 </head>
 
+
 <body>
 
-<div class="header">HARSIDHI VENTURES PICKUP RETURN SYSTEM</div>
 
-<div class="main">
+<!-- HEADER -->
 
-<div class="panel">
-<div class="panel-header">Dashboard & Bulk Update</div>
-<div class="left-content">
-<div id="dashboardArea"></div>
-<div class="card">
-<h3>Bulk Update</h3>
-<input type="date" id="bulkDate">
-<button class="btn btn-camera" onclick="loadBulkCounts()">Load Counts</button>
-<hr>
-<div id="bulkCounts">Pickup : 0<br>Return : 0</div>
-<br>
-<button id="pickupUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Pickup')">Update Pickup</button>
-<button id="returnUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Return')">Update Return</button>
-<hr>
-<div id="bulkProgress">Waiting...</div>
-</div>
-</div>
+<div class="header">
+
+HARSIDHI VENTURES SYSTEM V2
+
 </div>
 
-<div class="panel">
-<div class="center-content">
-<div class="mode-row">
-<button id="pickupBtn" class="mode-btn pickup" onclick="selectType('Pickup')">Pickup</button>
-<button id="returnBtn" class="mode-btn return" onclick="selectType('Return')">Return</button>
-</div>
 
-<div id="scanPanel" class="scan-panel">
-<button class="btn btn-camera" onclick="startCamera()">📷 Camera Scan</button>
-<button class="btn btn-manual" onclick="focusAWB()">⌨ Manual / Scanner</button>
-<div id="reader"></div>
-<input id="awbInput" class="input" placeholder="Scan AWB">
-<input id="orderInput" class="input" placeholder="Order ID (Manual Fallback)">
-<div id="resultCard" class="result-card"></div>
-<div class="action-row">
-<button class="btn btn-save" onclick="saveEntry()">Next</button>
-<button class="btn btn-stop" onclick="stopWork()">Stop</button>
-</div>
-</div>
-</div>
-</div>
+
+<!-- TOP MENU -->
+
 <div class="tabs">
 
-<button onclick="openPage('pickup')">
+
+<button class="tab-btn active"
+onclick="openPage('pickupPage',this)">
+
+🚚 Pickup / Return
+
+</button>
+
+
+<button class="tab-btn"
+onclick="openPage('dashboardPage',this)">
+
+📊 Dashboard
+
+</button>
+
+
+<button class="tab-btn"
+onclick="openPage('searchPage',this)">
+
+🔍 Search
+
+</button>
+
+
+<button class="tab-btn"
+onclick="openPage('inventoryPage',this)">
+
+📦 Inventory
+
+</button>
+
+
+</div>
+
+
+
+
+<div class="container">
+
+
+<!-- =====================
+PICKUP RETURN PAGE
+====================== -->
+
+
+<div id="pickupPage"
+class="page active">
+
+
+<div class="card">
+
+
+<div class="card-title">
+
+Select Work Type
+
+</div>
+
+
+<button id="pickupBtn"
+class="btn blue">
 🚚 Pickup
 </button>
 
-<button onclick="openPage('inventory')">
-📦 Inventory
+
+<button id="returnBtn"
+class="btn gray">
+↩ Return
 </button>
 
-</div>
-  <div id="pickupPage">
-
-YOUR CURRENT SYSTEM
 
 </div>
-  <div id="inventoryPage" style="display:none">
+
+
+
+<div class="card">
+
+
+<div class="card-title">
+
+Scan AWB
+
+</div>
+
+
+<button id="cameraBtn"
+class="btn blue">
+📷 Open Camera
+</button>
+
+
+<button id="manualBtn"
+class="btn gray">
+⌨ Manual Scanner
+</button>
+
+
+<div id="reader"></div>
+
+
+<input id="awbInput"
+class="input"
+placeholder="Scan AWB Number">
+
+
+<input id="orderInput"
+class="input"
+placeholder="Order ID (Optional)">
+
+
+
+<div id="trackingResult"
+class="result">
+
+Waiting for Scan...
+
+</div>
+
+
+<button id="saveBtn"
+class="btn green">
+✅ Save & Next
+</button>
+
+
+<button id="stopBtn"
+class="btn red">
+❌ Stop
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+<!-- DASHBOARD PAGE -->
+
+<div id="dashboardPage"
+class="page">
+
+
+<div class="dashboard"
+id="dashboardArea">
+
+
+</div>
+
+
+<div id="recentArea">
+<div class="card">
+
+    <div class="card-title">
+        Bulk Status Update
+    </div>
+
+    <input 
+        id="bulkDate"
+        type="date"
+        class="input">
+
+    <div style="margin-top:10px">
+        Pickup :
+        <span id="pickupCount">0</span>
+        <br>
+        Return :
+        <span id="returnCount">0</span>
+    </div>
+
+    <button 
+        class="btn blue"
+        onclick="loadBulkCounts()">
+
+        Load Counts
+
+    </button>
+
+
+    <button 
+        id="bulkPickupBtn"
+        class="btn green"
+        onclick="startBulkUpdate('Pickup')">
+
+        Update Pickup
+
+    </button>
+
+
+    <button 
+        id="bulkReturnBtn"
+        class="btn green"
+        onclick="startBulkUpdate('Return')">
+
+        Update Return
+
+    </button>
+
+
+    <div id="bulkProgress"
+    class="result">
+
+    Waiting...
+
+    </div>
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
+
+<!-- SEARCH PAGE -->
+
+
+<div id="searchPage"
+class="page">
+
+
+<div class="card">
+
+
+<div class="card-title">
+
+Find Order
+
+</div>
+
+
+<input 
+id="searchInput"
+class="input"
+placeholder="AWB / Order ID">
+
+
+<button 
+id="searchBtn"
+class="btn blue">
+
+Search
+
+</button>
+
+
+<div id="searchResult"
+class="result">
+
+No Search Yet
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- INVENTORY PAGE -->
+
+
+<div id="inventoryPage"
+class="page">
+
+
+<div class="card">
+
+
+<div class="card-title">
 
 Inventory Dashboard
 
+</div>
+
+
+<div id="inventoryDashboard">
+
+Loading Inventory...
+
+</div>
+
+
+</div>
+
+
+<div class="card">
+
+
+<div class="card-title">
+
 Search SKU
+
+</div>
+
+
+<input
+id="skuSearch"
+class="input"
+placeholder="Enter SKU">
+
+
+<button 
+id="skuSearchBtn"
+class="btn blue">
+
+Search SKU
+
+</button>
+
+
+</div>
+
+
+
+<div class="card">
+
+
+<div class="card-title">
 
 Stock Update
 
-Low Stock
-
-</div>
-<div class="panel">
-<div class="panel-header">Find Order</div>
-<div class="right-content">
-<div class="search-box">
-<input id="searchInput" class="input" placeholder="Search AWB / Order ID">
-<button class="btn btn-camera small-btn" onclick="searchOrder()">Search</button>
-<button id="updateSingleBtn" class="btn btn-save small-btn" style="display:none;">Update Sheet</button>
-<div id="searchResult" class="search-result"></div>
-</div>
-</div>
 </div>
 
+
+<input
+id="skuUpdate"
+class="input"
+placeholder="SKU">
+
+
+<input
+id="stockQty"
+class="input"
+placeholder="Quantity">
+
+
+<button 
+id="stockUpdateBtn"
+class="btn green">
+
+Update Stock
+
+</button>
+
+
 </div>
 
-<div id="loadingOverlay">Loading...</div>
+
+<div id="lowStockArea">
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+<!-- Loader -->
+
+
+<div id="loader"
+class="loader">
+
+Loading...
+
+</div>
+
 
 </body>
+  <script>
 
-<script>
-
-/* ===================================
-CONFIG
-=================================== */
+/* =================================
+   CONFIG
+================================= */
 
 const API_URL =
 "https://script.google.com/macros/s/AKfycby00URNBBmXCnQM7fWHZZvqVrCcvNwEJXQbDm8O35BnZp8w6f9Jkdu006yRPquRP0MQ/exec";
 
-/* ===================================
-GLOBAL
-=================================== */
-let bulkRunning = false;
-  
+
+/* =================================
+   FAST DOM SELECTOR
+================================= */
+
+const $ = id => document.getElementById(id);
+
+
+/* =================================
+   GLOBAL VARIABLES
+================================= */
+
 let currentType = "";
-
 let currentTracking = null;
-
+let latestTracking = null;
 let html5QrCode = null;
+let bulkRunning = false;
 
-const beep =
-new Audio(
+
+/* =================================
+   SOUND
+================================= */
+
+const beep = new Audio(
 "https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"
 );
-  /* ===================================
-TYPE SELECT
-=================================== */
 
-function selectType(type){
 
-  currentType = type;
+/* =================================
+   PAGE TAB SYSTEM
+================================= */
 
-  document
-    .getElementById("scanPanel")
+function openPage(pageId, btn){
+
+    // Hide all pages
+    document
+    .querySelectorAll(".page")
+    .forEach(page =>
+        page.classList.remove("active")
+    );
+
+
+    // Remove active button
+    document
+    .querySelectorAll(".tab-btn")
+    .forEach(button =>
+        button.classList.remove("active")
+    );
+
+
+    // Open selected page
+    $(pageId)
+    .classList.add("active");
+
+
+    // Highlight selected tab
+    btn
+    .classList.add("active");
+
+}
+
+
+/* =================================
+   LOADER
+================================= */
+
+
+function showLoader(){
+
+    $("loader")
     .style.display = "flex";
 
-  document
-    .getElementById("pickupBtn")
-    .classList.remove(
-      "active-pickup"
-    );
-
-  document
-    .getElementById("returnBtn")
-    .classList.remove(
-      "active-return"
-    );
-
-  if(type === "Pickup"){
-
-    document
-      .getElementById("pickupBtn")
-      .classList.add(
-        "active-pickup"
-      );
-
-  }else{
-
-    document
-      .getElementById("returnBtn")
-      .classList.add(
-        "active-return"
-      );
-
-  }
-
-  clearForm();
-
-  document
-    .getElementById("awbInput")
-    .focus();
-
 }
 
-/* ===================================
-CLEAR FORM
-=================================== */
-
-function clearForm(){
-
-  currentTracking = null;
-
-  document
-    .getElementById("awbInput")
-    .value = "";
-
-  document
-    .getElementById("orderInput")
-    .value = "";
-
-  document
-    .getElementById("orderInput")
-    .style.display = "none";
-
-  document
-    .getElementById("resultCard")
-    .style.display = "none";
-
-  document
-    .getElementById("resultCard")
-    .innerHTML = "";
-
-}
-
-/* ===================================
-FOCUS AWB
-=================================== */
-
-function focusAWB(){
-
-  document
-    .getElementById("awbInput")
-    .focus();
-
-}
-
-/* ===================================
-CAMERA START
-=================================== */
-
-async function startCamera(){
-
-  try{
-
-    if(html5QrCode){
-
-      await stopCamera();
-
-    }
-
-    document
-      .getElementById("reader")
-      .style.display = "block";
-
-    html5QrCode =
-      new Html5Qrcode(
-        "reader"
-      );
-
-    await html5QrCode.start(
-
-      {
-        facingMode:
-          "environment"
-      },
-
-      {
-
-        fps: 20,
-
-        qrbox: {
-
-          width: 280,
-
-          height: 140
-
-        }
-
-      },
-
-      function(decodedText){
-
-        document
-          .getElementById("awbInput")
-          .value =
-          decodedText;
-
-        beep.play();
-
-        stopCamera();
-
-        trackShipment();
-
-      }
-
-    );
-
-  }catch(err){
-
-    toast(
-      "Camera Error"
-    );
-
-    console.log(err);
-
-  }
-
-}
-
-/* ===================================
-STOP CAMERA
-=================================== */
-
-async function stopCamera(){
-
-  try{
-
-    if(html5QrCode){
-
-      await html5QrCode.stop();
-
-      await html5QrCode.clear();
-
-      html5QrCode = null;
-
-    }
-
-  }catch(err){}
-
-  document
-    .getElementById("reader")
-    .style.display = "none";
-
-}
-
-/* ===================================
-AUTO TRACK
-=================================== */
-
-document
-.getElementById("awbInput")
-.addEventListener(
-  "keydown",
-  function(e){
-
-    if(e.key === "Enter"){
-
-      trackShipment();
-
-    }
-
-  }
-);
-
-/* ===================================
-USB SCANNER SUPPORT
-=================================== */
-
-let scannerBuffer = "";
-
-document.addEventListener(
-  "keydown",
-  function(e){
-
-    if(
-      document.activeElement.id !== "awbInput"
-    ){
-      return;
-    }
-
-    // Enter aaya to tracking start
-    if(e.key === "Enter"){
-
-      e.preventDefault();
-
-      const awb = scannerBuffer.trim();
-
-      if(awb.length > 5){
-
-        document
-          .getElementById("awbInput")
-          .value = awb;
-
-        trackShipment();
-      }
-
-      scannerBuffer = "";
-
-      return;
-    }
-
-    // Sirf actual characters add karo
-    if(e.key.length === 1){
-
-      scannerBuffer += e.key;
-
-    }
-
-  }
-);
-
-/* ===================================
-TRACK SHIPMENT
-=================================== */
-
-async function trackShipment(){
-
-  const awb =
-
-    document
-      .getElementById(
-        "awbInput"
-      )
-      .value
-      .trim();
-
-  if(!awb){
-
-    toast(
-      "Scan AWB"
-    );
-
-    return;
-
-  }
-
-  showLoading();
-
-  try{
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=trackShipment&awb=" +
-
-        encodeURIComponent(
-          awb
-        )
-
-      );
-
-    const result =
-      await response.json();
-
-    if(result.success){
-
-      currentTracking =
-        result;
-
-      renderTracking(
-        result
-      );
-
-      return;
-
-    }
-
-    openManualOrder();
-
-  }catch(err){
-
-    console.log(err);
-
-    openManualOrder();
-
-  }
-
-}
-
-/* ===================================
-FALLBACK MODE
-=================================== */
-
-function openManualOrder(){
-
-  currentTracking = null;
-
-  const card =
-    document
-      .getElementById(
-        "resultCard"
-      );
-
-  card.style.display =
-    "block";
-
-  card.innerHTML = `
-
-    <div
-    style="
-      color:#dc2626;
-      font-weight:600;
-    ">
-
-    Tracking Not Found
-
-    </div>
-
-    <div
-    style="
-      margin-top:8px;
-    ">
-
-    Enter Order ID
-    manually
-
-    </div>
-
-  `;
-
-  document
-    .getElementById(
-      "orderInput"
-    )
-    .style.display =
-    "block";
-
-  document
-    .getElementById(
-      "orderInput"
-    )
-    .focus();
-
-}
-
-/* ===================================
-RENDER TRACKING
-=================================== */
-
-function renderTracking(data){
-
-  const card =
-    document
-      .getElementById(
-        "resultCard"
-      );
-
-  card.style.display =
-    "block";
-
-  card.innerHTML = `
-
-    <b>AWB:</b>
-    ${data.awb || ""}
-    <br>
-
-    <b>Order ID:</b>
-    ${data.orderId || ""}
-    <br>
-
-    <b>Status:</b>
-    ${data.status || ""}
-    <br>
-
-    <b>Courier:</b>
-    ${data.courier || ""}
-    <br>
-
-    <b>Name:</b>
-    ${data.customerName || ""}
-    <br>
-
-    <b>City:</b>
-    ${data.city || ""}
-
-  `;
-
-  document
-    .getElementById(
-      "orderInput"
-    )
-    .value =
-
-    data.orderId || "";
-
-}
-
-/* ===================================
-LOADING
-=================================== */
-
-function showLoading(){
-
-  const card =
-    document
-      .getElementById(
-        "resultCard"
-      );
-
-  card.style.display =
-    "block";
-
-  card.innerHTML =
-    "Fetching Tracking...";
-
-}
-
-/* ===================================
-STOP WORK
-=================================== */
-
-function stopWork(){
-
-  stopCamera();
-
-  currentType = "";
-
-  clearForm();
-
-  document
-    .getElementById(
-      "scanPanel"
-    )
-    .style.display =
-    "none";
-
-  document
-    .getElementById(
-      "pickupBtn"
-    )
-    .classList.remove(
-      "active-pickup"
-    );
-
-  document
-    .getElementById(
-      "returnBtn"
-    )
-    .classList.remove(
-      "active-return"
-    );
-
-}
-
-/* ===================================
-TOAST
-=================================== */
-
-function toast(msg){
-
-  const t =
-    document
-      .createElement(
-        "div"
-      );
-
-  t.className =
-    "toast";
-
-  t.innerText =
-    msg;
-
-  document.body
-    .appendChild(t);
-
-  setTimeout(
-    ()=>t.remove(),
-    2000
-  );
-
-}
-/* ===================================
-SAVE ENTRY
-=================================== */
-
-async function saveEntry(){
-
-  if(!currentType){
-
-    toast("Select Pickup / Return");
-    return;
-
-  }
-
-  const awb =
-    document
-      .getElementById("awbInput")
-      .value
-      .trim();
-
-  if(!awb){
-
-    toast("AWB Missing");
-    return;
-
-  }
-
-  const payload = {
-
-    type: currentType,
-
-    awb: awb,
-
-    orderId:
-      document
-        .getElementById("orderInput")
-        .value
-        .trim(),
-
-    courier:
-      currentTracking?.courier || "",
-
-    status:
-      currentTracking?.status || "",
-
-    customerName:
-      currentTracking?.customerName || "",
-
-    city:
-      currentTracking?.city || "",
-
-    state:
-      currentTracking?.state || "",
-
-    destination:
-      currentTracking?.destination || "",
-
-    pickupDate:
-      currentTracking?.pickupDate || "",
-
-    deliveredDate:
-      currentTracking?.deliveredDate || "",
-
-    expectedDate:
-      currentTracking?.expectedDate ||
-      currentTracking?.estimatedDate ||
-      "",
-
-    isRTO:
-      currentTracking?.isRTO || false
-
-  };
-
-  try{
-
-    showLoader();
-
-    const response =
-      await fetch(
-        API_URL,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-
-          body: JSON.stringify({
-
-            action: "saveEntry",
-
-            payload: payload
-
-          })
-
-        }
-      );
-
-    const text =
-      await response.text();
-
-    console.log(
-      "SAVE RESPONSE:",
-      text
-    );
-
-    let result = {};
-
-    try{
-
-      result =
-        JSON.parse(text);
-
-    }catch(err){
-
-      hideLoader();
-
-      toast(
-        "Invalid Server Response"
-      );
-
-      console.log(text);
-
-      return;
-
-    }
-
-    hideLoader();
-
-    if(result.duplicate){
-
-      toast("Duplicate AWB");
-
-      document
-        .getElementById("awbInput")
-        .select();
-
-      return;
-
-    }
-
-    if(!result.success){
-
-      toast(
-        result.message ||
-        "Save Failed"
-      );
-
-      console.log(result);
-
-      return;
-
-    }
-
-    playSuccessSound();
-
-    toast("Saved Successfully");
-
-    clearForm();
-
-    currentTracking = null;
-
-    document
-      .getElementById("awbInput")
-      .focus();
-
-    loadDashboard();
-
-    loadRecentRecords();
-
-  }catch(err){
-
-    hideLoader();
-
-    console.log(err);
-
-    toast(
-      "Save Failed : " +
-      err.message
-    );
-
-  }
-
-}
-
-/* ===================================
-SUCCESS SOUND
-=================================== */
-
-function playSuccessSound(){
-
-  try{
-
-    beep.currentTime = 0;
-
-    beep.play();
-
-  }catch(err){}
-
-}
-setTimeout(()=>{
-
-  document
-  .getElementById(
-    "awbInput"
-  )
-  .focus();
-
-},200);
-/* ===================================
-LOAD DASHBOARD
-=================================== */
-
-async function loadDashboard(){
-
-  try{
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=getDashboardCounts"
-
-      );
-
-    const data =
-      await response.json();
-
-    renderDashboard(
-      data
-    );
-
-  }catch(err){
-
-    console.log(err);
-
-  }
-
-}
-
-/* ===================================
-RENDER DASHBOARD
-=================================== */
-
-function renderDashboard(data){
-
-document.getElementById("dashboardArea").innerHTML=`
-
-<div class="card"><b>Today Pickup</b><h2>${data.todayPickup||0}</h2></div>
-<div class="card"><b>Today Return</b><h2>${data.todayReturn||0}</h2></div>
-<div class="card"><b>Yesterday Pickup</b><h2>${data.yesterdayPickup||0}</h2></div>
-<div class="card"><b>Yesterday Return</b><h2>${data.yesterdayReturn||0}</h2></div>
-<div class="card"><b>${data.monthName||''} Pickup</b><h2>${data.monthPickup||0}</h2></div>
-<div class="card"><b>${data.monthName||''} Return</b><h2>${data.monthReturn||0}</h2></div>
-
-<div id="recentArea"></div>
-
-`;
-
-}
-
-/* ===================================
-LOAD RECENT RECORDS
-=================================== */
-
-async function loadRecentRecords(){
-
-  try{
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=getRecentRecords"
-
-      );
-
-    const data =
-      await response.json();
-
-    renderRecent(
-      data.rows || []
-    );
-
-  }catch(err){
-
-    console.log(err);
-
-  }
-
-}
-
-/* ===================================
-RENDER RECENT
-=================================== */
-
-function renderRecent(rows){
-
-  const box =
-    document
-      .getElementById(
-        "recentArea"
-      );
-
-  if(!box){
-    return;
-  }
-
-  let html =
-
-    `<div class="card">
-      <b>Recent Scans</b>
-    </div>`;
-
-  rows.forEach(r=>{
-
-    html += `
-
-      <div class="card">
-
-        <b>
-        ${r.awb}
-        </b>
-
-        <br>
-
-        ${r.type}
-
-        <br>
-
-        ${r.status || ""}
-
-        <br>
-
-        ${r.date}
-
-      </div>
-
-    `;
-
-  });
-
-  box.innerHTML =
-    html;
-
-}
-
-/* ===================================
-SEARCH ORDER
-=================================== */
-
-async function searchOrder(){
-
-  const keyword =
-
-    document
-      .getElementById(
-        "searchInput"
-      )
-      .value
-      .trim();
-
-  if(!keyword){
-
-    toast(
-      "Enter AWB / Order ID"
-    );
-
-    return;
-
-  }
-
-  const resultBox =
-    document
-      .getElementById(
-        "searchResult"
-      );
-
-  resultBox.innerHTML =
-    "Searching...";
-
-  try{
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=searchOrder" +
-
-        "&keyword=" +
-
-        encodeURIComponent(
-          keyword
-        )
-
-      );
-
-    const data =
-      await response.json();
-
-    if(
-      !data.success
-    ){
-
-      resultBox.innerHTML =
-        "No Record Found";
-
-      return;
-
-    }
-
-    renderSearchResult(
-      data
-    );
-
-  }catch(err){
-
-    console.log(err);
-
-    resultBox.innerHTML =
-      "Error";
-
-  }
-
-}
-
-/* ===================================
-RENDER SEARCH
-=================================== */
-
-function renderSearchResult(
-  data
-){
-
-  const row = data;
-
-  document
-    .getElementById(
-      "searchResult"
-    )
-    .innerHTML = `
-
-    <div class="card">
-
-      <b>AWB:</b>
-      ${row.awb}
-      <br>
-
-      <b>Order:</b>
-      ${row.orderId}
-      <br>
-
-      <b>Status:</b>
-      ${row.status}
-      <br>
-
-      <b>Type:</b>
-      ${row.type}
-      <br>
-
-      <b>Courier:</b>
-      ${row.courier}
-      <br>
-
-      <b>Customer:</b>
-      ${row.customer}
-      <br>
-
-      <button
-      class="btn btn-camera"
-      onclick="refreshCurrentStatus('${row.awb}')">
-
-      Current Status
-
-      </button>
-
-    </div>
-
-  `;
-
-}
-
-/* ===================================
-CURRENT STATUS
-=================================== */
-
-let latestTrackingData = null;
-
-async function refreshCurrentStatus(awb){
-
-  const resultBox =
-    document.getElementById(
-      "searchResult"
-    );
-
-  resultBox.innerHTML +=
-    "<br>Refreshing...";
-
-  try{
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=trackShipment" +
-
-        "&awb=" +
-
-        encodeURIComponent(
-          awb
-        )
-
-      );
-
-    const data =
-      await response.json();
-
-    if(!data.success){
-
-      toast(
-        "Tracking Not Found"
-      );
-
-      return;
-
-    }
-
-    latestTrackingData = data;
-
-    resultBox.innerHTML += `
-
-    <div class="card">
-
-      <h3>
-      Latest Status
-      </h3>
-
-      <b>AWB :</b>
-      ${data.awb || ""}
-      <br>
-
-      <b>Order ID :</b>
-      ${data.orderId || ""}
-      <br>
-
-      <b>Courier :</b>
-      ${data.courier || ""}
-      <br>
-
-      <b>Status :</b>
-      ${data.status || ""}
-      <br>
-
-      <b>Customer :</b>
-      ${data.customerName || ""}
-      <br>
-
-      <b>City :</b>
-      ${data.city || ""}
-      <br>
-
-      <b>State :</b>
-      ${data.state || ""}
-      <br>
-
-      <b>Destination :</b>
-      ${data.destination || ""}
-      <br>
-
-      <b>Pickup Date :</b>
-      ${data.pickupDate || ""}
-      <br>
-
-      <b>Delivered Date :</b>
-      ${data.deliveredDate || ""}
-      <br>
-
-      <b>Expected Date :</b>
-      ${
-        data.expectedDate ||
-        data.estimatedDate ||
-        ""
-      }
-      <br>
-
-      <b>RTO :</b>
-      ${
-        data.isRTO
-        ? "Yes"
-        : "No"
-      }
-
-      <br><br>
-
-      <button
-      class="btn btn-save"
-      onclick="saveLatestStatus()">
-
-      Save To Sheet
-
-      </button>
-
-    </div>
-
-    `;
-
-  }catch(err){
-
-    console.log(err);
-
-    toast(
-      "Tracking Error"
-    );
-
-  }
-
-}
-/* ===================================
-SAVE LATEST STATUS
-=================================== */
-
-async function saveLatestStatus(){
-
-  if(!latestTrackingData){
-
-    toast(
-      "No Tracking Data"
-    );
-
-    return;
-
-  }
-
-  try{
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=updateSingleAWB" +
-
-        "&awb=" +
-
-        encodeURIComponent(
-          latestTrackingData.awb
-        )
-
-      );
-
-    const result =
-      await response.json();
-
-    console.log(
-      "Update Result:",
-      result
-    );
-
-    if(result.success){
-
-      toast(
-        "Sheet Updated"
-      );
-
-      searchOrder();
-
-    }else{
-
-      toast(
-
-        result.message ||
-
-        "Update Failed"
-
-      );
-
-    }
-
-  }catch(err){
-
-    console.log(err);
-
-    toast(
-      "Update Failed"
-    );
-
-  }
-
-}
-
-/* ===================================
-PAGE INIT
-=================================== */
-
-window.onload = function(){
-
-  loadDashboard();
-
-  loadRecentRecords();
-
-  setInterval(
-
-    loadDashboard,
-
-    30000
-
-  );
-
-};
-
-  function showLoader(){
-
-  document
-  .getElementById(
-    "loadingOverlay"
-  )
-  .style.display = "flex";
-
-}
 
 function hideLoader(){
 
-  document
-  .getElementById(
-    "loadingOverlay"
-  )
-  .style.display = "none";
+    $("loader")
+    .style.display = "none";
 
 }
-  async function updateSingleAWB(
-  awb
-){
 
-  showLoader();
 
-  try{
+/* =================================
+   TOAST MESSAGE
+================================= */
+
+
+function toast(message){
+
+    const box =
+    document.createElement("div");
+
+
+    box.className = "toast";
+
+
+    box.innerText = message;
+
+
+    document.body.appendChild(box);
+
+
+    setTimeout(() => {
+
+        box.remove();
+
+    },2000);
+
+}
+
+
+/* =================================
+   COMMON API GET
+================================= */
+
+
+async function apiGet(action, params = {}){
+
+
+    let url =
+    API_URL +
+    "?action=" +
+    action;
+
+
+    Object.keys(params)
+    .forEach(key => {
+
+        url +=
+        "&" +
+        key +
+        "=" +
+        encodeURIComponent(
+            params[key]
+        );
+
+    });
+
 
     const response =
-      await fetch(
+    await fetch(url);
 
-      API_URL +
 
-      "?action=updateSingleAWB" +
+    return await response.json();
 
-      "&awb=" +
+}
 
-      encodeURIComponent(
-        awb
-      )
 
+
+/* =================================
+   COMMON API POST
+================================= */
+
+
+async function apiPost(action, data){
+
+
+    const response =
+    await fetch(
+        API_URL,
+        {
+
+        method:"POST",
+
+        headers:{
+        "Content-Type":
+        "text/plain;charset=utf-8"
+        },
+
+
+        body: JSON.stringify({
+
+            action: action,
+
+            payload: data
+
+        })
+
+    });
+
+
+    return await response.json();
+
+}
+
+
+/* =================================
+   PLAY SUCCESS SOUND
+================================= */
+
+
+function successSound(){
+
+    try{
+
+        beep.currentTime = 0;
+
+        beep.play();
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* =================================
+   RESET SCAN FORM
+================================= */
+
+
+function clearScan(){
+
+    currentTracking = null;
+
+
+    if($("awbInput"))
+    $("awbInput").value = "";
+
+
+    if($("orderInput"))
+    $("orderInput").value = "";
+
+
+    if($("trackingResult"))
+    $("trackingResult").innerHTML =
+    "Waiting for Scan...";
+
+
+}
+
+
+
+/* =================================
+   AUTO FOCUS
+================================= */
+
+
+function focusAWB(){
+
+    if($("awbInput")){
+
+        $("awbInput").focus();
+
+    }
+
+}
+
+
+/* =================================
+   ERROR HANDLER
+================================= */
+
+
+function handleError(error){
+
+    console.log(
+        "System Error:",
+        error
     );
-
-    const result =
-      await response.json();
 
     hideLoader();
 
-    if(result.skipped){
+    toast(
+        "Something went wrong"
+    );
 
-      toast(
-        "Skipped : " +
-        result.reason
-      );
+}
 
-      return;
+
+/* =================================
+   INITIAL LOAD
+================================= */
+
+
+window.onload = function(){
+
+    console.log(
+        "Harsidhi System V2 Loaded"
+    );
+
+
+    $("pickupBtn").onclick = () =>
+        selectType("Pickup");
+
+
+    $("returnBtn").onclick = () =>
+        selectType("Return");
+
+
+    $("cameraBtn").onclick =
+        startCamera;
+
+
+    $("manualBtn").onclick =
+        focusAWB;
+
+
+    $("saveBtn").onclick =
+        saveEntry;
+
+
+    $("stopBtn").onclick =
+        stopWork;
+    $("searchBtn").onclick =
+        searchOrder;
+$("skuSearchBtn").onclick = searchSKU;
+
+$("stockUpdateBtn").onclick = updateStock;
+    focusAWB();
+
+};
+loadDashboard();
+loadRecent();
+loadInventory();
+setInterval(();
+loadDashboard();
+
+},30000);
+/* =================================
+   PICKUP / RETURN SELECT
+================================= */
+
+function selectType(type){
+
+    currentType = type;
+
+    if(type === "Pickup"){
+
+    $("pickupBtn").className =
+    "btn blue";
+
+    $("returnBtn").className =
+    "btn gray";
+
+}
+else{
+
+    $("pickupBtn").className =
+    "btn gray";
+
+    $("returnBtn").className =
+    "btn green";
+
+}
+
+    clearScan();
+
+    toast(type + " Mode Started");
+
+    focusAWB();
+}
+
+
+/* =================================
+   BUTTON EVENTS
+================================= */
+
+window.addEventListener("load", () => {
+
+    $("pickupBtn").onclick = () => selectType("Pickup");
+    $("returnBtn").onclick = () => selectType("Return");
+
+}); 
+/* =================================
+   CAMERA START
+================================= */
+
+async function startCamera(){
+
+    try{
+
+        if(html5QrCode){
+            await stopCamera();
+        }
+
+        $("reader").style.display = "block";
+
+        html5QrCode = new Html5Qrcode("reader");
+
+        await html5QrCode.start(
+
+            { facingMode:"environment" },
+
+            {
+                fps:20,
+                qrbox:{
+                    width:250,
+                    height:120
+                }
+            },
+
+            decodedText => {
+
+                $("awbInput").value = decodedText;
+
+                beep.currentTime = 0;
+                beep.play();
+
+                stopCamera();
+
+                trackShipment();
+
+            }
+
+        );
+
+    } catch(error){
+
+        console.log(error);
+
+        toast("Camera Error");
 
     }
 
-    if(result.success){
-
-      toast(
-        "Updated"
-      );
-
-      return;
-
-    }
-
-    toast(
-      result.message ||
-      "Update Failed"
-    );
-
-  }catch(err){
-
-    hideLoader();
-
-    toast(
-      "Update Failed"
-    );
-
-  }
-
 }
-  async function bulkUpdate(){
 
-  const date =
-    document.getElementById("bulkDate").value;
 
-  const type =
-    document.getElementById("bulkType").value;
+/* =================================
+   STOP CAMERA
+================================= */
 
-  if(!date || !type){
-    toast("Select Date & Type");
-    return;
-  }
+async function stopCamera(){
 
-  const formattedDate =
-    new Date(date)
-      .toLocaleDateString("en-GB");
+    try{
 
-  const response =
-    await fetch(
+        if(html5QrCode){
 
-      API_URL +
+            await html5QrCode.stop();
+            await html5QrCode.clear();
 
-      "?action=bulkUpdateByDate" +
-
-      "&date=" +
-
-      encodeURIComponent(formattedDate) +
-
-      "&type=" +
-
-      encodeURIComponent(type)
-
-    );
-
-  const result =
-    await response.json();
-
-  toast(
-    `Updated:${result.updated}
-     Skipped:${result.skipped}
-     Failed:${result.failed}`
-  );
-
-}
-  async function loadBulkCounts(){
-
-  const date =
-    document
-      .getElementById(
-        "bulkDate"
-      )
-      .value;
-
-  if(!date){
-
-    toast(
-      "Select Date"
-    );
-
-    return;
-
-  }
-
-  const formatted =
-    formatInputDate(
-      date
-    );
-
-  const response =
-    await fetch(
-
-      API_URL +
-
-      "?action=getBulkCounts" +
-
-      "&date=" +
-
-      encodeURIComponent(
-        formatted
-      )
-
-    );
-
-  const data =
-    await response.json();
-
-  document
-    .getElementById(
-      "bulkCounts"
-    )
-    .innerHTML =
-
-    `
-    Pickup : ${data.pickup || 0}
-    <br>
-    Return : ${data.return || 0}
-    `;
-
-}
-  async function startBulkUpdate(type){
-
-  if(bulkRunning){
-
-    toast(
-      "Another task running"
-    );
-
-    return;
-
-  }
-
-  bulkRunning = true;
-
-  document
-    .getElementById(
-      "pickupUpdateBtn"
-    )
-    .disabled = true;
-
-  document
-    .getElementById(
-      "returnUpdateBtn"
-    )
-    .disabled = true;
-
-  try{
-
-    const date =
-      document
-        .getElementById(
-          "bulkDate"
-        )
-        .value;
-
-    if(!date){
-
-      toast(
-        "Select Date"
-      );
-
-      return;
-
-    }
-
-    const formatted =
-      formatInputDate(
-        date
-      );
-
-    const response =
-      await fetch(
-
-        API_URL +
-
-        "?action=getBulkRows" +
-
-        "&date=" +
-
-        encodeURIComponent(
-          formatted
-        ) +
-
-        "&type=" +
-
-        encodeURIComponent(
-          type
-        )
-
-      );
-
-    const result =
-      await response.json();
-
-    const rows =
-      result.rows || [];
-
-    let updated = 0;
-    let failed = 0;
-
-    for(
-      let i = 0;
-      i < rows.length;
-      i++
-    ){
-
-      document
-        .getElementById(
-          "bulkProgress"
-        )
-        .innerHTML =
-
-        `
-        ${i+1}
-        /
-        ${rows.length}
-
-        Updating...
-        `;
-
-      try{
-
-        const res =
-          await fetch(
-
-            API_URL +
-
-            "?action=updateSingleAWB" +
-
-            "&awb=" +
-
-            encodeURIComponent(
-              rows[i].awb
-            )
-
-          );
-
-        const data =
-          await res.json();
-
-        if(
-          data.success
-        ){
-
-          updated++;
-
-        }else{
-
-          failed++;
+            html5QrCode = null;
 
         }
 
-      }catch(err){
+    }catch(e){}
 
-        failed++;
+    $("reader").style.display = "none";
 
-      }
+} 
+/* =================================
+   AWB ENTER AUTO TRACK
+================================= */
+
+$("awbInput").addEventListener(
+"keydown",
+
+function(e){
+
+    if(e.key === "Enter"){
+
+        e.preventDefault();
+
+        trackShipment();
 
     }
 
-    document
-      .getElementById(
-        "bulkProgress"
-      )
-      .innerHTML =
+}); 
+/* =================================
+   TRACK SHIPMENT
+================================= */
 
-      `
-      ✅ Done
+async function trackShipment(){
 
-      <br>
+    let awb = $("awbInput").value.trim();
 
-      Updated :
-      ${updated}
+    if(!awb){
 
-      <br>
+        toast("Scan AWB First");
 
-      Failed :
-      ${failed}
+        return;
+    }
 
-      <br>
+    try{
 
-      Total :
-      ${rows.length}
-      `;
+        showLoader();
 
-  }finally{
+        let data = await apiGet(
+            "trackShipment",
+            {awb:awb}
+        );
 
-    bulkRunning = false;
+        hideLoader();
 
-    document
-      .getElementById(
-        "pickupUpdateBtn"
-      )
-      .disabled = false;
+        if(!data.success){
 
-    document
-      .getElementById(
-        "returnUpdateBtn"
-      )
-      .disabled = false;
+            $("trackingResult").innerHTML =
+            "Tracking Not Found<br>Enter Order ID";
 
-  }
+            $("orderInput").focus();
+
+            return;
+        }
+
+        currentTracking = data;
+
+        $("trackingResult").innerHTML = `
+        AWB: ${data.awb}<br>
+        Order: ${data.orderId}<br>
+        Status: ${data.status}<br>
+        Courier: ${data.courier}<br>
+        Name: ${data.customerName}<br>
+        City: ${data.city}
+        `;
+
+    }
+    catch(error){
+
+        handleError(error);
+
+    }
+
+} 
+/* =================================
+   SAVE ENTRY
+================================= */
+
+async function saveEntry(){
+
+    if(!currentType){
+
+        toast("Select Pickup / Return");
+
+        return;
+    }
+
+    let payload = {
+
+        type: currentType,
+
+        awb: $("awbInput").value.trim(),
+
+        orderId: $("orderInput").value.trim(),
+
+        courier: currentTracking?.courier || "",
+
+        status: currentTracking?.status || "",
+
+        customer: currentTracking?.customerName || "",
+
+        city: currentTracking?.city || ""
+
+    };
+
+    if(!payload.awb){
+
+        toast("AWB Missing");
+
+        return;
+
+    }
+
+    try{
+
+        showLoader();
+
+        let result = await apiPost(
+            "saveEntry",
+            payload
+        );
+
+        hideLoader();
+
+        if(result.duplicate){
+
+            toast("Duplicate AWB");
+
+            return;
+        }
+
+        if(result.success){
+
+            successSound();
+
+            toast("Saved Successfully");
+
+            clearScan();
+
+            focusAWB();
+
+        }else{
+
+            toast(result.message || "Save Failed");
+
+        }
+
+    }
+    catch(error){
+
+        handleError(error);
+
+    }
 
 }
-  function formatInputDate(dateStr){
 
-  const d =
-    new Date(dateStr);
 
-  const dd =
-    String(
-      d.getDate()
-    ).padStart(2,"0");
+/* =================================
+   STOP WORK
+================================= */
 
-  const mm =
-    String(
-      d.getMonth()+1
-    ).padStart(2,"0");
+function stopWork(){
 
-  const yyyy =
-    d.getFullYear();
+    stopCamera();
 
-  return `${dd}/${mm}/${yyyy}`;
+    currentType = "";
+
+    clearScan();
+
+    toast("Work Stopped");
 
 }
-  
+/* ===============================
+   LOAD DASHBOARD
+================================ */
+
+async function loadDashboard(){
+
+    try{
+
+        let data =
+        await apiGet(
+            "getDashboardCounts"
+        );
+
+        $("dashboardArea").innerHTML = `
+
+        <div class="stat">
+            Today Pickup
+            <h2>${data.todayPickup || 0}</h2>
+        </div>
+
+        <div class="stat">
+            Today Return
+            <h2>${data.todayReturn || 0}</h2>
+        </div>
+
+
+        <div class="stat">
+            Yesterday Pickup
+            <h2>${data.yesterdayPickup || 0}</h2>
+        </div>
+
+
+        <div class="stat">
+            Yesterday Return
+            <h2>${data.yesterdayReturn || 0}</h2>
+        </div>
+
+
+        <div class="stat">
+            ${data.monthName || ""}
+            Pickup
+
+            <h2>
+            ${data.monthPickup || 0}
+            </h2>
+
+        </div>
+
+
+        <div class="stat">
+
+            ${data.monthName || ""}
+            Return
+
+            <h2>
+            ${data.monthReturn || 0}
+            </h2>
+
+        </div>
+
+        `;
+
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+    async function loadRecent(){
+
+async function searchOrder(){
+
+    let keyword =
+    $("searchInput").value.trim();
+
+
+    if(!keyword){
+
+        toast("Enter AWB / Order ID");
+
+        return;
+
+    }
+
+
+    $("searchResult").innerHTML =
+    "Searching...";
+
+
+    try{
+
+        let data =
+        await apiGet(
+            "searchOrder",
+            {
+                keyword: keyword
+            }
+        );
+
+
+        if(!data.success){
+
+            $("searchResult").innerHTML =
+            "No Record Found";
+
+            return;
+        }
+
+
+        $("searchResult").innerHTML = `
+
+        <b>AWB:</b>
+        ${data.awb}<br>
+
+        <b>Order:</b>
+        ${data.orderId}<br>
+
+        <b>Status:</b>
+        ${data.status}<br>
+
+        <b>Type:</b>
+        ${data.type}<br>
+
+        <b>Courier:</b>
+        ${data.courier}
+
+        <br><br>
+
+        <button 
+        class="btn green"
+        onclick="updateSingleAWB('${data.awb}')">
+
+        Update Current Status
+
+        </button>
+
+        `;
+
+
+    }catch(error){
+
+        handleError(error);
+
+    }
+
+}
+      async function updateSingleAWB(awb){
+
+    try{
+
+        showLoader();
+
+
+        let result =
+        await apiGet(
+            "updateSingleAWB",
+            {
+                awb: awb
+            }
+        );
+
+
+        hideLoader();
+
+
+        if(result.success){
+
+            toast("Status Updated");
+
+            searchOrder();
+
+        }else{
+
+            toast(
+            result.message ||
+            "Update Failed"
+            );
+
+        }
+
+
+    }catch(error){
+
+        handleError(error);
+
+    }
+
+}
+/* ==============================
+   INVENTORY DASHBOARD
+============================== */
+
+async function loadInventory(){
+
+    try{
+
+        let data = await apiGet(
+            "getInventoryDashboard"
+        );
+
+
+        $("inventoryDashboard").innerHTML = `
+
+        <div class="dashboard">
+
+            <div class="stat">
+                Total SKU
+                <h2>
+                ${data.totalSku || 0}
+                </h2>
+            </div>
+
+
+            <div class="stat">
+                Total Stock
+                <h2>
+                ${data.totalStock || 0}
+                </h2>
+            </div>
+
+
+            <div class="stat">
+                Low Stock
+                <h2>
+                ${data.lowStock || 0}
+                </h2>
+            </div>
+
+        </div>
+
+        `;
+
+
+        loadLowStock();
+
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+      async function searchSKU(){
+
+    let sku =
+    $("skuSearch").value.trim();
+
+
+    if(!sku){
+
+        toast("Enter SKU");
+
+        return;
+    }
+
+
+    try{
+
+        showLoader();
+
+
+        let data =
+        await apiGet(
+            "searchSKU",
+            {
+                sku: sku
+            }
+        );
+
+
+        hideLoader();
+
+
+        if(!data.success){
+
+            toast("SKU Not Found");
+
+            return;
+        }
+
+
+        $("inventoryDashboard")
+        .innerHTML += `
+
+        <div class="card">
+
+        <b>SKU :</b>
+        ${data.sku}<br>
+
+        <b>Product :</b>
+        ${data.name}<br>
+
+        <b>Stock :</b>
+        ${data.stock}
+
+        </div>
+
+        `;
+
+
+    }catch(error){
+
+        handleError(error);
+
+    }
+
+}
+      async function updateStock(){
+
+    let sku =
+    $("skuUpdate").value.trim();
+
+
+    let qty =
+    $("stockQty").value.trim();
+
+
+    if(!sku || !qty){
+
+        toast("Enter SKU & Quantity");
+
+        return;
+
+    }
+
+
+    try{
+
+        showLoader();
+
+
+        let result =
+        await apiPost(
+            "updateStock",
+            {
+                sku: sku,
+                quantity: qty
+            }
+        );
+
+
+        hideLoader();
+
+
+        if(result.success){
+
+            successSound();
+
+            toast("Stock Updated");
+
+            $("skuUpdate").value="";
+            $("stockQty").value="";
+
+
+            loadInventory();
+
+
+        }else{
+
+            toast(
+            result.message ||
+            "Update Failed"
+            );
+
+        }
+
+
+    }catch(error){
+
+        handleError(error);
+
+    }
+
+}
+      async function loadLowStock(){
+
+    try{
+
+        let data =
+        await apiGet(
+            "getLowStock"
+        );
+
+
+        let html =
+        `<div class="card">
+
+        <div class="card-title">
+        Low Stock Alert
+        </div>`;
+
+
+        data.rows.forEach(item=>{
+
+            html += `
+
+            <div class="result">
+
+            <b>
+            ${item.sku}
+            </b>
+
+            <br>
+
+            ${item.name}
+
+            <br>
+
+            Stock :
+            ${item.stock}
+
+            <hr>
+
+            </div>
+
+            `;
+
+        });
+
+
+        html += "</div>";
+
+
+        $("lowStockArea").innerHTML =
+        html;
+
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
 </script>
-</body>
+
 </html>
