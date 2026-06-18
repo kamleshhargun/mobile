@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Inventory Manager</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Inventory Manager Fast</title>
 
 <style>
 
@@ -18,691 +13,193 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Inter',sans-serif;
--webkit-tap-highlight-color:transparent;
-}
-
-:root{
-
---primary:#2563eb;
---primary-light:#eff6ff;
-
---success:#16a34a;
---danger:#dc2626;
---warning:#f59e0b;
-
---text:#111827;
---text-light:#6b7280;
-
---background:#f4f7fb;
---card:#ffffff;
---border:#e5e7eb;
-
---shadow:0 10px 30px rgba(0,0,0,.06);
-
---radius:18px;
-
+font-family:Arial,sans-serif;
 }
 
 body{
-
-background:var(--background);
-color:var(--text);
-padding:14px;
-
+background:#f3f4f6;
+padding:10px;
+color:#111;
+max-width:1100px;
+margin:auto;
 }
 
-img{
-max-width:100%;
-display:block;
+.card{
+background:#fff;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+border:1px solid #ddd;
 }
 
-button,
-input{
-font-family:inherit;
-}
+/* Header */
 
 .header{
-
-position:sticky;
-top:10px;
-
-background:rgba(255,255,255,.92);
-backdrop-filter:blur(16px);
-
-border:1px solid rgba(255,255,255,.6);
-
-box-shadow:var(--shadow);
-
-padding:18px;
-border-radius:20px;
-
-z-index:1000;
-
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
 }
 
-.header h1{
-
-font-size:24px;
-font-weight:800;
-color:var(--text);
-
+h1{
+font-size:22px;
 }
 
 .status{
-
-display:inline-flex;
-align-items:center;
-gap:8px;
-
-margin-top:12px;
-
-padding:10px 18px;
-
-border-radius:999px;
-
+padding:6px 12px;
+border-radius:20px;
 font-size:13px;
-font-weight:700;
-
+font-weight:bold;
 }
 
 .connected{
-
-background:#dcfce7;
-color:#166534;
-
+background:#d1fae5;
+color:#065f46;
 }
 
 .disconnected{
-
 background:#fee2e2;
 color:#991b1b;
-
 }
 
-.card{
 
-margin-top:18px;
+/* Dashboard */
 
-background:var(--card);
-
-border-radius:20px;
-
-padding:18px;
-
-border:1px solid var(--border);
-
-box-shadow:var(--shadow);
-
-}
-
-.card-title{
-
-font-size:18px;
-font-weight:700;
-
-margin-bottom:15px;
-
-}
-
-.dashboard{
-
+.grid{
 display:grid;
-
 grid-template-columns:repeat(2,1fr);
-
-gap:12px;
-
+gap:10px;
 }
 
 .box{
-
-background:#fafcff;
-
-border:1px solid var(--border);
-
-border-radius:18px;
-
-padding:18px 10px;
-
-transition:.25s;
-
-}
-
-.box:hover{
-
-transform:translateY(-2px);
-
-}
-
-.box div:first-child{
-
-font-size:13px;
-color:var(--text-light);
-
-}
-
-.number{
-
-margin-top:8px;
-
-font-size:28px;
-
-font-weight:800;
-
-color:var(--primary);
-
-}
-
-.search-wrap{
-
-position:relative;
-
-}
-
-#search{
-
-width:100%;
-
-padding:16px 18px;
-
-font-size:16px;
-
-background:white;
-
-border:2px solid var(--border);
-
-border-radius:16px;
-
-transition:.25s;
-
-}
-
-#search:focus{
-
-outline:none;
-
-border-color:var(--primary);
-
-box-shadow:0 0 0 4px rgba(37,99,235,.12);
-
-}
-
-.suggestions{
-
-position:absolute;
-
-top:105%;
-
-left:0;
-
-right:0;
-
-background:white;
-
-border-radius:18px;
-
-border:1px solid var(--border);
-
-box-shadow:0 20px 35px rgba(0,0,0,.08);
-
-overflow:hidden;
-
-max-height:280px;
-
-overflow-y:auto;
-
-z-index:999;
-
-}
-
-.suggestion-item{
-
-padding:15px 18px;
-
-cursor:pointer;
-
-transition:.2s;
-
-border-bottom:1px solid #f1f5f9;
-
-}
-
-.suggestion-item:last-child{
-
-border:none;
-
-}
-
-.suggestion-item:hover{
-
-background:var(--primary-light);
-
-}
-
-.product-image{
-
-width:100%;
-
-max-width:240px;
-
-height:240px;
-
-margin:18px auto;
-
-border-radius:20px;
-
-object-fit:cover;
-
-background:#f3f4f6;
-
-border:1px solid var(--border);
-
-}
-
-.stock-grid{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:12px;
-
-margin-top:18px;
-
-}
-
-.stock-item{
-
-background:#fafcff;
-
-border:1px solid var(--border);
-
-border-radius:18px;
-
-padding:15px;
-
 text-align:center;
-
-}
-
-.stock-item div:first-child{
-
-font-size:13px;
-color:var(--text-light);
-
-}
-
-.stock-value{
-
-margin-top:8px;
-
-font-size:24px;
-
-font-weight:800;
-
-color:var(--primary);
-
-}
-
-.action-grid{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:12px;
-
-margin-top:18px;
-
-}
-
-.action-btn{
-
-border:none;
-
-border-radius:16px;
-
-padding:15px;
-
-font-size:15px;
-
-font-weight:700;
-
-color:white;
-
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-.action-btn:hover{
-
-transform:translateY(-2px);
-
-}
-
-.opening{
-background:#2563eb;
-}
-
-.inward{
-background:#16a34a;
-}
-
-.returns{
-background:#0ea5e9;
-}
-
-.reject{
-background:#dc2626;
-}
-
-.sales{
-background:#7c3aed;
-}
-
-.action-btn.active{
-
-background:white !important;
-
-color:var(--text);
-
-border:2px solid var(--primary);
-
-}
-
-#qty{
-
-width:100%;
-
-margin-top:18px;
-
-padding:16px;
-
-font-size:18px;
-
-border-radius:16px;
-
-border:2px solid var(--border);
-
-transition:.25s;
-
-}
-
-#qty:focus{
-
-outline:none;
-
-border-color:var(--primary);
-
-box-shadow:0 0 0 4px rgba(37,99,235,.10);
-
-}
-
-.update-btn{
-
-width:100%;
-
-margin-top:16px;
-
-padding:16px;
-
-border:none;
-
-border-radius:16px;
-
-background:linear-gradient(90deg,#2563eb,#1d4ed8);
-
-color:white;
-
-font-size:17px;
-
-font-weight:700;
-
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-.update-btn:hover{
-
-transform:translateY(-2px);
-
-}
-
-.low-buttons{
-
-display:grid;
-
-grid-template-columns:repeat(2,1fr);
-
-gap:12px;
-
-}
-
-.low-btn{
-
-background:#111827;
-
-color:white;
-
-padding:14px;
-
-border:none;
-
-border-radius:16px;
-
-font-weight:600;
-
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-.low-btn:hover{
-
-background:#1f2937;
-
-}
-
-.low-list{
-
-margin-top:18px;
-
-}
-
-.low-item{
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-gap:12px;
-
 padding:12px;
-
-border-bottom:1px solid #edf2f7;
-
+border:1px solid #eee;
+border-radius:8px;
 }
 
-.low-item img{
+.value{
+font-size:24px;
+font-weight:bold;
+color:#2563eb;
+}
 
-width:56px;
 
-height:56px;
+/* Search */
 
-border-radius:14px;
+input{
+width:100%;
+padding:12px;
+border:1px solid #bbb;
+border-radius:8px;
+font-size:15px;
+}
 
+#suggestions{
+max-height:250px;
+overflow:auto;
+}
+
+.item{
+padding:10px;
+border-bottom:1px solid #eee;
+cursor:pointer;
+}
+
+
+/* Product */
+
+#productCard{
+display:none;
+}
+
+#productImage{
+width:180px;
+height:180px;
+display:block;
+margin:10px auto;
 object-fit:cover;
-
+border-radius:8px;
 }
+
+.stock{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+}
+
+.stock div{
+background:#f7f7f7;
+padding:10px;
+text-align:center;
+border-radius:8px;
+}
+
+
+/* Buttons */
+
+.actions{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+margin:12px 0;
+}
+
+button{
+border:0;
+padding:12px;
+border-radius:8px;
+background:#2563eb;
+color:#fff;
+cursor:pointer;
+}
+
+.active{
+background:#111;
+}
+
+
+.lowBtns{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+}
+
+
+/* Toast */
 
 #toast{
-
 position:fixed;
-
 bottom:20px;
-
 left:50%;
-
 transform:translateX(-50%);
-
-padding:14px 22px;
-
-border-radius:999px;
-
-font-size:14px;
-
-font-weight:700;
-
-color:white;
-
-opacity:0;
-
-visibility:hidden;
-
-transition:.3s;
-
-z-index:99999;
-
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-
+background:#111;
+color:#fff;
+padding:10px 18px;
+border-radius:20px;
+display:none;
 }
 
-#toast.show{
 
-opacity:1;
-
-visibility:visible;
-
-}
-
-#toast.success{
-
-background:#16a34a;
-
-}
-
-#toast.error{
-
-background:#dc2626;
-
-}
-
-/* ======================
-Mobile Special
-====================== */
-
-@media(max-width:767px){
-
-body{
-
-padding:12px;
-
-}
-
-.header{
-
-border-radius:18px;
-
-padding:16px;
-
-}
-
-.header h1{
-
-font-size:22px;
-
-}
-
-.card{
-
-padding:16px;
-
-border-radius:18px;
-
-}
-
-.product-image{
-
-width:190px;
-height:190px;
-
-}
-
-.action-btn{
-
-padding:16px 10px;
-
-font-size:14px;
-
-}
-
-.stock-value{
-
-font-size:22px;
-
-}
-
-.number{
-
-font-size:24px;
-
-}
-
-}
-
-/* ======================
-Desktop
-====================== */
+/* Desktop */
 
 @media(min-width:768px){
 
-body{
-
-max-width:1200px;
-
-margin:auto;
-
-padding:25px;
-
-}
-
-.dashboard{
-
+.grid{
 grid-template-columns:repeat(4,1fr);
-
 }
 
-.stock-grid{
-
+.stock{
 grid-template-columns:repeat(5,1fr);
-
 }
 
-.action-grid{
-
+.actions{
 grid-template-columns:repeat(5,1fr);
-
 }
 
-.low-buttons{
-
+.lowBtns{
 grid-template-columns:repeat(4,1fr);
-
 }
-
-}
-
-html{
-
-scroll-behavior:smooth;
 
 }
 
@@ -710,63 +207,57 @@ scroll-behavior:smooth;
 
 </head>
 
-
 <body>
 
-<div class="header">
 
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;">
+<!-- HEADER -->
 
-        <div>
+<div class="card header">
 
-            <h1>📦 Inventory Manager</h1>
+<div>
+<h1>📦 Inventory</h1>
+<small>Stock Management</small>
+</div>
 
-            <p style="margin-top:6px;color:#6b7280;font-size:14px;">
-                Inventory Dashboard & Stock Management
-            </p>
+<div id="connectionStatus"
+class="status disconnected">
 
-        </div>
+Checking...
 
-        <div id="connectionStatus" class="status disconnected">
-            🔄 Checking Connection...
-        </div>
-
-    </div>
+</div>
 
 </div>
 
 
-<!-- Dashboard -->
+<!-- DASHBOARD -->
 
 <div class="card">
 
-    <div class="card-title">
-        📊 Inventory Summary
-    </div>
+<h3>Dashboard</h3>
 
-    <div class="dashboard">
+<div class="grid">
 
-        <div class="box">
-            <div>Total SKU</div>
-            <div class="number" id="totalSKU">0</div>
-        </div>
+<div class="box">
+SKU
+<div id="totalSKU" class="value">0</div>
+</div>
 
-        <div class="box">
-            <div>Total Stock</div>
-            <div class="number" id="totalStock">0</div>
-        </div>
+<div class="box">
+Stock
+<div id="totalStock" class="value">0</div>
+</div>
 
-        <div class="box">
-            <div>Today's Sales</div>
-            <div class="number" id="todaySales">0</div>
-        </div>
+<div class="box">
+Sales
+<div id="todaySales" class="value">0</div>
+</div>
 
-        <div class="box">
-            <div>Top SKU</div>
-            <div class="number" id="topSKU">-</div>
-        </div>
+<div class="box">
+Top
+<div id="topSKU" class="value">-</div>
+</div>
 
-    </div>
+</div>
 
 </div>
 
@@ -775,185 +266,624 @@ scroll-behavior:smooth;
 
 <div class="card">
 
-    <div class="card-title">
-        🔍 Search Product
-    </div>
+<h3>Search Product</h3>
 
-    <div class="search-wrap">
+<input 
+id="search"
+placeholder="SKU Search">
 
-        <input
-            type="text"
-            id="search"
-            placeholder="Search SKU or Product Name">
-
-        <div
-            id="suggestions"
-            class="suggestions">
-        </div>
-
-    </div>
+<div id="suggestions"></div>
 
 </div>
-
 
 
 <!-- Product Details -->
 
-<div
-id="productCard"
-class="card"
-style="display:none;">
-
-    <img
-        id="productImage"
-        class="product-image"
-        alt="Product Image">
-
-    <h2
-        id="productSKU"
-        style="text-align:center;margin-bottom:20px;font-size:24px;">
-        SKU
-    </h2>
+<div id="productCard" class="card">
 
 
-    <div class="stock-grid">
-
-        <div class="stock-item">
-            <div>Opening</div>
-            <div class="stock-value" id="opening">0</div>
-        </div>
-
-        <div class="stock-item">
-            <div>Inward</div>
-            <div class="stock-value" id="inward">0</div>
-        </div>
-
-        <div class="stock-item">
-            <div>Reject</div>
-            <div class="stock-value" id="reject">0</div>
-        </div>
-
-        <div class="stock-item">
-            <div>Sales</div>
-            <div class="stock-value" id="sales">0</div>
-        </div>
-
-        <div class="stock-item">
-            <div>Available</div>
-            <div class="stock-value" id="stock">0</div>
-        </div>
-
-    </div>
+<img id="productImage">
 
 
-    <div class="card-title" style="margin-top:25px;">
-        ⚡ Stock Action
-    </div>
+<h2 id="productSKU"></h2>
 
 
-    <div class="action-grid">
+<div class="stock">
 
-        <button
-            class="action-btn opening"
-            onclick="selectAction(this,'opening')">
-            ➕ Opening
-        </button>
+<div>
+Opening
+<div id="opening">0</div>
+</div>
 
-        <button
-            class="action-btn inward"
-            onclick="selectAction(this,'inward')">
-            📥 Inward
-        </button>
+<div>
+Inward
+<div id="inward">0</div>
+</div>
 
-        <button
-            class="action-btn returns"
-            onclick="selectAction(this,'returns')">
-            ↩ Returns
-        </button>
+<div>
+Reject
+<div id="reject">0</div>
+</div>
 
-        <button
-            class="action-btn reject"
-            onclick="selectAction(this,'reject')">
-            ❌ Reject
-        </button>
+<div>
+Sales
+<div id="sales">0</div>
+</div>
 
-        <button
-            class="action-btn sales"
-            onclick="selectAction(this,'sales')">
-            🛒 Sales
-        </button>
-
-    </div>
-
-
-    <input
-        type="number"
-        id="qty"
-        placeholder="Enter Quantity">
-
-
-    <button
-        class="update-btn"
-        onclick="updateProductStock()">
-        ✅ Update Stock
-    </button>
+<div>
+Available
+<div id="stock">0</div>
+</div>
 
 </div>
 
 
+<h3>Stock Action</h3>
+
+
+<div class="actions">
+
+
+<button onclick="selectAction(this,'opening')">
+Opening
+</button>
+
+
+<button onclick="selectAction(this,'inward')">
+Inward
+</button>
+
+
+<button onclick="selectAction(this,'returns')">
+Return
+</button>
+
+
+<button onclick="selectAction(this,'reject')">
+Reject
+</button>
+
+
+<button onclick="selectAction(this,'sales')">
+Sales
+</button>
+
+
+</div>
+
+
+<input 
+type="number"
+id="qty"
+placeholder="Quantity">
+
+
+<button onclick="updateProductStock()">
+Update Stock
+</button>
+
+
+</div>
+
 
 <!-- Low Stock -->
 
+
 <div class="card">
 
-    <div class="card-title">
-        🚨 Low Stock Alert
-    </div>
+<h3>Low Stock</h3>
 
-    <div class="low-buttons">
 
-        <button
-            class="low-btn"
-            onclick="showLowStock(5)">
-            &lt; 5
-            (<span id="low5">0</span>)
-        </button>
+<div class="lowBtns">
 
-        <button
-            class="low-btn"
-            onclick="showLowStock(10)">
-            &lt; 10
-            (<span id="low10">0</span>)
-        </button>
+<button onclick="showLowStock(5)">
+< 5 (<span id="low5">0</span>)
+</button>
 
-        <button
-            class="low-btn"
-            onclick="showLowStock(15)">
-            &lt; 15
-            (<span id="low15">0</span>)
-        </button>
 
-        <button
-            class="low-btn"
-            onclick="showLowStock(20)">
-            &lt; 20
-            (<span id="low20">0</span>)
-        </button>
+<button onclick="showLowStock(10)">
+< 10 (<span id="low10">0</span>)
+</button>
 
-    </div>
 
-    <div
-        id="lowStockList"
-        class="low-list"
-        style="margin-top:20px;text-align:center;color:#6b7280;">
+<button onclick="showLowStock(15)">
+< 15 (<span id="low15">0</span>)
+</button>
 
-        📦 Select a filter to view products.
 
-    </div>
+<button onclick="showLowStock(20)">
+< 20 (<span id="low20">0</span>)
+</button>
+
+
+</div>
+
+
+<div id="lowStockList">
+Select Filter
+</div>
+
 
 </div>
 
 
 <div id="toast"></div>
- 
-<script> /************************************************* * CHANGE THIS URL *************************************************/ const API_URL = "https://script.google.com/macros/s/AKfycbyI9lCfbNcTT3xJrw5hr3TXRR1IZ-O6b3J7WGDryOcISL94nkPIHPabCvpOc0v5Vvfx/exec"; /************************************************* * GLOBALS *************************************************/ let products = []; let selectedSKU = ""; let selectedAction = ""; /************************************************* * PAGE LOAD *************************************************/ window.onload = function(){ checkConnection(); loadProducts(); loadDashboard(); loadLowStockCounts(); }; /************************************************* * CONNECTION *************************************************/ async function checkConnection(){ const res = await fetch( API_URL + "?action=connection" ); const data = await res.json(); const box = document.getElementById( "connectionStatus" ); if(data.status){ box.className = "status connected"; box.innerHTML = "🟢 Connected"; } else{ box.className = "status disconnected"; box.innerHTML = "🔴 Error"; } } /************************************************* * PRODUCTS *************************************************/ async function loadProducts(){ const res = await fetch( API_URL + "?action=products" ); products = await res.json(); } /************************************************* * DASHBOARD *************************************************/ async function loadDashboard(){ let res1 = await fetch( API_URL + "?action=summary" ); let summary = await res1.json(); document.getElementById( "totalSKU" ).innerHTML = summary.totalProducts; document.getElementById( "totalStock" ).innerHTML = summary.totalStock; let res2 = await fetch( API_URL + "?action=sales" ); let sales = await res2.json(); document.getElementById( "todaySales" ).innerHTML = sales.totalSalesQty; document.getElementById( "topSKU" ).innerHTML = sales.topSellingSKU; } /************************************************* * SEARCH *************************************************/ function normalizeText(text){ return text .toLowerCase() .replace(/-/g," ") .replace(/\s+/g," ") .trim(); } document .getElementById("search") .addEventListener( "input", function(){ let search = normalizeText(this.value); let box = document.getElementById( "suggestions" ); box.innerHTML = ""; if(search.length == 0) return; let words = search.split(" "); let result = products.filter(item=>{ let sku = normalizeText(item.sku); return words.every( word => sku.includes(word) ); }); result.slice(0,30) .forEach(item=>{ let div = document.createElement("div"); div.className = "suggestion-item"; div.innerHTML = "📦 " + item.sku; div.onclick = ()=>selectProduct(item.sku); box.appendChild(div); }); }); /************************************************* * SELECT PRODUCT *************************************************/ async function selectProduct(sku){ selectedSKU = sku; document .getElementById("search") .value = sku; document .getElementById( "suggestions" ) .innerHTML = ""; let res = await fetch( API_URL + "?action=product&sku=" + encodeURIComponent(sku) ); let data = await res.json(); if(data.status){ showProduct( data.data ); } } /************************************************* * SHOW PRODUCT *************************************************/ function showProduct(item){ document .getElementById( "productCard" ) .style.display = "block"; document .getElementById( "productSKU" ) .innerHTML = item.sku; document .getElementById( "opening" ) .innerHTML = item.opening; document .getElementById( "inward" ) .innerHTML = item.inward; document .getElementById( "reject" ) .innerHTML = item.reject; document .getElementById( "sales" ) .innerHTML = item.sales; document .getElementById( "stock" ) .innerHTML = item.stock; document .getElementById( "productImage" ) .src = item.image || "https://via.placeholder.com/250"; } /************************************************* * ACTION *************************************************/ function selectAction( button, action ){ document .querySelectorAll( ".action-btn" ) .forEach(btn=>{ btn.classList.remove( "active" ); }); button.classList.add( "active" ); selectedAction = action; } /************************************************* * UPDATE STOCK *************************************************/ async function updateProductStock(){ let qty = document .getElementById("qty") .value; if(!selectedSKU){ showToast( "Select Product", "error" ); return; } if(!selectedAction){ showToast( "Select Action", "error" ); return; } let res = await fetch( API_URL, { method:"POST", headers:{ "Content-Type": "application/json" }, body:JSON.stringify({ sku:selectedSKU, qty:qty, action:selectedAction }) } ); let data = await res.json(); if(data.status){ showProduct( data.data ); document .getElementById( "qty" ) .value = ""; showToast( data.message, "success" ); loadDashboard(); loadProducts(); loadLowStockCounts(); } else{ showToast( data.message, "error" ); } } /************************************************* * LOW STOCK *************************************************/ async function loadLowStockCounts(){ let res = await fetch( API_URL + "?action=lowstockcounts" ); let data = await res.json(); document .getElementById("low5") .innerHTML = data.less5; document .getElementById("low10") .innerHTML = data.less10; document .getElementById("low15") .innerHTML = data.less15; document .getElementById("low20") .innerHTML = data.less20; } async function showLowStock(limit){ let res = await fetch( API_URL + "?action=lowstock&limit=" + limit ); let data = await res.json(); let box = document .getElementById( "lowStockList" ); box.innerHTML = ""; if(data.count == 0){ box.innerHTML = "✅ No Low Stock"; return; } data.items.forEach(item=>{ box.innerHTML += <div class="low-item"> <div> <img src="${ item.image || 'https://via.placeholder.com/50' }"> </div> <div style="flex:1;padding-left:10px;"> ${item.sku} </div> <div> Stock: <b>${item.stock}</b> </div> </div> ; }); } /************************************************* * TOAST *************************************************/ function showToast( message, type="success" ){ let toast = document .getElementById( "toast" ); toast.innerHTML = message; toast.className = ""; toast.classList.add( "show" ); toast.classList.add( type ); setTimeout(()=>{ toast.classList.remove( "show" ); },2000); } </script> </body> </html>
+<script>
+
+/******** CONFIG ********/
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyI9lCfbNcTT3xJrw5hr3TXRR1IZ-O6b3J7WGDryOcISL94nkPIHPabCvpOc0v5Vvfx/exec";
+
+
+/******** VARIABLES ********/
+
+let products = [];
+let selectedSKU = "";
+let selectedAction = "";
+
+
+/******** SHORTCUT ********/
+
+const $ = id => document.getElementById(id);
+
+
+/******** PAGE LOAD ********/
+
+window.onload = () => {
+
+    checkConnection();
+
+    loadProducts();
+
+    loadDashboard();
+
+    loadLowCounts();
+
+};
+
+
+/******** CONNECTION ********/
+
+async function checkConnection(){
+
+try{
+
+let r = await fetch(API_URL+"?action=connection");
+
+let d = await r.json();
+
+$("connectionStatus").className =
+"status " + (d.status ? "connected" : "disconnected");
+
+$("connectionStatus").innerHTML =
+d.status ? "🟢 Connected" : "🔴 Error";
+
+}catch{
+
+$("connectionStatus").innerHTML="Offline";
+
+}
+
+}
+
+
+/******** PRODUCTS CACHE ********/
+
+async function loadProducts(){
+
+let r = await fetch(API_URL+"?action=products");
+
+products = await r.json();
+
+}
+
+
+/******** DASHBOARD ********/
+
+async function loadDashboard(){
+
+
+let [a,b] = await Promise.all([
+
+fetch(API_URL+"?action=summary"),
+fetch(API_URL+"?action=sales")
+
+]);
+
+
+let summary = await a.json();
+
+let sales = await b.json();
+
+
+$("totalSKU").innerHTML =
+summary.totalProducts;
+
+
+$("totalStock").innerHTML =
+summary.totalStock;
+
+
+$("todaySales").innerHTML =
+sales.totalSalesQty;
+
+
+$("topSKU").innerHTML =
+sales.topSellingSKU;
+
+
+}
+
+
+/******** SEARCH ********/
+
+$("search").oninput = function(){
+
+let text =
+this.value.toLowerCase().trim();
+
+
+let box = $("suggestions");
+
+
+if(!text){
+
+box.innerHTML="";
+
+return;
+
+}
+
+
+box.innerHTML = products
+
+.filter(x =>
+x.sku.toLowerCase()
+.includes(text))
+
+.slice(0,20)
+
+.map(x =>
+
+`<div class="item"
+onclick="selectProduct('${x.sku}')">
+
+📦 ${x.sku}
+
+</div>`
+
+)
+
+.join("");
+
+};
+
+
+
+/******** SELECT PRODUCT ********/
+
+async function selectProduct(sku){
+
+
+selectedSKU = sku;
+
+
+$("search").value = sku;
+
+
+$("suggestions").innerHTML="";
+
+
+let r = await fetch(
+
+API_URL +
+"?action=product&sku=" +
+encodeURIComponent(sku)
+
+);
+
+
+let d = await r.json();
+
+
+if(d.status){
+
+showProduct(d.data);
+
+}
+
+}
+
+
+
+/******** DISPLAY PRODUCT ********/
+
+function showProduct(x){
+
+
+$("productCard").style.display =
+"block";
+
+
+$("productSKU").innerHTML =
+x.sku;
+
+
+$("opening").innerHTML =
+x.opening;
+
+
+$("inward").innerHTML =
+x.inward;
+
+
+$("reject").innerHTML =
+x.reject;
+
+
+$("sales").innerHTML =
+x.sales;
+
+
+$("stock").innerHTML =
+x.stock;
+
+
+$("productImage").src =
+x.image ||
+"https://via.placeholder.com/180";
+
+
+}
+
+
+
+/******** ACTION SELECT ********/
+
+function selectAction(btn, action){
+
+
+document
+.querySelectorAll("button")
+.forEach(x =>
+x.classList.remove("active"));
+
+
+btn.classList.add("active");
+
+
+selectedAction = action;
+
+
+}
+    
+/******** UPDATE STOCK ********/
+
+async function updateProductStock(){
+
+let qty = $("qty").value;
+
+
+if(!selectedSKU)
+return toast("Select Product");
+
+
+if(!selectedAction)
+return toast("Select Action");
+
+
+if(!qty || qty <= 0)
+return toast("Enter Valid Qty");
+
+
+try{
+
+let r = await fetch(API_URL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body: JSON.stringify({
+
+sku:selectedSKU,
+qty:qty,
+action:selectedAction
+
+})
+
+});
+
+
+let d = await r.json();
+
+
+if(d.status){
+
+
+showProduct(d.data);
+
+
+$("qty").value = "";
+
+
+toast("Stock Updated");
+
+
+/* refresh background */
+
+loadDashboard();
+
+loadProducts();
+
+loadLowCounts();
+
+
+}
+else{
+
+toast(d.message);
+
+}
+
+
+}catch{
+
+toast("Server Error");
+
+}
+
+}
+
+
+
+/******** LOW STOCK COUNTS ********/
+
+
+async function loadLowCounts(){
+
+try{
+
+
+let r = await fetch(
+API_URL+"?action=lowstockcounts"
+);
+
+
+let d = await r.json();
+
+
+$("low5").innerHTML = d.less5;
+
+$("low10").innerHTML = d.less10;
+
+$("low15").innerHTML = d.less15;
+
+$("low20").innerHTML = d.less20;
+
+
+}catch{
+
+toast("Low Stock Error");
+
+}
+
+}
+
+
+
+
+/******** SHOW LOW STOCK ********/
+
+
+async function showLowStock(limit){
+
+
+let box = $("lowStockList");
+
+
+box.innerHTML = "Loading...";
+
+
+let r = await fetch(
+API_URL +
+"?action=lowstock&limit="+limit
+);
+
+
+let d = await r.json();
+
+
+if(!d.count){
+
+box.innerHTML =
+"✅ No Low Stock";
+
+return;
+
+}
+
+
+
+box.innerHTML = d.items.map(x=>`
+
+<div style="
+display:flex;
+align-items:center;
+padding:8px;
+border-bottom:1px solid #ddd">
+
+<img src="${
+x.image ||
+'https://via.placeholder.com/50'
+}"
+
+width="50"
+height="50"
+
+style="
+border-radius:6px;
+margin-right:10px">
+
+
+<div style="flex:1">
+
+${x.sku}
+
+</div>
+
+
+<b>
+Stock: ${x.stock}
+</b>
+
+
+</div>
+
+`).join("");
+
+}
+
+
+
+/******** TOAST ********/
+
+
+let timer;
+
+
+function toast(msg){
+
+
+let t = $("toast");
+
+
+t.innerHTML = msg;
+
+
+t.style.display = "block";
+
+
+clearTimeout(timer);
+
+
+timer = setTimeout(()=>{
+
+
+t.style.display = "none";
+
+
+},2000);
+
+
+}
+
+
+
+</script>
+</body>
+
+</html>
