@@ -162,38 +162,51 @@ onkeyup="searchListing()"
 
 <script>
 
-const API=
-"https://script.google.com/macros/s/AKfycbxSn8rbIWTCwurtMA5krgKYcWGDrTu6GiGqBxsrpJJ7caK3VnSKjnATGrNq6uTilET4/exec";
+const API="https://script.google.com/macros/s/AKfycbxSn8rbIWTCwurtMA5krgKYcWGDrTu6GiGqBxsrpJJ7caK3VnSKjnATGrNq6uTilET4/exec";
 
 let listings=[];
+let currentRow=null;
 
 function normalize(v){
+return String(v||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+}
 
-return String(v||"")
-.toLowerCase()
-.replace(/[^a-z0-9]/g,"");
+function getImageUrl(url){
+
+url=String(url||"").trim();
+
+if(!url) return "";
+
+if(url.includes("drive.google.com")){
+
+const m=url.match(/\/d\/([^\/]+)/);
+
+if(m){
+return "https://drive.google.com/uc?export=view&id="+m[1];
+}
+
+}
+
+return url;
 
 }
 
 async function api(url){
 
-const r=
-await fetch(url);
-
+const r=await fetch(url);
 return await r.json();
 
 }
 
 async function post(data){
 
-const r=
-await fetch(
-API,
-{
+const r=await fetch(API,{
 method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify(data)
-}
-);
+});
 
 return await r.json();
 
@@ -201,41 +214,35 @@ return await r.json();
 
 async function saveListing(){
 
-const r=
-await post({
+const data={
+image:image.value.trim(),
+sku:sku.value.trim(),
+product:product.value.trim(),
+price:price.value.trim(),
+stock:stock.value.trim()
+};
 
-action:"saveListing",
-
-data:{
-
-image:
-image.value,
-
-sku:
-sku.value,
-
-product:
-product.value,
-
-price:
-price.value,
-
-stock:
-stock.value
-
+if(!data.sku){
+alert("SKU Required");
+return;
 }
 
+const r=await post({
+action:"saveListing",
+data:data
 });
 
 if(r.success){
 
-alert(
-"Listing Saved"
-);
+alert("Listing Saved");
 
 clearForm();
 
 loadListings();
+
+}else{
+
+alert(r.message||"Save Failed");
 
 }
 
@@ -248,26 +255,26 @@ sku.value="";
 product.value="";
 price.value="";
 stock.value="";
+currentRow=null;
 
 }
 
 async function loadListings(){
 
-const d=
-await api(
-API+
-"?action=listings"
+const d=await api(
+API+"?action=listings"
 );
 
-if(!d.success)
+console.log("LISTINGS RESPONSE",d);
+
+if(!d.success){
+alert("Listing Load Failed");
 return;
+}
 
-listings=
-d.rows||[];
+listings=d.rows||[];
 
-renderRows(
-listings
-);
+renderRows(listings);
 
 }
 
@@ -283,31 +290,35 @@ html+=`
 
 <td>
 
-<img src="${
-r.image||''
-}">
+<img
+src="${getImageUrl(r.image)}"
+style="
+width:60px;
+height:60px;
+object-fit:cover;
+border-radius:8px;
+border:1px solid #ddd;
+"
+onerror="this.src='https://placehold.co/60x60?text=No+Image'"
+>
 
 </td>
 
-<td>${r.sku}</td>
+<td>${r.sku||""}</td>
 
-<td>${r.product}</td>
+<td>${r.product||""}</td>
 
-<td>${r.price}</td>
+<td>${r.price||0}</td>
 
-<td>${r.stock}</td>
+<td>${r.stock||0}</td>
 
 <td>
 
 <button
 class="btn"
-onclick="editRow(
-${r.row}
-)"
+onclick="editRow(${r.row})"
 >
-
 Edit
-
 </button>
 
 </td>
@@ -316,13 +327,9 @@ Edit
 
 <button
 class="btn"
-onclick="deleteRow(
-${r.row}
-)"
+onclick="deleteRow(${r.row})"
 >
-
 Delete
-
 </button>
 
 </td>
@@ -333,140 +340,121 @@ Delete
 
 });
 
-listingBody.innerHTML=
-html;
+document.getElementById("listingBody").innerHTML=html;
 
 }
 
 function editRow(row){
 
-const r=
-listings.find(
-x=>x.row===row
+const r=listings.find(
+x=>Number(x.row)===Number(row)
 );
 
-if(!r)
-return;
+if(!r) return;
 
-image.value=
-r.image;
+image.value=r.image||"";
+sku.value=r.sku||"";
+product.value=r.product||"";
+price.value=r.price||"";
+stock.value=r.stock||"";
 
-sku.value=
-r.sku;
+currentRow=row;
 
-product.value=
-r.product;
-
-price.value=
-r.price;
-
-stock.value=
-r.stock;
-
-window.currentRow=
-row;
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
 
 }
 
 async function updateListing(){
 
-const r=
-await post({
+if(!currentRow){
+alert("Select Listing First");
+return;
+}
+
+const r=await post({
 
 action:"updateListing",
 
 data:{
-
-row:
-window.currentRow,
-
-image:
-image.value,
-
-sku:
-sku.value,
-
-product:
-product.value,
-
-price:
-price.value,
-
-stock:
-stock.value
-
+row:currentRow,
+image:image.value.trim(),
+sku:sku.value.trim(),
+product:product.value.trim(),
+price:price.value.trim(),
+stock:stock.value.trim()
 }
 
 });
 
-alert(
-"Updated"
-);
+if(r.success){
+
+alert("Updated");
+
+clearForm();
 
 loadListings();
+
+}else{
+
+alert(r.message||"Update Failed");
+
+}
 
 }
 
 async function deleteRow(row){
 
-if(
-!confirm(
-"Delete Listing?"
-)
-)
+if(!confirm("Delete Listing ?"))
 return;
 
-await post({
-
+const r=await post({
 action:"deleteListing",
-
 row:row
-
 });
 
+if(r.success){
+
+alert("Deleted");
+
 loadListings();
+
+}else{
+
+alert(r.message||"Delete Failed");
+
+}
 
 }
 
 function searchListing(){
 
-const q=
-normalize(
-search.value
-);
+const q=normalize(search.value);
 
 if(!q){
 
-renderRows(
-listings
-);
+renderRows(listings);
 
 return;
 
 }
 
-const rows=
-listings.filter(r=>
+const filtered=listings.filter(r=>
 
-normalize(r.sku)
-.includes(q)
-
+normalize(r.sku).includes(q)
 ||
-
-normalize(r.product)
-.includes(q)
+normalize(r.product).includes(q)
 
 );
 
-renderRows(
-rows
-);
+renderRows(filtered);
 
 }
 
 loadListings();
 
 </script>
-
 </body>
 </html>
