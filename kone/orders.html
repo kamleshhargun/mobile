@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Orders</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.btn{
+background:#1976d2;
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+.input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.table{
+background:white;
+border-radius:12px;
+overflow:auto;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#1976d2;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+.info{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:15px;
+}
+
+.box{
+background:#f8f8f8;
+padding:10px;
+border-radius:8px;
+}
+
+@media(max-width:768px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.info{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="top">
+
+<h2>Orders Module</h2>
+
+<button
+class="btn"
+onclick="goHome()"
+
+>
+
+Dashboard </button>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Pickup Scan</h3>
+
+<input
+id="pickupAwb"
+class="input"
+placeholder="Enter AWB"
+
+>
+
+<button
+class="btn"
+onclick="fetchPickup()"
+
+>
+
+Fetch AWB </button>
+
+<div
+id="pickupData"
+class="info"
+></div>
+
+<button
+class="btn"
+style="margin-top:15px"
+onclick="savePickup()"
+
+>
+
+Save Pickup </button>
+
+</div>
+
+<div class="card">
+
+<h3>Return Scan</h3>
+
+<input
+id="returnAwb"
+class="input"
+placeholder="Enter AWB"
+
+>
+
+<button
+class="btn"
+onclick="fetchReturn()"
+
+>
+
+Fetch AWB </button>
+
+<div
+id="returnData"
+class="info"
+></div>
+
+<button
+class="btn"
+style="margin-top:15px"
+onclick="saveReturn()"
+
+>
+
+Save Return </button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Search Order</h3>
+
+<input
+id="searchAwb"
+class="input"
+placeholder="AWB / Order ID"
+
+>
+
+<button
+class="btn"
+onclick="searchOrder()"
+
+>
+
+Search </button>
+
+</div>
+
+<div class="table">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>AWB</th>
+<th>Order ID</th>
+<th>Customer</th>
+<th>Courier</th>
+<th>Status</th>
+<th>Type</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="ordersBody"
+></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const API=
+"https://script.google.com/macros/s/PASTE_DEPLOYMENT_ID/exec";
+
+let pickupObj=null;
+let returnObj=null;
+
+async function api(url){
+
+const r=
+await fetch(url);
+
+return await r.json();
+
+}
+
+async function post(data){
+
+const r=
+await fetch(
+API,
+{
+method:"POST",
+body:JSON.stringify(data)
+}
+);
+
+return await r.json();
+
+}
+
+function showData(
+id,
+d
+){
+
+document
+.getElementById(id)
+.innerHTML=`
+
+<div class="box">
+<b>AWB</b><br>
+${d.awb||""}
+</div>
+
+<div class="box">
+<b>Order ID</b><br>
+${d.orderId||""}
+</div>
+
+<div class="box">
+<b>Customer</b><br>
+${d.customer||""}
+</div>
+
+<div class="box">
+<b>Courier</b><br>
+${d.courier||""}
+</div>
+
+<div class="box">
+<b>Status</b><br>
+${d.status||""}
+</div>
+
+<div class="box">
+<b>City</b><br>
+${d.city||""}
+</div>
+
+`;
+
+}
+
+async function fetchPickup(){
+
+const awb=
+document
+.getElementById(
+"pickupAwb"
+)
+.value;
+
+if(!awb)
+return;
+
+const d=
+await api(
+API+
+"?action=track&awb="+
+encodeURIComponent(awb)
+);
+
+if(!d.success){
+
+alert(
+"AWB Not Found"
+);
+
+return;
+
+}
+
+pickupObj=d;
+
+showData(
+"pickupData",
+d
+);
+
+}
+
+async function fetchReturn(){
+
+const awb=
+document
+.getElementById(
+"returnAwb"
+)
+.value;
+
+if(!awb)
+return;
+
+const d=
+await api(
+API+
+"?action=track&awb="+
+encodeURIComponent(awb)
+);
+
+if(!d.success){
+
+alert(
+"AWB Not Found"
+);
+
+return;
+
+}
+
+returnObj=d;
+
+showData(
+"returnData",
+d
+);
+
+}
+
+async function savePickup(){
+
+if(!pickupObj)
+return;
+
+const r=
+await post({
+
+action:"pickup",
+
+awb:
+pickupObj.awb
+
+});
+
+alert(
+r.message||
+"Saved"
+);
+
+loadOrders();
+
+}
+
+async function saveReturn(){
+
+if(!returnObj)
+return;
+
+const r=
+await post({
+
+action:"return",
+
+awb:
+returnObj.awb
+
+});
+
+alert(
+r.message||
+"Saved"
+);
+
+loadOrders();
+
+}
+
+async function searchOrder(){
+
+const q=
+document
+.getElementById(
+"searchAwb"
+)
+.value;
+
+if(!q)
+return;
+
+const d=
+await api(
+
+API+
+"?action=search&q="+
+encodeURIComponent(q)
+
+);
+
+console.log(d);
+
+if(!d.success){
+
+alert(
+"No Record Found"
+);
+
+return;
+
+}
+
+alert(
+"Record Found"
+);
+
+}
+
+async function loadOrders(){
+
+const d=
+await api(
+API+
+"?action=orders"
+);
+
+if(!d.success)
+return;
+
+let html="";
+
+d.rows.forEach(r=>{
+
+html+=`
+
+<tr>
+
+<td>${r.awb}</td>
+
+<td>${r.orderId}</td>
+
+<td>${r.customer}</td>
+
+<td>${r.courier}</td>
+
+<td>${r.status}</td>
+
+<td>${r.type}</td>
+
+</tr>
+
+`;
+
+});
+
+document
+.getElementById(
+"ordersBody"
+)
+.innerHTML=
+html;
+
+}
+
+function goHome(){
+
+window.location=
+"index.html";
+
+}
+
+loadOrders();
+
+</script>
+
+</body>
+</html>
