@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inventory</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+padding:20px;
+}
+
+.card{
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+}
+
+.input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+.btn{
+background:#1976d2;
+color:#fff;
+border:none;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+width:100%;
+}
+
+.table{
+background:white;
+border-radius:12px;
+overflow:auto;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#1976d2;
+color:white;
+padding:12px;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+.summary{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:20px;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+@media(max-width:768px){
+
+.grid,
+.summary{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="summary">
+
+<div class="box">
+<h2 id="totalProducts">0</h2>
+<p>Products</p>
+</div>
+
+<div class="box">
+<h2 id="totalStock">0</h2>
+<p>Total Stock</p>
+</div>
+
+<div class="box">
+<h2 id="lowStock">0</h2>
+<p>Low Stock</p>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="card">
+
+<h3>Opening Stock</h3>
+
+<input id="oSku" class="input" placeholder="SKU">
+<input id="oQty" class="input" placeholder="Qty">
+<input id="oRemark" class="input" placeholder="Remark">
+
+<button
+class="btn"
+onclick="openingStock()"
+
+>
+
+Save </button>
+
+</div>
+
+<div class="card">
+
+<h3>Inward Stock</h3>
+
+<input id="iSku" class="input" placeholder="SKU">
+<input id="iQty" class="input" placeholder="Qty">
+<input id="iKarigar" class="input" placeholder="Karigar">
+<input id="iRemark" class="input" placeholder="Remark">
+
+<button
+class="btn"
+onclick="inwardStock()"
+
+>
+
+Save </button>
+
+</div>
+
+<div class="card">
+
+<h3>Alter Stock</h3>
+
+<input id="aSku" class="input" placeholder="SKU">
+<input id="aQty" class="input" placeholder="Qty">
+<input id="aKarigar" class="input" placeholder="Karigar">
+<input id="aRemark" class="input" placeholder="Remark">
+
+<button
+class="btn"
+onclick="alterStock()"
+
+>
+
+Save </button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<input
+id="searchSku"
+class="input"
+placeholder="Search SKU"
+onkeyup="filterHistory()"
+
+>
+
+</div>
+
+<div class="table">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Type</th>
+<th>SKU</th>
+<th>Product</th>
+<th>Qty</th>
+<th>Balance</th>
+<th>Karigar</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="historyBody"
+></tbody>
+
+</table>
+
+</div>
+
+<script>
+
+const API=
+"https://script.google.com/macros/s/PASTE_DEPLOYMENT_ID/exec";
+
+let inventoryRows=[];
+
+async function post(data){
+
+const r=
+await fetch(
+API,
+{
+method:"POST",
+body:JSON.stringify(data)
+}
+);
+
+return await r.json();
+
+}
+
+async function api(url){
+
+const r=
+await fetch(url);
+
+return await r.json();
+
+}
+
+async function openingStock(){
+
+const r=
+await post({
+
+action:"opening",
+
+sku:
+oSku.value,
+
+qty:
+oQty.value,
+
+remarks:
+oRemark.value
+
+});
+
+alert(
+r.success?
+"Saved":
+r.message
+);
+
+loadSummary();
+loadHistory();
+
+}
+
+async function inwardStock(){
+
+const r=
+await post({
+
+action:"inward",
+
+sku:
+iSku.value,
+
+qty:
+iQty.value,
+
+karigar:
+iKarigar.value,
+
+remarks:
+iRemark.value
+
+});
+
+alert(
+r.success?
+"Saved":
+r.message
+);
+
+loadSummary();
+loadHistory();
+
+}
+
+async function alterStock(){
+
+const r=
+await post({
+
+action:"alter",
+
+sku:
+aSku.value,
+
+qty:
+aQty.value,
+
+karigar:
+aKarigar.value,
+
+remarks:
+aRemark.value
+
+});
+
+alert(
+r.success?
+"Saved":
+r.message
+);
+
+loadSummary();
+loadHistory();
+
+}
+
+async function loadSummary(){
+
+const d=
+await api(
+API+
+"?action=dashboard"
+);
+
+if(!d.success)
+return;
+
+document
+.getElementById(
+"totalStock"
+)
+.innerText=
+d.stock;
+
+document
+.getElementById(
+"totalProducts"
+)
+.innerText=
+d.listings;
+
+const low=
+await api(
+API+
+"?action=lowStock"
+);
+
+document
+.getElementById(
+"lowStock"
+)
+.innerText=
+low.rows.length;
+
+}
+
+async function loadHistory(){
+
+const d=
+await api(
+API+
+"?action=inventoryHistory"
+);
+
+inventoryRows=
+d.rows||[];
+
+renderRows(
+inventoryRows
+);
+
+}
+
+function renderRows(rows){
+
+let html="";
+
+rows.forEach(r=>{
+
+html+=`
+
+<tr>
+
+<td>${r.date||""}</td>
+
+<td>${r.type||""}</td>
+
+<td>${r.sku||""}</td>
+
+<td>${r.product||""}</td>
+
+<td>${r.qty||0}</td>
+
+<td>${r.balance||0}</td>
+
+<td>${r.karigar||""}</td>
+
+</tr>
+
+`;
+
+});
+
+historyBody.innerHTML=
+html;
+
+}
+
+function normalize(v){
+
+return String(v||"")
+.toLowerCase()
+.replace(/[^a-z0-9]/g,"");
+
+}
+
+function filterHistory(){
+
+const q=
+normalize(
+searchSku.value
+);
+
+if(!q){
+
+renderRows(
+inventoryRows
+);
+
+return;
+
+}
+
+const rows=
+inventoryRows.filter(r=>
+
+normalize(r.sku)
+.includes(q)
+
+);
+
+renderRows(rows);
+
+}
+
+loadSummary();
+loadHistory();
+
+</script>
+
+</body>
+</html>
