@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Pickup Return Scanner</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+body{
+font-family:Arial;
+padding:20px;
+text-align:center;
+}
+
+#reader{
+width:350px;
+margin:auto;
+}
+
+button{
+padding:12px 20px;
+margin:5px;
+cursor:pointer;
+}
+
+.result{
+margin-top:20px;
+font-size:18px;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Pickup / Return Scanner</h2>
+
+<select id="type">
+
+<option value="Pickup">
+Pickup
+</option>
+
+<option value="Return">
+Return
+</option>
+
+</select>
+
+<div id="reader"></div>
+
+<div
+id="result"
+class="result">
+Ready
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwjC9TWBNWI5klVjqJ6W7jng6lJCdMw2YLxjUS0MYQeUd0G9vzahqJgg3VmgWPMlKTKPw/exec";
+
+let lastScan = "";
+
+function onScanSuccess(code){
+
+if(code === lastScan){
+return;
+}
+
+lastScan = code;
+
+document.getElementById(
+"result"
+).innerHTML =
+"Searching...";
+
+saveScan(code);
+
+}
+
+const html5QrCodeScanner =
+new Html5QrcodeScanner(
+"reader",
+{
+fps:10,
+qrbox:250
+}
+);
+
+html5QrCodeScanner.render(
+onScanSuccess
+);
+
+async function saveScan(awb){
+
+const type =
+document.getElementById(
+"type"
+).value;
+
+const response =
+await fetch(
+API_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+awb:awb,
+type:type
+})
+}
+);
+
+const data =
+await response.json();
+
+if(data.success){
+
+document.getElementById(
+"result"
+).innerHTML =
+`
+✅ Saved
+
+<br>
+
+AWB:
+${awb}
+
+<br>
+
+Order:
+${data.orderId}
+
+<br>
+
+Courier:
+${data.courier}
+`;
+
+}else{
+
+document.getElementById(
+"result"
+).innerHTML =
+"❌ " +
+data.message;
+
+}
+
+setTimeout(()=>{
+lastScan="";
+},3000);
+
+}
+
+</script>
+
+</body>
+
+</html>
