@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Pickup Return Scanner</title>
 
@@ -11,27 +12,138 @@
 
 <style>
 
-body{
-font-family:Arial;
-padding:20px;
-text-align:center;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
-#reader{
-width:350px;
+body{
+background:#f6f7fb;
+padding:15px;
+min-height:100vh;
+}
+
+.container{
+max-width:500px;
 margin:auto;
 }
 
-button{
-padding:12px 20px;
-margin:5px;
+.card{
+background:#fff;
+border-radius:20px;
+padding:20px;
+box-shadow:0 5px 25px rgba(0,0,0,.08);
+}
+
+h1{
+text-align:center;
+font-size:24px;
+margin-bottom:5px;
+}
+
+.sub{
+text-align:center;
+font-size:14px;
+color:#666;
+margin-bottom:20px;
+}
+
+.count-box{
+background:#f4f4f4;
+padding:12px;
+border-radius:12px;
+text-align:center;
+font-weight:600;
+margin-bottom:15px;
+}
+
+.type-selector{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+}
+
+.type-selector button{
+flex:1;
+height:50px;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+.active{
+background:#111;
+color:#fff;
+}
+
+.inactive{
+background:#ececec;
+color:#111;
+}
+
+.scan-box{
+border-radius:18px;
+overflow:hidden;
+border:3px solid #111;
+background:#000;
+}
+
+#reader{
+width:100%;
+}
+
+.action-buttons{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.action-buttons button{
+flex:1;
+height:45px;
+border:none;
+border-radius:12px;
+font-size:15px;
+font-weight:bold;
 cursor:pointer;
 }
 
+.flash-btn{
+background:#111;
+color:#fff;
+}
+
 .result{
-margin-top:20px;
-font-size:18px;
-font-weight:bold;
+margin-top:15px;
+padding:15px;
+border-radius:12px;
+background:#f5f5f5;
+text-align:center;
+word-break:break-word;
+line-height:1.8;
+font-size:15px;
+}
+
+.success{
+background:#e9fff0;
+color:#00803e;
+}
+
+.error{
+background:#fff1f1;
+color:#d60000;
+}
+
+.footer{
+margin-top:15px;
+text-align:center;
+font-size:12px;
+color:#777;
 }
 
 </style>
@@ -40,26 +152,66 @@ font-weight:bold;
 
 <body>
 
-<h2>Pickup / Return Scanner</h2>
+<div class="container">
 
-<select id="type">
+<div class="card">
 
-<option value="Pickup">
+<h1>Pickup Scanner</h1>
+
+<div class="sub">
+Scan AWB Barcode / QR
+</div>
+
+<div class="count-box">
+Today's Scans :
+<span id="todayCount">0</span>
+</div>
+
+<div class="type-selector">
+
+<button
+id="pickupBtn"
+class="active"
+onclick="setType('Pickup')">
 Pickup
-</option>
+</button>
 
-<option value="Return">
+<button
+id="returnBtn"
+class="inactive"
+onclick="setType('Return')">
 Return
-</option>
+</button>
 
-</select>
+</div>
 
+<div class="scan-box">
 <div id="reader"></div>
+</div>
+
+<div class="action-buttons">
+
+<button
+id="flashBtn"
+class="flash-btn"
+onclick="toggleFlash()">
+🔦 Flash ON
+</button>
+
+</div>
 
 <div
 id="result"
 class="result">
-Ready
+📷 Camera Ready
+</div>
+
+</div>
+
+<div class="footer">
+Inventory Scanner
+</div>
+
 </div>
 
 <script>
@@ -67,44 +219,110 @@ Ready
 const API_URL =
 "https://script.google.com/macros/s/AKfycbwjC9TWBNWI5klVjqJ6W7jng6lJCdMw2YLxjUS0MYQeUd0G9vzahqJgg3VmgWPMlKTKPw/exec";
 
+let scanType = "Pickup";
+
 let lastScan = "";
 
-function onScanSuccess(code){
+let flashOn = false;
 
-if(code === lastScan){
-return;
+let html5QrCode;
+
+const scannedAwbs =
+new Set();
+
+let todayCount =
+parseInt(
+localStorage.getItem(
+"todayCount"
+) || 0
+);
+
+document.getElementById(
+"todayCount"
+).innerText =
+todayCount;
+
+function setType(type){
+
+scanType = type;
+
+if(type==="Pickup"){
+
+pickupBtn.className =
+"active";
+
+returnBtn.className =
+"inactive";
+
+}else{
+
+pickupBtn.className =
+"inactive";
+
+returnBtn.className =
+"active";
+
 }
 
-lastScan = code;
+}
+
+function playBeep(){
+
+try{
+
+const audioContext =
+new (
+window.AudioContext ||
+window.webkitAudioContext
+)();
+
+const oscillator =
+audioContext.createOscillator();
+
+oscillator.connect(
+audioContext.destination
+);
+
+oscillator.frequency.value =
+1000;
+
+oscillator.start();
+
+setTimeout(()=>{
+oscillator.stop();
+},150);
+
+}catch(err){}
+
+}
+
+function vibrate(){
+
+if(
+navigator.vibrate
+){
+
+navigator.vibrate(
+200
+);
+
+}
+
+}
+
+async function saveScan(awb){
+
+document.getElementById(
+"result"
+).className =
+"result";
 
 document.getElementById(
 "result"
 ).innerHTML =
-"Searching...";
+"⏳ Searching Order...";
 
-saveScan(code);
-
-}
-
-const html5QrCodeScanner =
-new Html5QrcodeScanner(
-"reader",
-{
-fps:10,
-qrbox:250
-}
-);
-
-html5QrCodeScanner.render(
-onScanSuccess
-);
-
-async function saveScan(awb){
-
-const type =
-document.getElementById(
-"type"
-).value;
+try{
 
 const response =
 await fetch(
@@ -117,7 +335,7 @@ headers:{
 },
 body:JSON.stringify({
 awb:awb,
-type:type
+type:scanType
 })
 }
 );
@@ -127,29 +345,56 @@ await response.json();
 
 if(data.success){
 
+todayCount++;
+
+localStorage.setItem(
+"todayCount",
+todayCount
+);
+
+document.getElementById(
+"todayCount"
+).innerText =
+todayCount;
+
+document.getElementById(
+"result"
+).className =
+"result success";
+
 document.getElementById(
 "result"
 ).innerHTML =
 `
-✅ Saved
+✅ Saved Successfully
 
 <br>
 
-AWB:
+<b>Type:</b>
+${scanType}
+
+<br>
+
+<b>AWB:</b>
 ${awb}
 
 <br>
 
-Order:
+<b>Order ID:</b>
 ${data.orderId}
 
 <br>
 
-Courier:
+<b>Courier:</b>
 ${data.courier}
 `;
 
 }else{
+
+document.getElementById(
+"result"
+).className =
+"result error";
 
 document.getElementById(
 "result"
@@ -159,14 +404,166 @@ data.message;
 
 }
 
+}catch(err){
+
+document.getElementById(
+"result"
+).className =
+"result error";
+
+document.getElementById(
+"result"
+).innerHTML =
+"Network Error";
+
+}
+
 setTimeout(()=>{
 lastScan="";
 },3000);
 
 }
 
+function onScanSuccess(code){
+
+if(
+scannedAwbs.has(code)
+){
+
+document.getElementById(
+"result"
+).className =
+"result error";
+
+document.getElementById(
+"result"
+).innerHTML =
+"⚠ Already Scanned";
+
+return;
+
+}
+
+if(
+code === lastScan
+){
+return;
+}
+
+lastScan = code;
+
+scannedAwbs.add(code);
+
+playBeep();
+
+vibrate();
+
+saveScan(code);
+
+}
+
+async function startScanner(){
+
+try{
+
+const cameras =
+await Html5Qrcode.getCameras();
+
+if(!cameras.length){
+
+alert(
+"No Camera Found"
+);
+
+return;
+}
+
+let rearCamera =
+cameras[0].id;
+
+for(
+let cam of cameras
+){
+
+const label =
+cam.label.toLowerCase();
+
+if(
+label.includes("back") ||
+label.includes("rear")
+){
+
+rearCamera =
+cam.id;
+
+break;
+
+}
+
+}
+
+html5QrCode =
+new Html5Qrcode(
+"reader"
+);
+
+await html5QrCode.start(
+rearCamera,
+{
+fps:10,
+qrbox:{
+width:250,
+height:120
+},
+aspectRatio:1.2
+},
+onScanSuccess
+);
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
+
+async function toggleFlash(){
+
+try{
+
+flashOn =
+!flashOn;
+
+await html5QrCode
+.applyVideoConstraints({
+advanced:[
+{
+torch:flashOn
+}
+]
+});
+
+document.getElementById(
+"flashBtn"
+).innerHTML =
+flashOn
+? "🔦 Flash OFF"
+: "🔦 Flash ON";
+
+}catch(err){
+
+alert(
+"Flash Not Supported"
+);
+
+}
+
+}
+
+startScanner();
+
 </script>
 
 </body>
-
 </html>
