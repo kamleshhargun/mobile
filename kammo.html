@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Pickup Return Scanner</title>
 
@@ -20,11 +21,9 @@ font-family:Arial,sans-serif;
 }
 
 body{
-margin:0;
+background:#f4f6f9;
 height:100vh;
 overflow:hidden;
-background:#f6f7fb;
-font-family:Arial,sans-serif;
 }
 
 .container{
@@ -35,42 +34,12 @@ padding:10px;
 gap:10px;
 }
 
-.card{
-background:#fff;
-border-radius:20px;
-padding:20px;
-box-shadow:0 5px 25px rgba(0,0,0,.08);
-}
-
-h1{
-text-align:center;
-font-size:24px;
-margin-bottom:5px;
-}
-
-.sub{
-text-align:center;
-font-size:14px;
-color:#666;
-margin-bottom:20px;
-}
-
-.count-box{
-background:#f4f4f4;
-padding:12px;
-border-radius:12px;
-text-align:center;
-font-weight:600;
-margin-bottom:15px;
-}
-
-.type-selector{
+.header{
 display:flex;
 gap:10px;
-margin-bottom:15px;
 }
 
-.type-selector button{
+.type-btn{
 flex:1;
 height:50px;
 border:none;
@@ -78,7 +47,6 @@ border-radius:12px;
 font-size:16px;
 font-weight:bold;
 cursor:pointer;
-transition:.3s;
 }
 
 .active{
@@ -87,16 +55,29 @@ color:#fff;
 }
 
 .inactive{
-background:#ececec;
+background:#e7e7e7;
 color:#111;
 }
 
-.scan-box{
-height:260px;
+.counts{
+display:flex;
+gap:10px;
+}
+
+.count-card{
+flex:1;
+background:#fff;
+padding:12px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.camera-section{
+height:320px;
+background:#000;
 border-radius:16px;
 overflow:hidden;
-border:3px solid #111;
-background:#000;
 position:relative;
 flex-shrink:0;
 }
@@ -106,78 +87,107 @@ width:100%;
 height:100%;
 }
 
-.action-buttons{
-display:flex;
-gap:10px;
-margin-top:15px;
+.scan-overlay{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:260px;
+height:120px;
+border:3px solid #00ff66;
+border-radius:12px;
+pointer-events:none;
 }
 
-.action-buttons button{
+.controls{
+display:flex;
+gap:10px;
+}
+
+.controls button{
 flex:1;
 height:45px;
 border:none;
 border-radius:12px;
-font-size:15px;
 font-weight:bold;
 cursor:pointer;
 }
 
-.flash-btn{
+.flash{
 background:#111;
 color:#fff;
 }
 
-.result{
-margin-top:15px;
+.clear{
+background:#e74c3c;
+color:#fff;
+}
+
+.details{
+background:#fff;
 padding:15px;
 border-radius:12px;
-background:#f5f5f5;
-text-align:center;
-word-break:break-word;
-line-height:1.8;
-font-size:15px;
-height:140px;
-overflow:auto;
-flex-shrink:0;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.success{
-background:#e9fff0;
-color:#00803e;
+.row{
+margin-bottom:8px;
+font-size:14px;
 }
 
-.error{
-background:#fff1f1;
-color:#d60000;
+.label{
+font-weight:bold;
 }
 
-.footer{
-margin-top:15px;
-text-align:center;
-font-size:12px;
-color:#777;
+.save-btn{
+width:100%;
+height:50px;
+margin-top:10px;
+border:none;
+background:#16a34a;
+color:#fff;
+font-size:16px;
+font-weight:bold;
+border-radius:12px;
+cursor:pointer;
 }
-  .manual-box{
+
+.manual{
 display:flex;
 gap:10px;
 }
 
-.manual-box input{
+.manual input{
 flex:1;
 height:50px;
 border:1px solid #ddd;
 border-radius:12px;
 padding:0 15px;
-font-size:16px;
+font-size:15px;
 }
 
-.manual-box button{
+.manual button{
 width:120px;
 border:none;
 background:#111;
 color:#fff;
 border-radius:12px;
 font-weight:bold;
+}
+
+.status{
+text-align:center;
+font-size:14px;
+font-weight:bold;
+padding:8px;
+}
+
+.success{
+color:#16a34a;
+}
+
+.error{
+color:#dc2626;
 }
 
 </style>
@@ -188,73 +198,100 @@ font-weight:bold;
 
 <div class="container">
 
-<div class="card">
-
-<h1>Pickup Scanner</h1>
-
-<div class="sub">
-Scan AWB Barcode / QR
-</div>
-
-<div class="count-box">
-Today's Scans :
-<span id="todayCount">0</span>
-</div>
-
-<div class="type-selector">
+<div class="header">
 
 <button
 id="pickupBtn"
-class="active"
+class="type-btn active"
 onclick="setType('Pickup')">
-Pickup
-</button>
+Pickup </button>
 
 <button
 id="returnBtn"
-class="inactive"
+class="type-btn inactive"
 onclick="setType('Return')">
+Return </button>
+
+</div>
+
+<div class="counts">
+
+<div class="count-card">
+Pickup
+<br>
+<b id="pickupCount">0</b>
+</div>
+
+<div class="count-card">
 Return
-</button>
+<br>
+<b id="returnCount">0</b>
+</div>
 
 </div>
 
-<div class="scan-box">
+<div class="camera-section">
+
 <div id="reader"></div>
+
+<div class="scan-overlay"></div>
+
 </div>
 
-<div class="action-buttons">
+<div class="controls">
 
 <button
-id="flashBtn"
-class="flash-btn"
+class="flash"
 onclick="toggleFlash()">
-🔦 Flash ON
-</button>
+🔦 Flash </button>
+
+<button
+class="clear"
+onclick="clearData()">
+Clear </button>
+
+</div>
+
+<div class="details">
+
+<div class="row">
+<span class="label">AWB:</span>
+<span id="awb">-</span>
+</div>
+
+<div class="row">
+<span class="label">Order ID:</span>
+<span id="orderId">-</span>
+</div>
+
+<div class="row">
+<span class="label">Courier:</span>
+<span id="courier">-</span>
+</div>
+
+<button
+class="save-btn"
+onclick="saveShipment()">
+SAVE </button>
+
+</div>
+
+<div class="manual">
+
+<input
+id="manualAwb"
+placeholder="Enter AWB">
+
+<button
+onclick="manualSearch()">
+SEARCH </button>
 
 </div>
 
 <div
-id="result"
-class="result">
-📷 Camera Ready
-</div>
-
-</div>
-<div class="manual-box">
-
-<input
-id="manualAwb"
-type="text"
-placeholder="Enter AWB">
-
-<button onclick="submitManual()">
-Submit
-</button>
-
-</div>
-<div class="footer">
-Inventory Scanner
+id="status"
+class="status">
+Ready
 </div>
 
 </div>
@@ -262,79 +299,264 @@ Inventory Scanner
 <script>
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbwjC9TWBNWI5klVjqJ6W7jng6lJCdMw2YLxjUS0MYQeUd0G9vzahqJgg3VmgWPMlKTKPw/exec";
+"https://script.google.com/macros/s/AKfycbwPXBYMpLUYKspb9gZAb9ZRy6_qA9hwgvdHZ9yBHD-5qxhHvZao5JKM-TflgG2g1k4VHA/exec";
 
 let scanType = "Pickup";
-
-let lastScan = "";
 
 let flashOn = false;
 
 let html5QrCode;
 
-const scannedAwbs =
-new Set();
-
-let todayCount =
-parseInt(
-localStorage.getItem(
-"todayCount"
-) || 0
-);
-
-document.getElementById(
-"todayCount"
-).innerText =
-todayCount;
+let currentData = null;
 
 function setType(type){
 
 scanType = type;
 
-if(type==="Pickup"){
-
 pickupBtn.className =
-"active";
+type==="Pickup"
+?
+"type-btn active"
+:
+"type-btn inactive";
 
 returnBtn.className =
-"inactive";
-
-}else{
-
-pickupBtn.className =
-"inactive";
-
-returnBtn.className =
-"active";
+type==="Return"
+?
+"type-btn active"
+:
+"type-btn inactive";
 
 }
 
-}
-
-function playBeep(){
+async function loadCounts(){
 
 try{
 
-const audioContext =
-new (
+const res =
+await fetch(
+API_URL +
+"?action=counts"
+);
+
+const data =
+await res.json();
+
+if(data.success){
+
+pickupCount.innerText =
+data.pickup;
+
+returnCount.innerText =
+data.return;
+
+}
+
+}catch(err){}
+
+}
+
+async function searchAwb(awb){
+
+status.innerHTML =
+"Searching...";
+
+try{
+
+const res =
+await fetch(
+API_URL +
+"?action=search&awb="
++
+encodeURIComponent(awb)
+);
+
+const data =
+await res.json();
+
+if(!data.success){
+
+status.className =
+"status error";
+
+status.innerHTML =
+data.message;
+
+return;
+
+}
+
+currentData = data;
+
+document.getElementById(
+"awb"
+).innerText =
+data.awb;
+
+document.getElementById(
+"orderId"
+).innerText =
+data.orderId;
+
+document.getElementById(
+"courier"
+).innerText =
+data.courier;
+
+status.className =
+"status success";
+
+status.innerHTML =
+"Shipment Found";
+
+}catch(err){
+
+status.className =
+"status error";
+
+status.innerHTML =
+"Network Error";
+
+}
+
+}
+
+async function saveShipment(){
+
+if(!currentData){
+
+return;
+
+}
+
+try{
+
+const res =
+await fetch(
+API_URL,
+{
+method:"POST",
+headers:{
+"Content-Type":
+"application/json"
+},
+body:JSON.stringify({
+
+action:"save",
+
+data:{
+
+type:scanType,
+
+awb:
+currentData.awb,
+
+orderId:
+currentData.orderId,
+
+courier:
+currentData.courier
+
+}
+
+})
+}
+);
+
+const data =
+await res.json();
+
+if(data.success){
+
+status.className =
+"status success";
+
+status.innerHTML =
+"Saved Successfully";
+
+loadCounts();
+
+}else{
+
+status.className =
+"status error";
+
+status.innerHTML =
+data.message;
+
+}
+
+}catch(err){
+
+status.className =
+"status error";
+
+status.innerHTML =
+"Save Failed";
+
+}
+
+}
+
+function clearData(){
+
+currentData = null;
+
+awb.innerText="-";
+orderId.innerText="-";
+courier.innerText="-";
+
+status.className =
+"status";
+
+status.innerHTML =
+"Ready";
+
+}
+
+function manualSearch(){
+
+const awb =
+manualAwb.value.trim();
+
+if(!awb){
+
+alert(
+"Enter AWB"
+);
+
+return;
+
+}
+
+searchAwb(awb);
+
+}
+
+function beep(){
+
+try{
+
+const ctx =
+new(
 window.AudioContext ||
 window.webkitAudioContext
 )();
 
-const oscillator =
-audioContext.createOscillator();
+const osc =
+ctx.createOscillator();
 
-oscillator.connect(
-audioContext.destination
+osc.connect(
+ctx.destination
 );
 
-oscillator.frequency.value =
-1000;
+osc.frequency.value =
+900;
 
-oscillator.start();
+osc.start();
 
 setTimeout(()=>{
-oscillator.stop();
+osc.stop();
 },150);
 
 }catch(err){}
@@ -355,190 +577,43 @@ navigator.vibrate(
 
 }
 
-async function saveScan(awb){
-
-document.getElementById(
-"result"
-).className =
-"result";
-
-document.getElementById(
-"result"
-).innerHTML =
-"⏳ Searching Order...";
-
-try{
-
-const response =
-await fetch(
-API_URL,
-{
-method:"POST",
-headers:{
-"Content-Type":
-"application/json"
-},
-body:JSON.stringify({
-awb:awb,
-type:scanType
-})
-}
-);
-
-const data =
-await response.json();
-
-if(data.success){
-
-todayCount++;
-
-localStorage.setItem(
-"todayCount",
-todayCount
-);
-
-document.getElementById(
-"todayCount"
-).innerText =
-todayCount;
-
-document.getElementById(
-"result"
-).className =
-"result success";
-
-document.getElementById(
-"result"
-).innerHTML =
-`
-✅ Saved Successfully
-
-<br>
-
-<b>Type:</b>
-${scanType}
-
-<br>
-
-<b>AWB:</b>
-${awb}
-
-<br>
-
-<b>Order ID:</b>
-${data.orderId}
-
-<br>
-
-<b>Courier:</b>
-${data.courier}
-`;
-
-}else{
-
-document.getElementById(
-"result"
-).className =
-"result error";
-
-document.getElementById(
-"result"
-).innerHTML =
-"❌ " +
-data.message;
-
-}
-
-}catch(err){
-
-document.getElementById(
-"result"
-).className =
-"result error";
-
-document.getElementById(
-"result"
-).innerHTML =
-"Network Error";
-
-}
-
-setTimeout(()=>{
-lastScan="";
-},3000);
-
-}
-
 function onScanSuccess(code){
 
-if(
-scannedAwbs.has(code)
-){
-
-document.getElementById(
-"result"
-).className =
-"result error";
-
-document.getElementById(
-"result"
-).innerHTML =
-"⚠ Already Scanned";
-
-return;
-
-}
-
-if(
-code === lastScan
-){
-return;
-}
-
-lastScan = code;
-
-scannedAwbs.add(code);
-
-playBeep();
+beep();
 
 vibrate();
 
-saveScan(code);
+searchAwb(code);
 
 }
 
 async function startScanner(){
 
-try{
-
 const cameras =
 await Html5Qrcode.getCameras();
 
-if(!cameras.length){
-
-alert(
-"No Camera Found"
-);
-
+if(
+!cameras.length
+){
 return;
 }
 
-let rearCamera =
+let cameraId =
 cameras[0].id;
 
 for(
 let cam of cameras
 ){
 
-const label =
+const name =
 cam.label.toLowerCase();
 
 if(
-label.includes("back") ||
-label.includes("rear")
+name.includes("back") ||
+name.includes("rear")
 ){
 
-rearCamera =
+cameraId =
 cam.id;
 
 break;
@@ -553,26 +628,25 @@ new Html5Qrcode(
 );
 
 await html5QrCode.start(
-rearCamera,
+
+cameraId,
+
 {
+
 fps:10,
-aspectRatio:1.7778,
-videoConstraints:{
-facingMode:"environment"
-},
+
+aspectRatio:1.777,
+
 qrbox:{
 width:260,
 height:120
 }
+
 },
+
 onScanSuccess
+
 );
-
-}catch(err){
-
-console.log(err);
-
-}
 
 }
 
@@ -585,19 +659,14 @@ flashOn =
 
 await html5QrCode
 .applyVideoConstraints({
+
 advanced:[
 {
 torch:flashOn
 }
 ]
-});
 
-document.getElementById(
-"flashBtn"
-).innerHTML =
-flashOn
-? "🔦 Flash OFF"
-: "🔦 Flash ON";
+});
 
 }catch(err){
 
@@ -608,36 +677,13 @@ alert(
 }
 
 }
-  function submitManual(){
 
-const awb =
-document.getElementById(
-"manualAwb"
-).value.trim();
-
-if(!awb){
-
-alert("Enter AWB");
-
-return;
-
-}
-
-playBeep();
-
-vibrate();
-
-saveScan(awb);
-
-document.getElementById(
-"manualAwb"
-).value="";
-
-}
+loadCounts();
 
 startScanner();
 
 </script>
 
 </body>
+
 </html>
