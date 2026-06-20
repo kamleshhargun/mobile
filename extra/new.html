@@ -1,384 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
+
+<title>Delhivery AWB Saver</title>
 
 <style>
+
 body{
-    margin:0;
-    padding:0;
-    font-family:Segoe UI,Arial,sans-serif;
-    background:#f4f6fb;
+font-family:Arial;
+padding:40px;
+max-width:500px;
+margin:auto;
 }
 
-.header{
-    background:#2d3e50;
-    color:#fff;
-    text-align:center;
-    padding:20px;
-    font-size:28px;
-    font-weight:bold;
+h2{
+text-align:center;
 }
 
-.dashboard{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:25px;
-    padding:30px;
+input{
+width:100%;
+padding:12px;
+font-size:16px;
+margin-top:10px;
 }
 
-.card{
-    width:250px;
-    min-height:250px;
-    background:#fff;
-    border-radius:15px;
-    box-shadow:0 6px 15px rgba(0,0,0,.1);
-    padding:15px;
-    cursor:pointer;
-    transition:.3s;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+button{
+width:100%;
+padding:12px;
+font-size:16px;
+margin-top:15px;
+cursor:pointer;
 }
 
-.card:hover{
-    transform:translateY(-5px);
-    background:#eef3ff;
+#message{
+margin-top:20px;
+font-weight:bold;
 }
 
-.card h3{
-    margin:0;
-    text-align:center;
-}
-
-.stats{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.stat{
-    background:#f1f3f9;
-    padding:10px;
-    border-radius:8px;
-    font-weight:600;
-}
-
-.stat span{
-    display:block;
-    margin-top:5px;
-    font-size:22px;
-    font-weight:bold;
-}
-
-.today{
-    border-left:5px solid #4CAF50;
-}
-
-.yesterday{
-    border-left:5px solid #FF9800;
-}
-
-.total{
-    border-left:5px solid #2196F3;
-}
-
-.setting-btn{
-    background:#2d3e50;
-    color:#fff;
-    padding:10px;
-    margin-top:8px;
-    border-radius:8px;
-    text-align:center;
-    cursor:pointer;
-}
-
-.setting-btn:hover{
-    opacity:.9;
-}
-
-.loading{
-    text-align:center;
-    color:#666;
-    margin-top:15px;
-}
 </style>
+
 </head>
+
 
 <body>
 
-<div class="header">
-    Harsidhi Ventures
-</div>
+<h2>Delhivery AWB Tracker</h2>
 
-<div class="dashboard">
 
-    <!-- PICKUP -->
-    <div class="card" onclick="openPage('pickup.html')">
-        <h3>Pickup</h3>
+<input 
+type="text"
+id="awb"
+placeholder="Enter AWB Number">
 
-        <div class="stats">
 
-            <div class="stat today">
-                Today
-                <span id="pickup_today">0</span>
-            </div>
+<button onclick="submitAWB()">
+Fetch & Save Data
+</button>
 
-            <div class="stat yesterday">
-                Yesterday
-                <span id="pickup_yesterday">0</span>
-            </div>
 
-            <div class="stat total">
-                Month Total
-                <span id="pickup_total">0</span>
-            </div>
+<div id="message"></div>
 
-        </div>
-    </div>
-
-    <!-- RETURN -->
-    <div class="card" onclick="openPage('return.html')">
-        <h3>Return</h3>
-
-        <div class="stats">
-
-            <div class="stat today">
-                Today
-                <span id="return_today">0</span>
-            </div>
-
-            <div class="stat yesterday">
-                Yesterday
-                <span id="return_yesterday">0</span>
-            </div>
-
-            <div class="stat total">
-                Month Total
-                <span id="return_total">0</span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- RETURN REQUEST -->
-    <div class="card" onclick="openPage('return-request.html')">
-        <h3>Return Request</h3>
-
-        <div class="stats">
-
-            <div class="stat today">
-                Today
-                <span>0</span>
-            </div>
-
-            <div class="stat yesterday">
-                Yesterday
-                <span>0</span>
-            </div>
-
-            <div class="stat total">
-                Total
-                <span>0</span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- CUSTOMER -->
-    <div class="card" onclick="openPage('customer.html')">
-        <h3>Customer</h3>
-
-        <div class="stats">
-
-            <div class="stat today">
-                Today
-                <span>0</span>
-            </div>
-
-            <div class="stat yesterday">
-                Yesterday
-                <span>0</span>
-            </div>
-
-            <div class="stat total">
-                Total
-                <span>0</span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- LOOKUP -->
-    <div class="card" onclick="openPage('lookup.html')">
-        <h3>Lookup Orders</h3>
-
-        <div class="stats">
-            <div class="stat total">
-                Search Order
-                <span>🔍</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- CUTTING -->
-    <div class="card" onclick="openPage('cutting.html')">
-        <h3>Cutting</h3>
-
-        <div class="stats">
-
-            <div class="stat today">
-                Today
-                <span>0</span>
-            </div>
-
-            <div class="stat yesterday">
-                Yesterday
-                <span>0</span>
-            </div>
-
-            <div class="stat total">
-                Total
-                <span>0</span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- FURNISHED -->
-    <div class="card" onclick="openPage('furnished.html')">
-        <h3>Furnished</h3>
-
-        <div class="stats">
-
-            <div class="stat today">
-                Today
-                <span>0</span>
-            </div>
-
-            <div class="stat yesterday">
-                Yesterday
-                <span>0</span>
-            </div>
-
-            <div class="stat total">
-                Total
-                <span>0</span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div class="card">
-
-        <h3>Settings</h3>
-
-        <div>
-
-            <div class="setting-btn">
-                API Setting
-            </div>
-
-            <div class="setting-btn">
-                Reset Data
-            </div>
-
-            <div class="setting-btn">
-                User Management
-            </div>
-
-            <div class="setting-btn">
-                Export Data
-            </div>
-
-            <div class="setting-btn" onclick="location.reload()">
-                Refresh
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="loading" id="statusText">
-    Loading Dashboard...
-</div>
 
 <script>
 
+
+// Replace with your Apps Script URL
+
 const API_URL =
-"https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
+"https://script.google.com/macros/s/AKfycbwi5ASrIuvWEO3rNIWFkCwpM6Wl2c4HpCZSfF8e2XsW1AswuEUKWtvHLdDzJbenjV6W/exec";
 
-function openPage(page){
-    window.location.href = page;
-}
 
-async function loadDashboard(){
 
-    try{
+async function submitAWB(){
 
-        document.getElementById("statusText").innerHTML =
-        "Loading Dashboard...";
 
-        const response =
-        await fetch(
-            API_URL +
-            "?action=getDashboardCounts"
-        );
+let awb =
+document
+.getElementById("awb")
+.value
+.trim();
 
-        const data =
-        await response.json();
 
-        if(!data.success){
 
-            document.getElementById("statusText").innerHTML =
-            "Dashboard Load Failed";
+if(!awb){
 
-            console.log(data);
-            return;
-        }
+alert("Please enter AWB");
 
-        document.getElementById("pickup_today").innerText =
-        data.todayPickup || 0;
-
-        document.getElementById("pickup_yesterday").innerText =
-        data.yesterdayPickup || 0;
-
-        document.getElementById("pickup_total").innerText =
-        data.monthPickup || 0;
-
-        document.getElementById("return_today").innerText =
-        data.todayReturn || 0;
-
-        document.getElementById("return_yesterday").innerText =
-        data.yesterdayReturn || 0;
-
-        document.getElementById("return_total").innerText =
-        data.monthReturn || 0;
-
-        document.getElementById("statusText").innerHTML =
-        "Month : " + (data.monthName || "");
-
-    }
-    catch(err){
-
-        console.error(err);
-
-        document.getElementById("statusText").innerHTML =
-        "API Connection Failed";
-
-    }
+return;
 
 }
 
-loadDashboard();
+
+let msg =
+document.getElementById("message");
+
+
+msg.innerHTML = "Fetching Data...";
+
+
+
+try{
+
+
+let response =
+await fetch(API_URL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+awb:awb
+})
+
+});
+
+
+
+let result =
+await response.json();
+
+
+
+if(result.success){
+
+msg.innerHTML =
+"✅ " + result.message;
+
+}else{
+
+
+msg.innerHTML =
+"❌ " + result.message;
+
+
+}
+
+
+
+}catch(error){
+
+
+msg.innerHTML =
+"❌ Error: " + error.message;
+
+
+}
+
+
+
+}
+
 
 </script>
 
+
 </body>
+
 </html>
