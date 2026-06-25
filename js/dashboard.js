@@ -267,3 +267,47 @@ window.addEventListener(
   }
 
 );
+
+async function checkSystemStatus(){
+
+  try{
+
+    const data =
+      await getSystemStatusAPI();
+
+    const el =
+      document.getElementById(
+        "systemStatus"
+      );
+
+    if(!el) return;
+
+    if(data.success){
+
+      el.innerHTML =
+        "🟢 System Online";
+
+    }else{
+
+      el.innerHTML =
+        "🔴 Offline";
+
+    }
+
+  }catch(err){
+
+    const el =
+      document.getElementById(
+        "systemStatus"
+      );
+
+    if(el){
+
+      el.innerHTML =
+        "🔴 Offline";
+
+    }
+
+  }
+
+}
