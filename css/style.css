@@ -611,3 +611,44 @@ MOBILE
         font-size:24px;
     }
 }
+/* Hidden until Pickup/Return selected */
+
+#scanPanel{
+    display:none;
+}
+
+/* Toast */
+
+.toast{
+
+    position:fixed;
+
+    right:20px;
+
+    top:90px;
+
+    background:#111827;
+
+    color:#fff;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    z-index:999999;
+
+    animation:fadeIn .2s ease;
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(-10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
