@@ -213,51 +213,67 @@ function showTrackingLoading() {
 
 }
 
-/* ===================================
-DASHBOARD
-=================================== */
+/* =====================================================
+   RENDER DASHBOARD
+===================================================== */
 
 function renderDashboard(data){
 
-    document.getElementById(
-        "pickupToday"
-    ).textContent =
-        data.todayPickup || 0;
+  document.getElementById(
+    "todayPickup"
+  ).innerText =
+    data.todayPickup || 0;
 
-    document.getElementById(
-        "pickupYesterday"
-    ).textContent =
-        data.yesterdayPickup || 0;
+  document.getElementById(
+    "todayReturn"
+  ).innerText =
+    data.todayReturn || 0;
 
-    document.getElementById(
-        "returnToday"
-    ).textContent =
-        data.todayReturn || 0;
+  document.getElementById(
+    "yesterdayPickup"
+  ).innerText =
+    data.yesterdayPickup || 0;
 
-    document.getElementById(
-        "returnYesterday"
-    ).textContent =
-        data.yesterdayReturn || 0;
+  document.getElementById(
+    "yesterdayReturn"
+  ).innerText =
+    data.yesterdayReturn || 0;
 
-    document.getElementById(
-        "currentMonthPickup"
-    ).textContent =
-        data.monthPickup || 0;
+  document.getElementById(
+    "currentMonthPickup"
+  ).innerText =
+    data.currentMonthPickup || 0;
 
-    document.getElementById(
-        "currentMonthReturn"
-    ).textContent =
-        data.monthReturn || 0;
+  document.getElementById(
+    "currentMonthReturn"
+  ).innerText =
+    data.currentMonthReturn || 0;
 
-    document.getElementById(
-        "lastMonthPickup"
-    ).textContent =
-        data.lastMonthPickup || 0;
+  document.getElementById(
+    "lastMonthPickup"
+  ).innerText =
+    data.lastMonthPickup || 0;
 
-    document.getElementById(
-        "lastMonthReturn"
-    ).textContent =
-        data.lastMonthReturn || 0;
+  document.getElementById(
+    "lastMonthReturn"
+  ).innerText =
+    data.lastMonthReturn || 0;
+
+  document.getElementById(
+    "trackingPending"
+  ).innerText =
+    data.trackingPending || 0;
+
+  document.getElementById(
+    "trackingDelivered"
+  ).innerText =
+    data.trackingDelivered || 0;
+
+  document.getElementById(
+    "trackingRTO"
+  ).innerText =
+    data.trackingRTO || 0;
+
 }
 
 /* ===================================
