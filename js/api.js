@@ -6,7 +6,7 @@ Central API Layer
 const CONFIG = {
 
   API_URL:
-  "https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec",
+  "https://script.google.com/macros/s/AKfycbwzKW15XfTj3emaWH8MHe_sCvHGvskr9naPk71vDuQTWZUPOebetTVaruUTGbgjOW0_/exec",
 
   TIMEOUT: 15000
 
