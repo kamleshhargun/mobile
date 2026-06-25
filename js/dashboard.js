@@ -65,7 +65,7 @@ async function refreshDashboard() {
 
   await loadDashboard();
 
-  //await loadRecentRecords();
+  await loadRecentRecords();
 
 }
 
