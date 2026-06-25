@@ -2,8 +2,10 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Harsidhi Ventures - Pickup & Return System</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +15,15 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>
 
-    <!-- HEADER -->
+    <!-- ===================================
+    HEADER
+    ==================================== -->
+
     <header class="topbar">
 
         <div class="brand">
@@ -27,6 +33,7 @@
             </div>
 
             <div>
+
                 <div class="brand-title">
                     Harsidhi Ventures
                 </div>
@@ -34,21 +41,27 @@
                 <div class="brand-subtitle">
                     Pickup & Return Management System
                 </div>
+
             </div>
 
         </div>
 
-        <div id="systemStatus" class="live-status">
+        <div class="live-status" id="apiStatus">
             ● System Online
         </div>
 
     </header>
 
+    <!-- ===================================
+    MAIN CONTAINER
+    ==================================== -->
 
-    <!-- MAIN CONTAINER -->
     <main class="page-container">
 
-        <!-- DAILY COUNTS -->
+        <!-- ===================================
+        DAILY COUNTS
+        ==================================== -->
+
         <section class="section-card">
 
             <div class="section-header">
@@ -58,65 +71,157 @@
             <div class="stats-grid">
 
                 <div class="stat-card">
-                    <div class="stat-label">Pickup Today</div>
-                    <div id="pickupToday" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Pickup Today
+                    </div>
+
+                    <div
+                        id="pickupToday"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-label">Pickup Yesterday</div>
-                    <div id="pickupYesterday" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Pickup Yesterday
+                    </div>
+
+                    <div
+                        id="pickupYesterday"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-label">Return Today</div>
-                    <div id="returnToday" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Return Today
+                    </div>
+
+                    <div
+                        id="returnToday"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-label">Return Yesterday</div>
-                    <div id="returnYesterday" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Return Yesterday
+                    </div>
+
+                    <div
+                        id="returnYesterday"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
             </div>
 
         </section>
 
+        <!-- ===================================
+        MONTHLY COUNTS
+        ==================================== -->
 
-        <!-- MONTHLY COUNTS -->
         <section class="section-card">
 
             <div class="section-header">
-                Monthly Counts
+                Monthly / Total Counts
             </div>
 
             <div class="stats-grid">
 
                 <div class="stat-card">
-                    <div class="stat-label">Current Month Pickup</div>
-                    <div id="currentMonthPickup" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Current Month Pickup
+                    </div>
+
+                    <div
+                        id="currentMonthPickup"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-label">Current Month Return</div>
-                    <div id="currentMonthReturn" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Current Month Return
+                    </div>
+
+                    <div
+                        id="currentMonthReturn"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-label">Last Month Pickup</div>
-                    <div id="lastMonthPickup" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Last Month Pickup
+                    </div>
+
+                    <div
+                        id="lastMonthPickup"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-label">Last Month Return</div>
-                    <div id="lastMonthReturn" class="stat-value">0</div>
+
+                    <div class="stat-label">
+                        Last Month Return
+                    </div>
+
+                    <div
+                        id="lastMonthReturn"
+                        class="stat-value">
+
+                        0
+
+                    </div>
+
                 </div>
 
             </div>
 
         </section>
 
+        <!-- ===================================
+        DAILY SCAN
+        ==================================== -->
 
-        <!-- DAILY SCAN -->
         <section class="section-card">
 
             <div class="section-header">
@@ -145,67 +250,73 @@
 
             </div>
 
-            <div class="scan-actions">
+            <div id="scanPanel">
 
-                <button
-                    class="btn btn-primary"
-                    onclick="startCamera()">
+                <div class="scan-actions">
 
-                    📷 Camera Scan
+                    <button
+                        class="btn btn-primary"
+                        onclick="startCamera()">
 
-                </button>
+                        📷 Camera Scan
 
-                <button
-                    class="btn btn-secondary"
-                    onclick="focusAWB()">
+                    </button>
 
-                    ⌨ Manual Scan
+                    <button
+                        class="btn btn-secondary"
+                        onclick="focusAWB()">
 
-                </button>
+                        ⌨ Manual Scan
 
-            </div>
+                    </button>
 
-            <div id="reader"></div>
+                </div>
 
-            <input
-                id="awbInput"
-                class="input"
-                placeholder="Scan AWB">
+                <div id="reader"></div>
 
-            <input
-                id="orderInput"
-                class="input"
-                placeholder="Order ID">
+                <input
+                    id="awbInput"
+                    class="input"
+                    placeholder="Scan AWB Number">
 
-            <div
-                id="resultCard"
-                class="result-card">
-            </div>
+                <input
+                    id="orderInput"
+                    class="input"
+                    placeholder="Enter Order ID">
 
-            <div class="action-row">
+                <div
+                    id="resultCard"
+                    class="result-card">
+                </div>
 
-                <button
-                    class="btn btn-success"
-                    onclick="saveEntry()">
+                <div class="action-row">
 
-                    Save & Next
+                    <button
+                        class="btn btn-success"
+                        onclick="saveEntry()">
 
-                </button>
+                        Save & Next
 
-                <button
-                    class="btn btn-danger"
-                    onclick="stopCamera()">
+                    </button>
 
-                    Stop Scanner
+                    <button
+                        class="btn btn-danger"
+                        onclick="stopWork()">
 
-                </button>
+                        Stop Work
+
+                    </button>
+
+                </div>
 
             </div>
 
         </section>
 
+        <!-- ===================================
+        FIND ORDER
+        ==================================== -->
 
-        <!-- FIND ORDER -->
         <section class="section-card">
 
             <div class="section-header">
@@ -232,8 +343,10 @@
 
         </section>
 
+        <!-- ===================================
+        BULK UPDATE
+        ==================================== -->
 
-        <!-- BULK UPDATE -->
         <section class="section-card">
 
             <div class="section-header">
@@ -257,28 +370,33 @@
                 id="bulkCounts"
                 class="info-box">
 
-                Pickup : 0<br>
+                Pickup : 0
+                <br>
                 Return : 0
 
             </div>
 
-            <button
-                id="pickupUpdateBtn"
-                class="btn btn-success"
-                onclick="startBulkUpdate('Pickup')">
+            <div class="action-row">
 
-                Update Pickup
+                <button
+                    id="pickupUpdateBtn"
+                    class="btn btn-success"
+                    onclick="startBulkUpdate('Pickup')">
 
-            </button>
+                    Update Pickup
 
-            <button
-                id="returnUpdateBtn"
-                class="btn btn-success"
-                onclick="startBulkUpdate('Return')">
+                </button>
 
-                Update Return
+                <button
+                    id="returnUpdateBtn"
+                    class="btn btn-success"
+                    onclick="startBulkUpdate('Return')">
 
-            </button>
+                    Update Return
+
+                </button>
+
+            </div>
 
             <div
                 id="bulkProgress"
@@ -292,29 +410,45 @@
 
     </main>
 
+    <!-- ===================================
+    FOOTER
+    ==================================== -->
 
-    <!-- FOOTER -->
     <footer class="footer">
 
         © 2026 Harsidhi Ventures
+        |
+        Pickup & Return Management System
 
     </footer>
 
+    <!-- ===================================
+    LOADER
+    ==================================== -->
 
-    <!-- LOADER -->
     <div id="loadingOverlay">
 
         <div class="loader-card">
+
             Loading...
+
         </div>
 
     </div>
 
+    <!-- ===================================
+    LIBRARIES
+    ==================================== -->
 
-    <!-- LIBRARIES -->
-    <script defer src="https://unpkg.com/html5-qrcode"></script>
+    <script
+        defer
+        src="https://unpkg.com/html5-qrcode">
+    </script>
 
-    <!-- JS FILES -->
+    <!-- ===================================
+    APPLICATION FILES
+    ==================================== -->
+
     <script defer src="js/api.js"></script>
     <script defer src="js/ui.js"></script>
     <script defer src="js/scanner.js"></script>
@@ -323,4 +457,5 @@
     <script defer src="js/bulk.js"></script>
 
 </body>
+
 </html>
