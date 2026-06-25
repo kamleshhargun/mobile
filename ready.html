@@ -1,13 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Harsidhi Ventures Pickup Return System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsidhi Ventures - Pickup & Return System</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,11 +13,11 @@
         rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
-
 </head>
+
 <body>
 
-    <!-- Top Header -->
+    <!-- HEADER -->
     <header class="topbar">
 
         <div class="brand">
@@ -41,205 +38,253 @@
 
         </div>
 
-        <div class="live-status">
+        <div id="systemStatus" class="live-status">
             ● System Online
         </div>
 
     </header>
 
-    <!-- Dashboard Stats -->
 
-    <section class="stats-row">
+    <!-- MAIN CONTAINER -->
+    <main class="page-container">
 
-        <div class="stat-card">
-            <div class="stat-title">Today's Pickup</div>
-            <div id="pickupCount" class="stat-value">0</div>
-        </div>
+        <!-- DAILY COUNTS -->
+        <section class="section-card">
 
-        <div class="stat-card">
-            <div class="stat-title">Today's Return</div>
-            <div id="returnCount" class="stat-value">0</div>
-        </div>
+            <div class="section-header">
+                Daily Counts
+            </div>
 
-        <div class="stat-card">
-            <div class="stat-title">Pending Scan</div>
-            <div id="pendingCount" class="stat-value">0</div>
-        </div>
+            <div class="stats-grid">
 
-        <div class="stat-card">
-            <div class="stat-title">Total Processed</div>
-            <div id="processedCount" class="stat-value">0</div>
-        </div>
-
-    </section>
-
-    <!-- Main Layout -->
-
-    <main class="dashboard-grid">
-
-        <!-- Left Sidebar -->
-
-        <aside class="sidebar">
-
-            <div class="card">
-
-                <h3>📦 Bulk Update</h3>
-
-                <input type="date" id="bulkDate" class="input">
-
-                <button class="btn btn-primary"
-                    onclick="loadBulkCounts()">
-
-                    Load Counts
-
-                </button>
-
-                <div id="bulkCounts" class="info-box">
-
-                    Pickup : 0<br>
-                    Return : 0
-
+                <div class="stat-card">
+                    <div class="stat-label">Pickup Today</div>
+                    <div id="pickupToday" class="stat-value">0</div>
                 </div>
 
-                <button
-                    id="pickupUpdateBtn"
-                    class="btn btn-success"
-                    onclick="startBulkUpdate('Pickup')">
+                <div class="stat-card">
+                    <div class="stat-label">Pickup Yesterday</div>
+                    <div id="pickupYesterday" class="stat-value">0</div>
+                </div>
 
-                    Update Pickup
+                <div class="stat-card">
+                    <div class="stat-label">Return Today</div>
+                    <div id="returnToday" class="stat-value">0</div>
+                </div>
 
-                </button>
-
-                <button
-                    id="returnUpdateBtn"
-                    class="btn btn-success"
-                    onclick="startBulkUpdate('Return')">
-
-                    Update Return
-
-                </button>
-
-                <div id="bulkProgress" class="info-box">
-
-                    Waiting...
-
+                <div class="stat-card">
+                    <div class="stat-label">Return Yesterday</div>
+                    <div id="returnYesterday" class="stat-value">0</div>
                 </div>
 
             </div>
 
-            <div class="card">
+        </section>
 
-                <h3>🔍 Search Order</h3>
 
-                <input
-                    id="searchInput"
-                    class="input"
-                    placeholder="AWB / Order ID">
+        <!-- MONTHLY COUNTS -->
+        <section class="section-card">
+
+            <div class="section-header">
+                Monthly Counts
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-label">Current Month Pickup</div>
+                    <div id="currentMonthPickup" class="stat-value">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Current Month Return</div>
+                    <div id="currentMonthReturn" class="stat-value">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Last Month Pickup</div>
+                    <div id="lastMonthPickup" class="stat-value">0</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Last Month Return</div>
+                    <div id="lastMonthReturn" class="stat-value">0</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DAILY SCAN -->
+        <section class="section-card">
+
+            <div class="section-header">
+                Daily Scan
+            </div>
+
+            <div class="scan-mode-row">
+
+                <button
+                    id="pickupBtn"
+                    class="mode-btn pickup"
+                    onclick="selectType('Pickup')">
+
+                    Pickup
+
+                </button>
+
+                <button
+                    id="returnBtn"
+                    class="mode-btn return"
+                    onclick="selectType('Return')">
+
+                    Return
+
+                </button>
+
+            </div>
+
+            <div class="scan-actions">
 
                 <button
                     class="btn btn-primary"
-                    onclick="searchOrder()">
+                    onclick="startCamera()">
 
-                    Search Order
+                    📷 Camera Scan
 
                 </button>
 
-                <div id="searchResult" class="search-result"></div>
+                <button
+                    class="btn btn-secondary"
+                    onclick="focusAWB()">
+
+                    ⌨ Manual Scan
+
+                </button>
 
             </div>
 
-        </aside>
+            <div id="reader"></div>
 
-        <!-- Scanner Section -->
+            <input
+                id="awbInput"
+                class="input"
+                placeholder="Scan AWB">
 
-        <section class="scanner-section">
+            <input
+                id="orderInput"
+                class="input"
+                placeholder="Order ID">
 
-            <div class="card">
+            <div
+                id="resultCard"
+                class="result-card">
+            </div>
 
-                <h3>📷 Scan Operations</h3>
+            <div class="action-row">
 
-                <div class="mode-row">
+                <button
+                    class="btn btn-success"
+                    onclick="saveEntry()">
 
-                    <button
-                        id="pickupBtn"
-                        class="mode-btn pickup"
-                        onclick="selectType('Pickup')">
+                    Save & Next
 
-                        Pickup
+                </button>
 
-                    </button>
+                <button
+                    class="btn btn-danger"
+                    onclick="stopCamera()">
 
-                    <button
-                        id="returnBtn"
-                        class="mode-btn return"
-                        onclick="selectType('Return')">
+                    Stop Scanner
 
-                        Return
+                </button>
 
-                    </button>
+            </div>
 
-                </div>
+        </section>
 
-                <div id="scanPanel" class="scan-panel">
 
-                    <div class="button-group">
+        <!-- FIND ORDER -->
+        <section class="section-card">
 
-                        <button
-                            class="btn btn-primary"
-                            onclick="startCamera()">
+            <div class="section-header">
+                Find Order
+            </div>
 
-                            📷 Camera Scan
+            <input
+                id="searchInput"
+                class="input"
+                placeholder="AWB / Order ID">
 
-                        </button>
+            <button
+                class="btn btn-primary"
+                onclick="searchOrder()">
 
-                        <button
-                            class="btn btn-secondary"
-                            onclick="focusAWB()">
+                Search Order
 
-                            ⌨ Manual Scan
+            </button>
 
-                        </button>
+            <div
+                id="searchResult"
+                class="search-result">
+            </div>
 
-                    </div>
+        </section>
 
-                    <div id="reader"></div>
 
-                    <input
-                        id="awbInput"
-                        class="input"
-                        placeholder="Scan AWB">
+        <!-- BULK UPDATE -->
+        <section class="section-card">
 
-                    <input
-                        id="orderInput"
-                        class="input"
-                        placeholder="Order ID">
+            <div class="section-header">
+                Bulk Update
+            </div>
 
-                    <div
-                        id="resultCard"
-                        class="result-card">
-                    </div>
+            <input
+                type="date"
+                id="bulkDate"
+                class="input">
 
-                    <div class="action-row">
+            <button
+                class="btn btn-primary"
+                onclick="loadBulkCounts()">
 
-                        <button
-                            class="btn btn-success"
-                            onclick="saveEntry()">
+                Load Counts
 
-                            Save & Next
+            </button>
 
-                        </button>
+            <div
+                id="bulkCounts"
+                class="info-box">
 
-                        <button
-                            class="btn btn-danger"
-                            onclick="stopCamera()">
+                Pickup : 0<br>
+                Return : 0
 
-                            Stop Scanner
+            </div>
 
-                        </button>
+            <button
+                id="pickupUpdateBtn"
+                class="btn btn-success"
+                onclick="startBulkUpdate('Pickup')">
 
-                    </div>
+                Update Pickup
 
-                </div>
+            </button>
+
+            <button
+                id="returnUpdateBtn"
+                class="btn btn-success"
+                onclick="startBulkUpdate('Return')">
+
+                Update Return
+
+            </button>
+
+            <div
+                id="bulkProgress"
+                class="info-box">
+
+                Waiting...
 
             </div>
 
@@ -247,6 +292,16 @@
 
     </main>
 
+
+    <!-- FOOTER -->
+    <footer class="footer">
+
+        © 2026 Harsidhi Ventures
+
+    </footer>
+
+
+    <!-- LOADER -->
     <div id="loadingOverlay">
 
         <div class="loader-card">
@@ -255,12 +310,11 @@
 
     </div>
 
-    <!-- Libraries -->
 
+    <!-- LIBRARIES -->
     <script defer src="https://unpkg.com/html5-qrcode"></script>
 
-    <!-- Application JS -->
-
+    <!-- JS FILES -->
     <script defer src="js/api.js"></script>
     <script defer src="js/ui.js"></script>
     <script defer src="js/scanner.js"></script>
@@ -269,5 +323,4 @@
     <script defer src="js/bulk.js"></script>
 
 </body>
-
 </html>
