@@ -1,5 +1,5 @@
 /* ===================================
-GOOGLE FONT RESET
+GLOBAL
 =================================== */
 
 *{
@@ -8,10 +8,6 @@ GOOGLE FONT RESET
     box-sizing:border-box;
     font-family:'Inter',sans-serif;
 }
-
-/* ===================================
-ROOT VARIABLES
-=================================== */
 
 :root{
 
@@ -25,7 +21,7 @@ ROOT VARIABLES
     --pickup:#2563eb;
     --return:#0891b2;
 
-    --bg:#f1f5f9;
+    --bg:#f8fafc;
     --card:#ffffff;
 
     --text:#0f172a;
@@ -34,16 +30,11 @@ ROOT VARIABLES
     --border:#e2e8f0;
 
     --shadow:
-    0 10px 30px rgba(15,23,42,.08);
+    0 4px 12px rgba(15,23,42,.06);
 
     --shadow-hover:
-    0 15px 40px rgba(15,23,42,.12);
-
+    0 10px 25px rgba(15,23,42,.10);
 }
-
-/* ===================================
-BODY
-=================================== */
 
 body{
 
@@ -52,18 +43,25 @@ body{
     color:var(--text);
 
     min-height:100vh;
-
 }
 
 /* ===================================
-TOP HEADER
+HEADER
 =================================== */
 
 .topbar{
 
-    height:72px;
+    position:sticky;
+    top:0;
+    z-index:1000;
 
     background:#fff;
+
+    border-bottom:1px solid var(--border);
+
+    height:72px;
+
+    padding:0 24px;
 
     display:flex;
 
@@ -71,24 +69,9 @@ TOP HEADER
 
     justify-content:space-between;
 
-    padding:0 25px;
-
-    border-bottom:1px solid var(--border);
-
     box-shadow:
-    0 3px 15px rgba(0,0,0,.05);
-
-    position:sticky;
-
-    top:0;
-
-    z-index:100;
-
+    0 2px 10px rgba(0,0,0,.04);
 }
-
-/* ===================================
-BRAND
-=================================== */
 
 .brand{
 
@@ -97,38 +80,30 @@ BRAND
     align-items:center;
 
     gap:14px;
-
 }
 
 .logo{
 
-    width:48px;
+    width:46px;
 
-    height:48px;
+    height:46px;
 
-    border-radius:14px;
+    border-radius:12px;
 
     background:linear-gradient(
     135deg,
     #2563eb,
-    #3b82f6
-    );
+    #3b82f6);
 
     color:#fff;
 
     font-weight:800;
-
-    font-size:18px;
 
     display:flex;
 
     align-items:center;
 
     justify-content:center;
-
-    box-shadow:
-    0 8px 20px rgba(37,99,235,.25);
-
 }
 
 .brand-title{
@@ -136,9 +111,6 @@ BRAND
     font-size:18px;
 
     font-weight:800;
-
-    color:#0f172a;
-
 }
 
 .brand-subtitle{
@@ -146,20 +118,15 @@ BRAND
     font-size:12px;
 
     color:var(--muted);
-
-    margin-top:2px;
-
 }
-
-/* ===================================
-LIVE STATUS
-=================================== */
 
 .live-status{
 
     background:#dcfce7;
 
     color:#15803d;
+
+    border:1px solid #bbf7d0;
 
     padding:10px 16px;
 
@@ -168,163 +135,41 @@ LIVE STATUS
     font-size:12px;
 
     font-weight:700;
-
-    border:1px solid #bbf7d0;
-
 }
 
 /* ===================================
-STATS SECTION
+MAIN CONTAINER
 =================================== */
 
-.stats-row{
+.page-container{
 
-    display:grid;
+    max-width:1400px;
 
-    grid-template-columns:
-    repeat(4,1fr);
-
-    gap:18px;
+    margin:auto;
 
     padding:20px;
-
 }
 
 /* ===================================
-STAT CARD
+SECTION CARD
 =================================== */
 
-.stat-card{
+.section-card{
 
     background:#fff;
+
+    border:1px solid var(--border);
 
     border-radius:18px;
 
-    padding:22px;
-
-    box-shadow:var(--shadow);
-
-    transition:.25s;
-
-    border:1px solid var(--border);
-
-}
-
-.stat-card:hover{
-
-    transform:translateY(-3px);
-
-    box-shadow:var(--shadow-hover);
-
-}
-
-.stat-title{
-
-    font-size:13px;
-
-    color:var(--muted);
-
-    font-weight:600;
-
-}
-
-.stat-value{
-
-    margin-top:10px;
-
-    font-size:34px;
-
-    font-weight:800;
-
-    color:var(--primary);
-
-}
-
-/* ===================================
-MAIN DASHBOARD GRID
-=================================== */
-
-.dashboard-grid{
-
-    display:grid;
-
-    grid-template-columns:
-    340px
-    1fr;
-
-    gap:20px;
-
-    padding:0 20px 20px;
-
-}
-
-/* ===================================
-LEFT SIDEBAR
-=================================== */
-
-.sidebar{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
-}
-
-/* ===================================
-SCANNER AREA
-=================================== */
-
-.scanner-section{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:20px;
-
-}
-
-/* ===================================
-LOADING OVERLAY
-=================================== */
-
-#loadingOverlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(255,255,255,.25);
-    z-index:999999;
-    align-items:center;
-    justify-content:center;
-}
-
-.loader-card{
-    background:#fff;
-    padding:20px 35px;
-    border-radius:16px;
-    box-shadow:0 15px 40px rgba(0,0,0,.15);
-}
-/* ===================================
-CARDS
-=================================== */
-
-.card{
-
-    background:#ffffff;
-
-    border:1px solid var(--border);
-
-    border-radius:20px;
-
     padding:20px;
 
-    box-shadow:var(--shadow);
+    margin-bottom:20px;
 
+    box-shadow:var(--shadow);
 }
 
-.card h3{
+.section-header{
 
     font-size:18px;
 
@@ -333,29 +178,62 @@ CARDS
     margin-bottom:18px;
 
     color:var(--text);
-
 }
 
 /* ===================================
-INFO BOX
+COUNT CARDS
 =================================== */
 
-.info-box{
+.stats-grid{
 
-    margin-top:15px;
+    display:grid;
 
-    padding:14px;
+    grid-template-columns:
+    repeat(4,1fr);
 
-    background:#f8fafc;
+    gap:16px;
+}
+
+.stat-card{
+
+    background:#fff;
 
     border:1px solid var(--border);
 
-    border-radius:14px;
+    border-radius:16px;
 
-    line-height:1.8;
+    padding:18px;
 
-    font-size:14px;
+    text-align:center;
 
+    transition:.25s;
+}
+
+.stat-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:var(--shadow-hover);
+}
+
+.stat-label{
+
+    font-size:13px;
+
+    color:var(--muted);
+
+    line-height:1.4;
+}
+
+.stat-value{
+
+    margin-top:10px;
+
+    font-size:28px;
+
+    font-weight:800;
+
+    color:var(--primary);
 }
 
 /* ===================================
@@ -370,20 +248,17 @@ INPUTS
 
     padding:0 16px;
 
-    margin-bottom:12px;
-
     border:1px solid #dbe2ea;
 
     border-radius:14px;
 
-    outline:none;
-
-    background:#fff;
+    margin-bottom:12px;
 
     font-size:14px;
 
-    transition:.25s;
+    outline:none;
 
+    transition:.25s;
 }
 
 .input:focus{
@@ -391,8 +266,7 @@ INPUTS
     border-color:var(--primary);
 
     box-shadow:
-    0 0 0 4px rgba(37,99,235,.12);
-
+    0 0 0 4px rgba(37,99,235,.10);
 }
 
 /* ===================================
@@ -414,13 +288,11 @@ BUTTONS
     cursor:pointer;
 
     transition:.25s;
-
 }
 
 .btn:hover{
 
     transform:translateY(-2px);
-
 }
 
 .btn-primary{
@@ -428,13 +300,11 @@ BUTTONS
     background:var(--primary);
 
     color:#fff;
-
 }
 
 .btn-primary:hover{
 
     background:var(--primary-dark);
-
 }
 
 .btn-secondary{
@@ -442,7 +312,6 @@ BUTTONS
     background:var(--secondary);
 
     color:#fff;
-
 }
 
 .btn-success{
@@ -450,7 +319,6 @@ BUTTONS
     background:var(--success);
 
     color:#fff;
-
 }
 
 .btn-danger{
@@ -458,21 +326,19 @@ BUTTONS
     background:var(--danger);
 
     color:#fff;
-
 }
 
 /* ===================================
-MODE BUTTONS
+SCAN MODE
 =================================== */
 
-.mode-row{
+.scan-mode-row{
 
     display:flex;
 
     gap:12px;
 
-    margin-top:10px;
-
+    margin-bottom:16px;
 }
 
 .mode-btn{
@@ -487,14 +353,9 @@ MODE BUTTONS
 
     background:#fff;
 
-    font-size:15px;
-
     font-weight:700;
 
     cursor:pointer;
-
-    transition:.25s;
-
 }
 
 .pickup{
@@ -502,7 +363,6 @@ MODE BUTTONS
     border-color:#2563eb;
 
     color:#2563eb;
-
 }
 
 .return{
@@ -510,7 +370,6 @@ MODE BUTTONS
     border-color:#0891b2;
 
     color:#0891b2;
-
 }
 
 .active-pickup{
@@ -518,7 +377,6 @@ MODE BUTTONS
     background:#2563eb;
 
     color:#fff;
-
 }
 
 .active-return{
@@ -526,39 +384,28 @@ MODE BUTTONS
     background:#0891b2;
 
     color:#fff;
-
 }
 
 /* ===================================
-SCAN PANEL
+SCAN ACTIONS
 =================================== */
 
-.scan-panel{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:14px;
-
-    margin-top:20px;
-
-    padding:20px;
-
-    border-radius:18px;
-
-    background:#f8fafc;
-
-    border:1px solid var(--border);
-
-}
-
-.button-group{
+.scan-actions{
 
     display:flex;
 
     gap:12px;
 
+    margin-bottom:16px;
+}
+
+.action-row{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:15px;
 }
 
 /* ===================================
@@ -569,18 +416,19 @@ QR READER
 
     width:100%;
 
-    min-height:300px;
+    min-height:280px;
 
     border-radius:16px;
 
-    overflow:hidden;
-
     border:2px dashed #cbd5e1;
+
+    overflow:hidden;
 
     background:#fff;
 
     display:none;
 
+    margin-bottom:16px;
 }
 
 /* ===================================
@@ -591,30 +439,15 @@ RESULT CARD
 
     display:none;
 
+    margin-top:12px;
+
     background:#eff6ff;
 
-    border-left:5px solid var(--primary);
+    border-left:4px solid var(--primary);
 
-    border-radius:14px;
+    border-radius:12px;
 
     padding:16px;
-
-    line-height:1.8;
-
-    font-size:14px;
-
-}
-
-/* ===================================
-ACTION BUTTONS
-=================================== */
-
-.action-row{
-
-    display:flex;
-
-    gap:12px;
-
 }
 
 /* ===================================
@@ -625,11 +458,7 @@ SEARCH RESULT
 
     margin-top:15px;
 
-    min-height:250px;
-
-    max-height:500px;
-
-    overflow:auto;
+    min-height:180px;
 
     background:#f8fafc;
 
@@ -637,67 +466,76 @@ SEARCH RESULT
 
     border-radius:14px;
 
-    padding:14px;
-
-    font-size:14px;
-
-    line-height:1.7;
-
+    padding:16px;
 }
 
 /* ===================================
-TOAST
+INFO BOX
 =================================== */
 
-.toast{
+.info-box{
+
+    margin:15px 0;
+
+    padding:14px;
+
+    background:#f8fafc;
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    line-height:1.8;
+}
+
+/* ===================================
+FOOTER
+=================================== */
+
+.footer{
+
+    text-align:center;
+
+    padding:25px;
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+/* ===================================
+LOADER
+=================================== */
+
+#loadingOverlay{
+
+    display:none;
 
     position:fixed;
 
-    bottom:20px;
+    inset:0;
 
-    left:50%;
+    background:rgba(255,255,255,.4);
 
-    transform:translateX(-50%);
-
-    background:#111827;
-
-    color:#fff;
-
-    padding:12px 18px;
-
-    border-radius:12px;
+    backdrop-filter:blur(3px);
 
     z-index:99999;
 
-    box-shadow:
-    0 8px 20px rgba(0,0,0,.25);
+    align-items:center;
 
-    animation:toastFade .25s ease;
-
+    justify-content:center;
 }
 
-@keyframes toastFade{
+.loader-card{
 
-    from{
+    background:#fff;
 
-        opacity:0;
+    padding:20px 35px;
 
-        transform:
-        translateX(-50%)
-        translateY(10px);
+    border-radius:16px;
 
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translateX(-50%)
-        translateY(0);
-
-    }
-
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.15);
 }
 
 /* ===================================
@@ -707,7 +545,6 @@ SCROLLBAR
 ::-webkit-scrollbar{
 
     width:8px;
-
 }
 
 ::-webkit-scrollbar-thumb{
@@ -715,99 +552,62 @@ SCROLLBAR
     background:#cbd5e1;
 
     border-radius:20px;
-
-}
-
-::-webkit-scrollbar-track{
-
-    background:transparent;
-
 }
 
 /* ===================================
 TABLET
 =================================== */
 
-@media(max-width:1200px){
+@media(max-width:1000px){
 
-    .stats-row{
+    .stats-grid{
 
         grid-template-columns:
         repeat(2,1fr);
-
     }
-
 }
 
 /* ===================================
 MOBILE
 =================================== */
 
-@media(max-width:900px){
-
-    .dashboard-grid{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .stats-row{
-
-        grid-template-columns:
-        repeat(2,1fr);
-
-    }
+@media(max-width:768px){
 
     .topbar{
 
-        flex-direction:column;
-
         height:auto;
-
-        gap:10px;
 
         padding:15px;
 
-    }
-
-}
-
-/* ===================================
-SMALL MOBILE
-=================================== */
-
-@media(max-width:600px){
-
-    .stats-row{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .button-group,
-    .action-row,
-    .mode-row{
-
         flex-direction:column;
 
+        gap:10px;
+    }
+
+    .stats-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .scan-mode-row,
+    .scan-actions,
+    .action-row{
+
+        flex-direction:column;
     }
 
     .btn{
 
         width:100%;
+    }
 
+    .page-container{
+
+        padding:12px;
     }
 
     .stat-value{
 
-        font-size:28px;
-
+        font-size:24px;
     }
-
-    .brand-title{
-
-        font-size:16px;
-
-    }
-
 }
