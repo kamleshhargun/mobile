@@ -358,3 +358,13 @@ const AppState = {
   html5QrCode: null
 
 };
+/* ===================================
+SYSTEM STATUS
+=================================== */
+async function getSystemStatusAPI(){
+
+  return await apiGet(
+    "systemStatus"
+  );
+
+}
