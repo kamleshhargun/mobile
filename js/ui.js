@@ -217,44 +217,47 @@ function showTrackingLoading() {
 DASHBOARD
 =================================== */
 
-function renderDashboard(data) {
+function renderDashboard(data){
 
-  UI.dashboardArea.innerHTML = `
+    document.getElementById(
+        "pickupToday"
+    ).textContent =
+        data.todayPickup || 0;
 
-    <div class="card">
-      <b>Today Pickup</b>
-      <h2>${data.todayPickup || 0}</h2>
-    </div>
+    document.getElementById(
+        "pickupYesterday"
+    ).textContent =
+        data.yesterdayPickup || 0;
 
-    <div class="card">
-      <b>Today Return</b>
-      <h2>${data.todayReturn || 0}</h2>
-    </div>
+    document.getElementById(
+        "returnToday"
+    ).textContent =
+        data.todayReturn || 0;
 
-    <div class="card">
-      <b>Yesterday Pickup</b>
-      <h2>${data.yesterdayPickup || 0}</h2>
-    </div>
+    document.getElementById(
+        "returnYesterday"
+    ).textContent =
+        data.yesterdayReturn || 0;
 
-    <div class="card">
-      <b>Yesterday Return</b>
-      <h2>${data.yesterdayReturn || 0}</h2>
-    </div>
+    document.getElementById(
+        "currentMonthPickup"
+    ).textContent =
+        data.monthPickup || 0;
 
-    <div class="card">
-      <b>${data.monthName || ""} Pickup</b>
-      <h2>${data.monthPickup || 0}</h2>
-    </div>
+    document.getElementById(
+        "currentMonthReturn"
+    ).textContent =
+        data.monthReturn || 0;
 
-    <div class="card">
-      <b>${data.monthName || ""} Return</b>
-      <h2>${data.monthReturn || 0}</h2>
-    </div>
+    document.getElementById(
+        "lastMonthPickup"
+    ).textContent =
+        data.lastMonthPickup || 0;
 
-    <div id="recentArea"></div>
-
-  `;
-
+    document.getElementById(
+        "lastMonthReturn"
+    ).textContent =
+        data.lastMonthReturn || 0;
 }
 
 /* ===================================
