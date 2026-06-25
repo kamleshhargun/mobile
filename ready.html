@@ -18,187 +18,201 @@
     <link rel="stylesheet" href="css/style.css">
 
 </head>
-
 <body>
 
-    <!-- Header -->
+    <!-- Top Header -->
+    <header class="topbar">
 
-    <header class="header">
+        <div class="brand">
 
-        <div class="header-left">
-            <div class="logo-circle">HV</div>
+            <div class="logo">
+                HV
+            </div>
 
             <div>
-                <div class="header-title">
-                    HARSIDHI VENTURES
+                <div class="brand-title">
+                    Harsidhi Ventures
                 </div>
 
-                <div class="header-subtitle">
+                <div class="brand-subtitle">
                     Pickup & Return Management System
                 </div>
             </div>
+
         </div>
 
-        <div class="header-right">
-            <span class="status-badge">
-                ● LIVE
-            </span>
+        <div class="live-status">
+            ● System Online
         </div>
 
     </header>
 
+    <!-- Dashboard Stats -->
+
+    <section class="stats-row">
+
+        <div class="stat-card">
+            <div class="stat-title">Today's Pickup</div>
+            <div id="pickupCount" class="stat-value">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Today's Return</div>
+            <div id="returnCount" class="stat-value">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Pending Scan</div>
+            <div id="pendingCount" class="stat-value">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-title">Total Processed</div>
+            <div id="processedCount" class="stat-value">0</div>
+        </div>
+
+    </section>
+
     <!-- Main Layout -->
 
-    <main class="main">
+    <main class="dashboard-grid">
 
-        <!-- Left Panel -->
+        <!-- Left Sidebar -->
 
-        <section class="panel">
+        <aside class="sidebar">
 
-            <div class="panel-header">
-                📊 Dashboard & Bulk Update
-            </div>
+            <div class="card">
 
-            <div class="left-content">
+                <h3>📦 Bulk Update</h3>
 
-                <div id="dashboardArea"></div>
+                <input type="date" id="bulkDate" class="input">
 
-                <div class="card">
+                <button class="btn btn-primary"
+                    onclick="loadBulkCounts()">
 
-                    <h3>Bulk Update Center</h3>
+                    Load Counts
 
-                    <input
-                        type="date"
-                        id="bulkDate"
-                        class="input">
+                </button>
 
-                    <button
-                        type="button"
-                        class="btn btn-camera"
-                        onclick="loadBulkCounts()">
+                <div id="bulkCounts" class="info-box">
 
-                        Load Counts
+                    Pickup : 0<br>
+                    Return : 0
 
-                    </button>
+                </div>
 
-                    <hr>
+                <button
+                    id="pickupUpdateBtn"
+                    class="btn btn-success"
+                    onclick="startBulkUpdate('Pickup')">
 
-                    <div id="bulkCounts">
+                    Update Pickup
 
-                        Pickup : 0<br>
-                        Return : 0
+                </button>
 
-                    </div>
+                <button
+                    id="returnUpdateBtn"
+                    class="btn btn-success"
+                    onclick="startBulkUpdate('Return')">
 
-                    <hr>
+                    Update Return
 
-                    <button
-                        type="button"
-                        id="pickupUpdateBtn"
-                        class="btn btn-save"
-                        onclick="startBulkUpdate('Pickup')">
+                </button>
 
-                        Update Pickup
+                <div id="bulkProgress" class="info-box">
 
-                    </button>
-
-                    <br><br>
-
-                    <button
-                        type="button"
-                        id="returnUpdateBtn"
-                        class="btn btn-save"
-                        onclick="startBulkUpdate('Return')">
-
-                        Update Return
-
-                    </button>
-
-                    <hr>
-
-                    <div id="bulkProgress">
-
-                        Waiting...
-
-                    </div>
+                    Waiting...
 
                 </div>
 
             </div>
 
-        </section>
+            <div class="card">
 
-        <!-- Center Panel -->
+                <h3>🔍 Search Order</h3>
 
-        <section class="panel">
+                <input
+                    id="searchInput"
+                    class="input"
+                    placeholder="AWB / Order ID">
 
-            <div class="center-content">
+                <button
+                    class="btn btn-primary"
+                    onclick="searchOrder()">
 
-                <div class="card">
+                    Search Order
 
-                    <h3>Scan Operations</h3>
+                </button>
 
-                    <div class="mode-row">
+                <div id="searchResult" class="search-result"></div>
 
-                        <button
-                            type="button"
-                            id="pickupBtn"
-                            class="mode-btn pickup"
-                            onclick="selectType('Pickup')">
+            </div>
 
-                            Pickup
+        </aside>
 
-                        </button>
+        <!-- Scanner Section -->
 
-                        <button
-                            type="button"
-                            id="returnBtn"
-                            class="mode-btn return"
-                            onclick="selectType('Return')">
+        <section class="scanner-section">
 
-                            Return
+            <div class="card">
 
-                        </button>
+                <h3>📷 Scan Operations</h3>
 
-                    </div>
+                <div class="mode-row">
+
+                    <button
+                        id="pickupBtn"
+                        class="mode-btn pickup"
+                        onclick="selectType('Pickup')">
+
+                        Pickup
+
+                    </button>
+
+                    <button
+                        id="returnBtn"
+                        class="mode-btn return"
+                        onclick="selectType('Return')">
+
+                        Return
+
+                    </button>
 
                 </div>
 
                 <div id="scanPanel" class="scan-panel">
 
-                    <button
-                        type="button"
-                        class="btn btn-camera"
-                        onclick="startCamera()">
+                    <div class="button-group">
 
-                        📷 Camera Scan
+                        <button
+                            class="btn btn-primary"
+                            onclick="startCamera()">
 
-                    </button>
+                            📷 Camera Scan
 
-                    <button
-                        type="button"
-                        class="btn btn-manual"
-                        onclick="focusAWB()">
+                        </button>
 
-                        ⌨ Manual / Scanner
+                        <button
+                            class="btn btn-secondary"
+                            onclick="focusAWB()">
 
-                    </button>
+                            ⌨ Manual Scan
+
+                        </button>
+
+                    </div>
 
                     <div id="reader"></div>
 
                     <input
                         id="awbInput"
                         class="input"
-                        type="text"
-                        autocomplete="off"
-                        placeholder="Scan AWB Number">
+                        placeholder="Scan AWB">
 
                     <input
                         id="orderInput"
                         class="input"
-                        type="text"
-                        autocomplete="off"
-                        placeholder="Enter Order ID">
+                        placeholder="Order ID">
 
                     <div
                         id="resultCard"
@@ -208,8 +222,7 @@
                     <div class="action-row">
 
                         <button
-                            type="button"
-                            class="btn btn-save"
+                            class="btn btn-success"
                             onclick="saveEntry()">
 
                             Save & Next
@@ -217,53 +230,12 @@
                         </button>
 
                         <button
-                            type="button"
-                            class="btn btn-stop"
+                            class="btn btn-danger"
                             onclick="stopCamera()">
 
-                            Stop
+                            Stop Scanner
 
                         </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- Right Panel -->
-
-        <section class="panel">
-
-            <div class="panel-header">
-                🔍 Find Order
-            </div>
-
-            <div class="right-content">
-
-                <div class="search-box">
-
-                    <input
-                        id="searchInput"
-                        class="input"
-                        type="text"
-                        autocomplete="off"
-                        placeholder="Search AWB / Order ID">
-
-                    <button
-                        type="button"
-                        class="btn btn-camera small-btn"
-                        onclick="searchOrder()">
-
-                        Search Order
-
-                    </button>
-
-                    <div
-                        id="searchResult"
-                        class="search-result">
 
                     </div>
 
@@ -275,14 +247,10 @@
 
     </main>
 
-    <!-- Loading -->
-
     <div id="loadingOverlay">
 
-        <div class="loader-box">
-
+        <div class="loader-card">
             Loading...
-
         </div>
 
     </div>
