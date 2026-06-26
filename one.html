@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pickup Return Daily Scanner</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+
+body{
+background:#111;
+color:#fff;
+padding:12px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+}
+
+.card{
+background:#1d1d1d;
+border-radius:18px;
+padding:16px;
+margin-bottom:15px;
+box-shadow:0 0 15px rgba(0,0,0,.45);
+}
+
+.title{
+text-align:center;
+font-size:25px;
+font-weight:bold;
+margin-bottom:18px;
+}
+
+.row{
+display:flex;
+gap:10px;
+margin-bottom:10px;
+}
+
+button{
+flex:1;
+height:54px;
+border:none;
+border-radius:12px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.2s;
+}
+
+button:active{
+transform:scale(.96);
+}
+
+.primary{
+background:#0d6efd;
+color:#fff;
+}
+
+.success{
+background:#198754;
+color:#fff;
+}
+
+.warning{
+background:#ffc107;
+color:#000;
+}
+
+.danger{
+background:#dc3545;
+color:#fff;
+}
+
+.dark{
+background:#333;
+color:#fff;
+}
+
+input,select{
+width:100%;
+height:52px;
+border:none;
+border-radius:12px;
+padding:12px;
+margin-top:8px;
+margin-bottom:10px;
+font-size:16px;
+background:#2a2a2a;
+color:#fff;
+outline:none;
+}
+
+label{
+font-size:14px;
+opacity:.9;
+}
+
+#reader{
+width:100%;
+height:420px;
+background:#000;
+border-radius:15px;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.cameraOff{
+background:#000;
+color:#666;
+font-size:22px;
+}
+
+.statusBar{
+margin-top:12px;
+background:#222;
+padding:12px;
+border-radius:12px;
+text-align:center;
+font-weight:bold;
+}
+
+.loader{
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+display:none;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,.75);
+z-index:9999;
+}
+
+.loader div{
+width:65px;
+height:65px;
+border:6px solid #444;
+border-top:6px solid #0d6efd;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+.toast{
+position:fixed;
+left:50%;
+bottom:20px;
+transform:translateX(-50%);
+background:#222;
+padding:14px 25px;
+border-radius:12px;
+display:none;
+z-index:99999;
+font-weight:bold;
+}
+
+@media(max-width:700px){
+
+.row{
+flex-direction:column;
+}
+
+button{
+width:100%;
+}
+
+#reader{
+height:340px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="loader" id="loader">
+<div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="container">
+
+<div class="card">
+
+<div class="title">
+Pickup Return Daily Scanner
+</div>
+
+<div class="row">
+
+<button id="pickupBtn" class="primary">
+Pickup
+</button>
+
+<button id="returnBtn" class="warning">
+Return
+</button>
+
+</div>
+
+<div class="row">
+
+<button id="cameraBtn" class="success">
+Camera
+</button>
+
+<button id="manualBtn" class="dark">
+Manual
+</button>
+
+</div>
+
+<div id="reader" class="cameraOff">
+Camera OFF
+</div>
+
+<div class="statusBar" id="statusBar">
+Ready
+</div>
+
+</div>
+
+<div class="card">
+
+<label>AWB</label>
+<input id="awb">
+
+<label>Order ID</label>
+<input id="orderId">
+
+<label>Courier</label>
+<input id="courier">
+
+<label>Status</label>
+<input id="status">
+
+<label>Customer Name</label>
+<input id="customerName">
+
+<label>City</label>
+<input id="city">
+
+<label>State</label>
+<input id="state">
+
+<label>Destination</label>
+<input id="destination">
+
+<label>Pickup Date</label>
+<input id="pickupDate">
+
+<label>Delivered Date</label>
+<input id="deliveredDate">
+
+<label>Expected Date</label>
+<input id="expectedDate">
+
+<div class="row">
+
+<button id="saveBtn" class="success">
+Save
+</button>
+
+<button id="nextBtn" class="primary">
+Next
+</button>
+
+<button id="editBtn" class="warning">
+Edit
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const API_URL="https://script.google.com/macros/s/AKfycbycaBQC18Se-0ZOLAvfNu1PI1fJ6_Yxoe6wTrTfbJZ_ZpgjANw94m8LM9GcpivBz1v2/exec";
+
+let TYPE="Pickup";
+let CAMERA=false;
+let qrScanner=null;
+let saving=false;
+
+const $=id=>document.getElementById(id);
+
+const fields=[
+"awb",
+"orderId",
+"courier",
+"status",
+"customerName",
+"city",
+"state",
+"destination",
+"pickupDate",
+"deliveredDate",
+"expectedDate"
+];
+
+function toast(msg){
+const t=$("toast");
+t.innerHTML=msg;
+t.style.display="block";
+setTimeout(()=>t.style.display="none",2500);
+}
+
+function loader(v){
+$("loader").style.display=v?"flex":"none";
+}
+
+function setStatus(t){
+$("statusBar").innerHTML=t;
+}
+
+function clearForm(){
+
+fields.forEach(f=>$(f).value="");
+
+}
+
+function formData(){
+
+return{
+
+type:TYPE,
+awb:$("awb").value.trim(),
+orderId:$("orderId").value.trim(),
+courier:$("courier").value.trim(),
+status:$("status").value.trim(),
+customerName:$("customerName").value.trim(),
+city:$("city").value.trim(),
+state:$("state").value.trim(),
+destination:$("destination").value.trim(),
+pickupDate:$("pickupDate").value.trim(),
+deliveredDate:$("deliveredDate").value.trim(),
+expectedDate:$("expectedDate").value.trim(),
+isRTO:false
+
+};
+
+}
+
+/*************** CONTINUED IN index.html PART 2 ***************/
+
+
+async function api(action,data={}){
+loader(true);
+try{
+const res=await fetch(API_URL,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({...data,action})
+});
+const json=await res.json();
+loader(false);
+return json;
+}catch(e){
+loader(false);
+toast(e.message||e);
+return{success:false,message:e.message||String(e)};
+}
+}
+
+function fillForm(d){
+$("awb").value=d.awb||"";
+$("orderId").value=d.orderId||"";
+$("courier").value=d.courier||"";
+$("status").value=d.status||"";
+$("customerName").value=d.customerName||"";
+$("city").value=d.city||"";
+$("state").value=d.state||"";
+$("destination").value=d.destination||"";
+$("pickupDate").value=d.pickupDate||"";
+$("deliveredDate").value=d.deliveredDate||"";
+$("expectedDate").value=d.expectedDate||"";
+}
+
+async function afterScan(code){
+
+if(!code)return;
+
+if(CAMERA){
+await stopCamera();
+}
+
+$("awb").value=code;
+
+setStatus("Checking Duplicate...");
+
+const dup=await api("duplicate",{awb:code,type:TYPE});
+
+if(dup.success&&dup.duplicate){
+toast(TYPE+" already exists");
+setStatus(TYPE+" already exists");
+return;
+}
+
+setStatus("Tracking...");
+
+const track=await api("track",{awb:code});
+
+if(track.success){
+fillForm(track);
+toast("Tracking Loaded");
+setStatus("Ready To Save");
+}else{
+toast(track.message||"Tracking Not Found");
+setStatus("Manual Entry");
+}
+
+}
+
+async function startCamera(){
+
+if(CAMERA)return;
+
+CAMERA=true;
+
+$("reader").classList.remove("cameraOff");
+
+$("reader").innerHTML="";
+
+qrScanner=new Html5Qrcode("reader");
+
+const config={
+fps:10,
+qrbox:{width:250,height:250},
+rememberLastUsedCamera:true
+};
+
+try{
+
+const cameras=await Html5Qrcode.getCameras();
+
+if(!cameras.length){
+toast("Camera Not Found");
+CAMERA=false;
+return;
+}
+
+await qrScanner.start(
+{facingMode:"environment"},
+config,
+decoded=>{
+afterScan(decoded);
+},
+err=>{}
+);
+
+setStatus("Camera ON");
+
+}catch(e){
+
+CAMERA=false;
+
+toast(e.message);
+
+$("reader").innerHTML="Camera OFF";
+
+$("reader").classList.add("cameraOff");
+
+}
+
+}
+
+async function stopCamera(){
+
+if(!CAMERA)return;
+
+try{
+
+await qrScanner.stop();
+
+await qrScanner.clear();
+
+}catch(e){}
+
+CAMERA=false;
+
+$("reader").classList.add("cameraOff");
+
+$("reader").innerHTML="Camera OFF";
+
+setStatus("Camera OFF");
+
+}
+
+async function saveRecord(){
+
+if(saving)return;
+
+saving=true;
+
+const data=formData();
+
+if(data.awb==""){
+toast("Enter AWB");
+saving=false;
+return;
+}
+
+const res=await api("save",data);
+
+saving=false;
+
+if(res.success){
+
+toast("Saved Successfully");
+
+setStatus("Saved Successfully");
+
+}else{
+
+toast(res.message||"Save Failed");
+
+setStatus("Save Failed");
+
+}
+
+}
+
+function nextRecord(){
+
+clearForm();
+
+$("awb").focus();
+
+setStatus("Next Record");
+
+}
+
+async function editRecord(){
+
+const data=formData();
+
+if(data.awb==""){
+toast("Enter AWB");
+return;
+}
+
+const res=await api("update",data);
+
+if(res.success){
+
+toast("Updated");
+
+setStatus("Updated Successfully");
+
+}else{
+
+toast(res.message);
+
+}
+
+}
+
+$("pickupBtn").onclick=()=>{
+
+TYPE="Pickup";
+
+$("pickupBtn").className="success";
+
+$("returnBtn").className="warning";
+
+setStatus("Pickup Mode");
+
+};
+
+$("returnBtn").onclick=()=>{
+
+TYPE="Return";
+
+$("pickupBtn").className="primary";
+
+$("returnBtn").className="success";
+
+setStatus("Return Mode");
+
+};
+
+$("cameraBtn").onclick=()=>{
+
+CAMERA?stopCamera():startCamera();
+
+};
+
+$("manualBtn").onclick=async()=>{
+
+await stopCamera();
+
+$("awb").focus();
+
+};
+
+$("saveBtn").onclick=saveRecord;
+
+$("nextBtn").onclick=nextRecord;
+
+$("editBtn").onclick=editRecord;
+
+$("awb").addEventListener("keydown",e=>{
+
+if(e.key==="Enter"){
+
+afterScan($("awb").value.trim());
+
+}
+
+});
+
+document.addEventListener("keydown",e=>{
+
+if(e.key==="F2")saveRecord();
+
+if(e.key==="F4")nextRecord();
+
+if(e.key==="Escape")stopCamera();
+
+});
+
+window.onload=()=>{
+
+setStatus("Ready");
+
+$("awb").focus();
+
+};
+
+/******************** END OF index.html PART 2 ********************/
+</script>
+</body>
+</html>
