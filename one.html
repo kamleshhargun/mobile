@@ -363,22 +363,39 @@ isRTO:false
 /*************** CONTINUED IN index.html PART 2 ***************/
 
 
-async function api(action,data={}){
-loader(true);
-try{
-const res=await fetch(API_URL,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({...data,action})
-});
-const json=await res.json();
-loader(false);
-return json;
-}catch(e){
-loader(false);
-toast(e.message||e);
-return{success:false,message:e.message||String(e)};
-}
+async function api(action, data = {}) {
+    loader(true);
+
+    try {
+
+        const formData = new URLSearchParams();
+        formData.append("action", action);
+
+        for (const key in data) {
+            formData.append(key, data[key]);
+        }
+
+        const res = await fetch(API_URL, {
+            method: "POST",
+            body: formData
+        });
+
+        const json = await res.json();
+
+        loader(false);
+        return json;
+
+    } catch (e) {
+
+        loader(false);
+        toast(e.message || String(e));
+
+        return {
+            success: false,
+            message: e.message || String(e)
+        };
+
+    }
 }
 
 function fillForm(d){
