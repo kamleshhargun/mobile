@@ -90,22 +90,20 @@
 
     <script>
         // --- CONFIGURATION ---
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNunFbmgDLzFIVpl2LiDmU9PtelTRnPrjNKQmGkMT6qzmodxE7Jx5MTYvoPkL6csbm/exec"; // Apna Web App URL yahan dalein
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz5AwSN8Cuqa8ZAlekLHPbKM68Ln6IwEkuSzvrCzVrm2TO3dGAPJok3cpwJmO7Z60FQ/exec"; // Naya Apps Script Web App URL yahan dalein
         
         let currentMode = 'Pickup'; 
         let html5QrcodeScanner = null;
         let currentDataPayload = null;
 
-        // Sound Player Wrapper
         function playSound(id) {
             const sound = document.getElementById(id);
             if(sound) {
                 sound.currentTime = 0;
-                sound.play().catch(e => console.log("Sound play delayed until user interaction"));
+                sound.play().catch(e => console.log("Sound error delayed"));
             }
         }
 
-        // Live Link Checker Function
         function checkSheetConnection() {
             fetch(`${WEB_APP_URL}?action=ping`)
             .then(res => res.json())
@@ -113,20 +111,17 @@
                 if(data.status === 'online') {
                     document.getElementById('sync-dot').className = "w-2.5 h-2.5 bg-green-500 rounded-full";
                     document.getElementById('sync-text').innerText = "Sheet Linked";
-                    log("Google Sheet real-time link active.");
                 }
             })
             .catch(() => {
                 document.getElementById('sync-dot').className = "w-2.5 h-2.5 bg-red-500 rounded-full";
                 document.getElementById('sync-text').innerText = "No Link";
-                log("Warning: Google Sheet connection failed.");
             });
         }
 
-        // On Page Load initialize connection verification
         window.onload = () => {
             checkSheetConnection();
-            setInterval(checkSheetConnection, 30000); // Check identity every 30s
+            setInterval(checkSheetConnection, 20000); 
             log("System ready... Mode: Pickup");
         };
 
@@ -205,55 +200,57 @@
             awbInput.value = ''; 
         }
 
-        // Logic sequence update: Fetch Data -> Check Duplicate on fetched info -> Preview
         function initiateWorkflow(awb) {
-            showStatus("Contacting server logistics database...", 'warn');
+            showStatus("Checking backend and active logistics databases...", 'warn');
             hidePreview();
             
-            // Step 1: Fetch logistics data first to read context completely
-            fetch(`${WEB_APP_URL}?action=fetchData&awb=${awb}`)
+            // Step 1: Duplicate check pehle karein
+            fetch(`${WEB_APP_URL}?action=checkDuplicate&awb=${awb}&type=${currentMode}`)
             .then(res => res.json())
-            .then(apiRes => {
-                if(!apiRes.success && apiRes.status === "Unknown") {
-                    showStatus(`AWB tracking details not found on Boxd or Delhivery.`, 'error');
-                    playSound('sound-error');
-                    log(`Fetch failed for AWB: ${awb}`);
+            .then(dupRes => {
+                if (dupRes.isDuplicate) {
+                    showStatus(`Duplicate Detected: AWB already exists in '${currentMode}'!`, 'error');
+                    playSound('sound-duplicate');
+                    log(`Block: Duplicate AWB entry.`);
                     return;
                 }
 
-                // Step 2: Since AWB is active, verify that no duplicate registration exists for current action mode
-                fetch(`${WEB_APP_URL}?action=checkDuplicate&awb=${awb}&type=${currentMode}`)
+                // Step 2: Clear duplicate, fetch API
+                log("No duplicate found. Accessing Courier servers via cloud API...");
+                fetch(`${WEB_APP_URL}?action=fetchData&awb=${awb}`)
                 .then(res => res.json())
-                .then(dupRes => {
-                    if (dupRes.isDuplicate) {
-                        showStatus(`Duplicate Detected: AWB already saved under '${currentMode}'!`, 'error');
-                        playSound('sound-duplicate');
-                        log(`Block: Duplicate entries disallowed.`);
-                    } else {
-                        // Success scan, trigger positive discovery audio
+                .then(apiRes => {
+                    
+                    currentDataPayload = {
+                        date: getFormattedDate(),
+                        type: currentMode,
+                        awb: awb,
+                        orderId: apiRes.orderId || "N/A",
+                        status: apiRes.status || "Not Found / System Bypass"
+                    };
+                    
+                    document.getElementById('prev-date').innerText = currentDataPayload.date;
+                    document.getElementById('prev-type').innerText = currentDataPayload.type;
+                    document.getElementById('prev-awb').innerText = currentDataPayload.awb;
+                    document.getElementById('prev-order').innerText = currentDataPayload.orderId;
+                    document.getElementById('prev-status').innerText = currentDataPayload.status;
+                    
+                    document.getElementById('preview-section').classList.remove('hidden');
+
+                    if (apiRes.apiFound) {
                         playSound('sound-find');
-                        
-                        currentDataPayload = {
-                            date: getFormattedDate(),
-                            type: currentMode,
-                            awb: awb,
-                            orderId: apiRes.orderId,
-                            status: apiRes.status
-                        };
-                        
-                        document.getElementById('prev-date').innerText = currentDataPayload.date;
-                        document.getElementById('prev-type').innerText = currentDataPayload.type;
-                        document.getElementById('prev-awb').innerText = currentDataPayload.awb;
-                        document.getElementById('prev-order').innerText = currentDataPayload.orderId;
-                        document.getElementById('prev-status').innerText = currentDataPayload.status;
-                        
-                        document.getElementById('preview-section').classList.remove('hidden');
-                        showStatus("Verification clear. Review and hit save.", 'success');
+                        showStatus("Data successfully matched with Logistics!", 'success');
+                        log("Logistics tracking parsed successfully.");
+                    } else {
+                        // Sound error play hoga alert ke liye lekin workflow aage badhega!
+                        playSound('sound-error');
+                        showStatus("AWB not active on Courier API yet. Preview generated to force save.", 'warn');
+                        log("Warning: API data missing, bypass active.");
                     }
                 });
             })
             .catch(err => {
-                showStatus("Network execution failure.", 'error');
+                showStatus("Execution failure. Please check Apps Script Deployment URL.", 'error');
                 playSound('sound-error');
                 log(`Process Error: ${err}`);
             });
@@ -261,7 +258,7 @@
 
         function saveDataToSheet() {
             if (!currentDataPayload) return;
-            showStatus("Writing details into row entries...", 'warn');
+            showStatus("Writing row data inside Google Sheet...", 'warn');
 
             fetch(WEB_APP_URL, {
                 method: "POST",
@@ -271,18 +268,17 @@
             })
             .then(() => {
                 playSound('sound-save');
-                showStatus(`Data row written successfully for AWB: ${currentDataPayload.awb}!`, 'success');
-                log(`Stored payload row safely.`);
+                showStatus(`Successfully written row for AWB: ${currentDataPayload.awb}!`, 'success');
+                log(`Logged row entry inside spreadsheet.`);
                 hidePreview();
             })
             .catch(err => {
-                showStatus("Error appending data.", 'error');
+                showStatus("Failed to submit row data.", 'error');
                 playSound('sound-error');
             });
         }
 
         function cancelPreview() {
-            log("Transaction rolled back.");
             hidePreview();
             showStatus("Operation cancelled.");
         }
