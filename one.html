@@ -7,10 +7,10 @@
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 <style>
-/* ================================
-   PREMIUM PROFESSIONAL LIGHT THEME
-   Ready To Paste CSS
-================================ */
+/* ==========================================
+   PREMIUM LIGHT THEME
+   PART-1
+========================================== */
 
 *{
 margin:0;
@@ -19,312 +19,662 @@ box-sizing:border-box;
 font-family:"Segoe UI",Roboto,Arial,sans-serif;
 }
 
+:root{
+
+--primary:#2563eb;
+--primary-dark:#1d4ed8;
+
+--green:#16a34a;
+--green-dark:#15803d;
+
+--red:#dc2626;
+--red-dark:#b91c1c;
+
+--gray:#475569;
+--gray-dark:#334155;
+
+--bg:#f4f7fb;
+--card:#ffffff;
+--border:#dbe4ee;
+--text:#111827;
+
+}
+
 body{
-background:#f4f7fb;
-color:#222;
+
+background:var(--bg);
+color:var(--text);
 padding:20px;
+
 }
 
 .container{
+
 max-width:760px;
 margin:auto;
+
 }
 
 .card{
-background:#ffffff;
-border-radius:20px;
+
+background:#fff;
+border-radius:22px;
 padding:22px;
-margin-bottom:20px;
-border:1px solid #e8edf4;
+margin-bottom:22px;
+border:1px solid #e5e7eb;
+
 box-shadow:
-0 8px 25px rgba(0,0,0,.06),
-0 2px 6px rgba(0,0,0,.03);
+0 8px 25px rgba(0,0,0,.05),
+0 2px 8px rgba(0,0,0,.04);
+
 transition:.3s;
+
 }
 
 .card:hover{
+
 transform:translateY(-2px);
+
 box-shadow:
-0 12px 35px rgba(0,0,0,.08);
+0 15px 40px rgba(0,0,0,.08);
+
 }
 
 .title{
+
 font-size:30px;
 font-weight:700;
 text-align:center;
 margin-bottom:25px;
 color:#0f172a;
-letter-spacing:.3px;
+
 }
 
 .row{
+
 display:flex;
 gap:14px;
 margin-bottom:14px;
+
+}
+
+.modeRow{
+
+margin-bottom:16px;
+
 }
 
 button{
+
 flex:1;
 height:56px;
-border:none;
-border-radius:14px;
 font-size:16px;
-font-weight:600;
+font-weight:700;
 cursor:pointer;
 transition:.25s;
-box-shadow:0 4px 12px rgba(0,0,0,.08);
+border:none;
+outline:none;
+
 }
 
 button:hover{
+
 transform:translateY(-2px);
-box-shadow:0 10px 24px rgba(0,0,0,.12);
+
+box-shadow:
+0 10px 20px rgba(0,0,0,.12);
+
 }
 
 button:active{
+
 transform:scale(.97);
+
 }
 
-.primary{
-background:#2563eb;
+/* ===========================
+   PICKUP BUTTON
+=========================== */
+
+.pickupBtn{
+
+background:#fff;
+color:var(--green);
+
+border:2px solid var(--green);
+
+border-radius:40px;
+
+}
+
+.pickupBtn.active{
+
+background:var(--green);
+
 color:#fff;
+
 }
 
-.primary:hover{
-background:#1d4ed8;
+/* ===========================
+   RETURN BUTTON
+=========================== */
+
+.returnBtn{
+
+background:#fff;
+color:var(--red);
+
+border:2px solid var(--red);
+
+border-radius:40px;
+
 }
 
-.success{
-background:#16a34a;
+.returnBtn.active{
+
+background:var(--red);
+
 color:#fff;
+
 }
 
-.success:hover{
-background:#15803d;
+/* ===========================
+   CAMERA BUTTON
+=========================== */
+
+.cameraBtn{
+
+background:#fff;
+
+color:var(--primary);
+
+border:2px solid var(--primary);
+
+border-radius:14px;
+
 }
 
-.warning{
+.cameraBtn.active{
+
+background:var(--primary);
+
+color:#fff;
+
+}
+
+/* ===========================
+   MANUAL BUTTON
+=========================== */
+
+.manualBtn{
+
+background:#fff;
+
+color:var(--gray);
+
+border:2px solid var(--gray);
+
+border-radius:14px;
+
+}
+
+.manualBtn.active{
+
+background:var(--gray);
+
+color:#fff;
+
+}
+
+/* ===========================
+SAVE
+=========================== */
+
+.saveBtn{
+
+background:var(--green);
+
+color:#fff;
+
+border-radius:14px;
+
+}
+
+/* ===========================
+NEXT
+=========================== */
+
+.nextBtn{
+
+background:var(--primary);
+
+color:#fff;
+
+border-radius:14px;
+
+}
+
+/* ===========================
+EDIT
+=========================== */
+
+.editBtn{
+
 background:#f59e0b;
+
 color:#fff;
+
+border-radius:14px;
+
 }
 
-.warning:hover{
-background:#d97706;
-}
-
-.danger{
-background:#dc2626;
-color:#fff;
-}
-
-.danger:hover{
-background:#b91c1c;
-}
-
-.dark{
-background:#334155;
-color:#fff;
-}
-
-.dark:hover{
-background:#1e293b;
-}
+/* ===========================
+LABEL
+=========================== */
 
 label{
+
 display:block;
 font-size:14px;
-font-weight:600;
+font-weight:700;
 margin-bottom:6px;
-color:#475569;
+color:#64748b;
+
 }
 
-input,
-select{
+/* ===========================
+INPUT
+=========================== */
+
+input{
+
 width:100%;
-height:55px;
+height:56px;
+
 padding:0 16px;
-margin-bottom:16px;
+
 font-size:15px;
+
 border-radius:14px;
-border:1px solid #dbe4ee;
+
+border:1px solid var(--border);
+
 background:#fff;
-color:#111827;
+
 outline:none;
+
 transition:.25s;
+
+margin-bottom:16px;
+
 }
 
-input:focus,
-select:focus{
-border-color:#2563eb;
-box-shadow:0 0 0 4px rgba(37,99,235,.15);
+input:focus{
+
+border-color:var(--primary);
+
+box-shadow:
+0 0 0 4px rgba(37,99,235,.15);
+
 }
 
 ::placeholder{
+
 color:#94a3b8;
+
+}
+/* ==========================================
+   PREMIUM LIGHT THEME
+   PART-2
+========================================== */
+
+/* ===========================
+   CAMERA CARD
+=========================== */
+
+.cameraCard{
+
+margin-top:18px;
+margin-bottom:18px;
+
+background:#fff;
+
+border-radius:20px;
+
+padding:12px;
+
+border:1px solid #e5e7eb;
+
+box-shadow:
+0 6px 20px rgba(0,0,0,.05);
+
 }
 
+/* ===========================
+   CAMERA
+=========================== */
+
 #reader{
+
 width:100%;
 height:340px;
+
+border-radius:16px;
+
+overflow:hidden;
+
 background:#f8fafc;
+
 border:2px dashed #cbd5e1;
-border-radius:18px;
+
 display:flex;
 align-items:center;
 justify-content:center;
-overflow:hidden;
-box-shadow:inset 0 0 15px rgba(0,0,0,.03);
+
+transition:.3s;
+
+}
+
+#reader:hover{
+
+border-color:#2563eb;
+
 }
 
 .cameraOff{
+
 font-size:22px;
-font-weight:600;
+
+font-weight:700;
+
 color:#94a3b8;
+
 }
+
+/* ===========================
+STATUS
+=========================== */
 
 .statusBar{
+
 margin-top:18px;
+
 padding:16px;
-border-radius:16px;
+
+border-radius:14px;
+
 background:#eff6ff;
+
 border:1px solid #bfdbfe;
-color:#1d4ed8;
-font-size:16px;
+
+color:#2563eb;
+
 font-weight:700;
+
 text-align:center;
+
 }
 
+/* ===========================
+RESULT CARD
+=========================== */
+
+.resultCard{
+
+background:#fff;
+
+border-radius:18px;
+
+padding:18px;
+
+border:1px solid #e5e7eb;
+
+box-shadow:
+0 5px 15px rgba(0,0,0,.05);
+
+margin-top:18px;
+
+}
+
+.resultItem{
+
+display:flex;
+
+justify-content:space-between;
+
+padding:12px 0;
+
+border-bottom:1px solid #eef2f7;
+
+}
+
+.resultItem:last-child{
+
+border-bottom:none;
+
+}
+
+/* ===========================
+LOADER
+=========================== */
+
 .loader{
+
 position:fixed;
+
 left:0;
 top:0;
+
 width:100%;
 height:100%;
+
 display:none;
+
 align-items:center;
 justify-content:center;
-background:rgba(255,255,255,.75);
-backdrop-filter:blur(6px);
+
+background:rgba(255,255,255,.8);
+
+backdrop-filter:blur(5px);
+
 z-index:99999;
+
 }
 
 .loader div{
+
 width:65px;
 height:65px;
+
 border-radius:50%;
+
 border:6px solid #dbeafe;
+
 border-top:6px solid #2563eb;
-animation:spin .9s linear infinite;
+
+animation:spin 1s linear infinite;
+
 }
 
 @keyframes spin{
+
 100%{
+
 transform:rotate(360deg);
-}
+
 }
 
+}
+
+/* ===========================
+TOAST
+=========================== */
+
 .toast{
+
 position:fixed;
+
 left:50%;
-bottom:30px;
+bottom:25px;
+
 transform:translateX(-50%);
-background:#2563eb;
-color:#fff;
+
 padding:14px 24px;
+
 border-radius:14px;
+
+background:#111827;
+
+color:#fff;
+
 font-weight:600;
-box-shadow:0 12px 35px rgba(37,99,235,.25);
+
 display:none;
+
+box-shadow:
+0 10px 25px rgba(0,0,0,.2);
+
 z-index:999999;
-animation:fadeIn .3s ease;
+
+animation:fadeIn .3s;
+
 }
 
 @keyframes fadeIn{
 
 from{
+
 opacity:0;
 transform:translate(-50%,20px);
+
 }
 
 to{
+
 opacity:1;
 transform:translate(-50%,0);
-}
 
 }
 
-/* Result Card */
-
-.resultCard{
-margin-top:18px;
-background:#ffffff;
-border-radius:18px;
-padding:18px;
-border:1px solid #e5e7eb;
-box-shadow:0 6px 18px rgba(0,0,0,.05);
 }
 
-.resultCard h3{
-margin-bottom:15px;
-font-size:18px;
-color:#2563eb;
-}
-
-.resultItem{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:12px 0;
-border-bottom:1px solid #edf2f7;
-}
-
-.resultItem:last-child{
-border:none;
-}
-
-.resultItem span:first-child{
-font-weight:600;
-color:#64748b;
-}
-
-.resultItem span:last-child{
-font-weight:700;
-color:#111827;
-}
-
-/* Mobile */
+/* ===========================
+MOBILE
+=========================== */
 
 @media(max-width:768px){
 
 body{
+
 padding:14px;
+
 }
 
-.row{
-flex-direction:column;
-gap:12px;
-}
+.container{
 
-button{
-width:100%;
+max-width:100%;
+
 }
 
 .card{
-padding:18px;
+
+padding:16px;
+
 border-radius:18px;
+
 }
 
 .title{
-font-size:24px;
+
+font-size:22px;
+
+margin-bottom:18px;
+
+}
+
+/* Buttons horizontal */
+
+.row{
+
+display:flex;
+
+flex-direction:row;
+
+gap:10px;
+
+}
+
+button{
+
+height:50px;
+
+font-size:15px;
+
 }
 
 #reader{
+
 height:250px;
+
 }
 
-input,
-select{
-height:52px;
+.statusBar{
+
+font-size:14px;
+
+padding:14px;
+
 }
+
+input{
+
+height:50px;
+
+font-size:14px;
+
+}
+
+}
+
+/* ===========================
+SMOOTH EFFECTS
+=========================== */
+
+button,
+input,
+.card,
+#reader{
+
+transition:.25s ease;
+
+}
+
+button:hover{
+
+transform:translateY(-2px);
+
+}
+
+button:active{
+
+transform:scale(.97);
+
+}
+
+.card:hover{
+
+transform:translateY(-2px);
+
+}
+
+/* Optional Active Glow */
+
+.pickupBtn.active,
+.returnBtn.active,
+.cameraBtn.active,
+.manualBtn.active{
+
+box-shadow:0 0 0 4px rgba(37,99,235,.08);
 
 }
 
@@ -335,84 +685,94 @@ height:52px;
 <body>
 
 <div class="loader" id="loader">
-<div></div>
+    <div></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <div class="container">
 
-<div class="card">
+    <!-- Scanner Card -->
+    <div class="card">
 
-<div class="title">
-Pickup Return Daily Scanner
-</div>
+        <div class="title">
+            📦 Pickup Return Scanner
+        </div>
 
-<div class="row">
+        <!-- Pickup / Return -->
+        <div class="row modeRow">
 
-<button id="pickupBtn" class="primary">
-Pickup
-</button>
+            <button id="pickupBtn" class="pickupBtn active">
+                📥 Pickup
+            </button>
 
-<button id="returnBtn" class="warning">
-Return
-</button>
+            <button id="returnBtn" class="returnBtn">
+                ↩ Return
+            </button>
 
-</div>
+        </div>
 
-<div class="row">
+        <!-- Camera / Manual -->
+        <div class="row modeRow">
 
-<button id="cameraBtn" class="success">
-Camera
-</button>
+            <button id="cameraBtn" class="cameraBtn active">
+                📷 Camera
+            </button>
 
-<button id="manualBtn" class="dark">
-Manual
-</button>
+            <button id="manualBtn" class="manualBtn">
+                ⌨ Manual
+            </button>
 
-</div>
+        </div>
 
-<div id="reader" class="cameraOff">
-Camera OFF
-</div>
+        <!-- Camera -->
+        <div class="cameraCard">
 
-<div class="statusBar" id="statusBar">
-Ready
-</div>
+            <div id="reader" class="cameraOff">
+                Camera OFF
+            </div>
 
-</div>
+        </div>
 
-<div class="card">
+        <!-- Status -->
+        <div class="statusBar" id="statusBar">
+            ✅ Ready
+        </div>
 
-<label>AWB</label>
-<input id="awb">
+    </div>
 
-<label>Order ID</label>
-<input id="orderId">
+    <!-- Result Card -->
+    <div class="card">
 
-<label>Courier</label>
-<input id="courier">
+        <label>AWB</label>
+        <input id="awb" placeholder="Scan or Enter AWB">
 
-<label>Status</label>
-<input id="status">
+        <label>Order ID</label>
+        <input id="orderId" placeholder="Order ID">
 
-<div class="row">
+        <label>Courier</label>
+        <input id="courier" placeholder="Courier Name">
 
-<button id="saveBtn" class="success">
-Save
-</button>
+        <label>Status</label>
+        <input id="status" placeholder="Current Status">
 
-<button id="nextBtn" class="primary">
-Next
-</button>
+        <div class="row">
 
-<button id="editBtn" class="warning">
-Edit
-</button>
+            <button id="saveBtn" class="saveBtn">
+                💾 Save
+            </button>
 
-</div>
+            <button id="nextBtn" class="nextBtn">
+                ➜ Next
+            </button>
 
-</div>
+            <button id="editBtn" class="editBtn">
+                ✏ Edit
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -477,7 +837,7 @@ isRTO:false
 
 }
 
-/*************** CONTINUED IN index.html PART 2 ***************/
+
 
 
 async function api(action, data = {}) {
@@ -792,7 +1152,11 @@ setStatus("Ready");
 $("awb").focus();
 
 };
+pickupBtn.classList.add("active");
+returnBtn.classList.remove("active");
 
+cameraBtn.classList.add("active");
+manualBtn.classList.remove("active");
 /******************** END OF index.html PART 2 ********************/
 </script>
 </body>
