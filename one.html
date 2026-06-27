@@ -164,7 +164,7 @@ color:#94a3b8;
 
 #reader{
 width:100%;
-height:430px;
+height:340px;
 background:#f8fafc;
 border:2px dashed #cbd5e1;
 border-radius:18px;
@@ -318,7 +318,7 @@ font-size:24px;
 }
 
 #reader{
-height:340px;
+height:250px;
 }
 
 input,
@@ -579,10 +579,20 @@ $("reader").innerHTML="";
 
 qrScanner=new Html5Qrcode("reader");
 
-const config={
-fps:10,
-qrbox:{width:250,height:250},
-rememberLastUsedCamera:true
+const reader = document.getElementById("reader");
+
+const size = Math.min(
+    reader.clientWidth,
+    reader.clientHeight
+);
+
+const config = {
+    fps: 10,
+    qrbox: {
+        width: size,
+        height: size
+    },
+    rememberLastUsedCamera: true
 };
 
 try{
