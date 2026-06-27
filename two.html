@@ -228,66 +228,145 @@ min-height:340px;
 
 <body>
 
-<div class="header">HARSIDHI VENTURES PICKUP RETURN SYSTEM</div>
+<div class="header">
+    🚚 HARSIDHI VENTURES
+    <span style="font-size:14px;font-weight:500;margin-left:10px;opacity:.9;">
+        Pickup & Return Management
+    </span>
+</div>
 
 <div class="main">
 
-<div class="panel">
-<div class="panel-header">Dashboard & Bulk Update</div>
-<div class="left-content">
-<div id="dashboardArea"></div>
-<div class="card">
-<h3>Bulk Update</h3>
-<input type="date" id="bulkDate">
-<button class="btn btn-camera" onclick="loadBulkCounts()">Load Counts</button>
-<hr>
-<div id="bulkCounts">Pickup : 0<br>Return : 0</div>
-<br>
-<button id="pickupUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Pickup')">Update Pickup</button>
-<button id="returnUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Return')">Update Return</button>
-<hr>
-<div id="bulkProgress">Waiting...</div>
-</div>
-</div>
+    <!-- Left Panel -->
+    <div class="panel">
+        <div class="panel-header">📊 Dashboard & Bulk Update</div>
+
+        <div class="left-content">
+
+            <div id="dashboardArea"></div>
+
+            <div class="card">
+                <h3 style="margin-bottom:12px;">📅 Bulk Update</h3>
+
+                <input type="date" id="bulkDate" class="input">
+
+                <br><br>
+
+                <button class="btn btn-camera" onclick="loadBulkCounts()">
+                    Load Counts
+                </button>
+
+                <hr style="margin:15px 0;">
+
+                <div id="bulkCounts">
+                    Pickup : <b>0</b><br>
+                    Return : <b>0</b>
+                </div>
+
+                <br>
+
+                <button id="pickupUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Pickup')">
+                    ✅ Update Pickup
+                </button>
+
+                <button id="returnUpdateBtn" class="btn btn-save" onclick="startBulkUpdate('Return')">
+                    🔄 Update Return
+                </button>
+
+                <hr style="margin:15px 0;">
+
+                <div id="bulkProgress">
+                    ⏳ Waiting...
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Center Panel -->
+    <div class="panel">
+
+        <div class="center-content">
+
+            <div class="mode-row">
+                <button id="pickupBtn" class="mode-btn pickup" onclick="selectType('Pickup')">
+                    📦 Pickup
+                </button>
+
+                <button id="returnBtn" class="mode-btn return" onclick="selectType('Return')">
+                    🔁 Return
+                </button>
+            </div>
+
+            <div id="scanPanel" class="scan-panel">
+
+                <button class="btn btn-camera" onclick="startCamera()">
+                    📷 Camera Scan
+                </button>
+
+                <button class="btn btn-manual" onclick="focusAWB()">
+                    ⌨ Manual / Scanner
+                </button>
+
+                <div id="reader"></div>
+
+                <input id="awbInput" class="input" placeholder="Enter / Scan AWB">
+
+                <input id="orderInput" class="input" placeholder="Order ID (Optional)">
+
+                <div id="resultCard" class="result-card"></div>
+
+                <div class="action-row">
+                    <button class="btn btn-save" onclick="saveEntry()">
+                        ✅ Next
+                    </button>
+
+                    <button class="btn btn-stop" onclick="stopWork()">
+                        ⛔ Stop
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Right Panel -->
+    <div class="panel">
+
+        <div class="panel-header">
+            🔍 Find Order
+        </div>
+
+        <div class="right-content">
+
+            <div class="search-box">
+
+                <input id="searchInput" class="input" placeholder="Search AWB / Order ID">
+
+                <button class="btn btn-camera small-btn" onclick="searchOrder()">
+                    Search
+                </button>
+
+                <button id="updateSingleBtn" class="btn btn-save small-btn" style="display:none;">
+                    Update Sheet
+                </button>
+
+                <div id="searchResult" class="search-result"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div class="panel">
-<div class="center-content">
-<div class="mode-row">
-<button id="pickupBtn" class="mode-btn pickup" onclick="selectType('Pickup')">Pickup</button>
-<button id="returnBtn" class="mode-btn return" onclick="selectType('Return')">Return</button>
+<div id="loadingOverlay">
+    ⏳ Loading...
 </div>
-
-<div id="scanPanel" class="scan-panel">
-<button class="btn btn-camera" onclick="startCamera()">📷 Camera Scan</button>
-<button class="btn btn-manual" onclick="focusAWB()">⌨ Manual / Scanner</button>
-<div id="reader"></div>
-<input id="awbInput" class="input" placeholder="Scan AWB">
-<input id="orderInput" class="input" placeholder="Order ID (Manual Fallback)">
-<div id="resultCard" class="result-card"></div>
-<div class="action-row">
-<button class="btn btn-save" onclick="saveEntry()">Next</button>
-<button class="btn btn-stop" onclick="stopWork()">Stop</button>
-</div>
-</div>
-</div>
-</div>
-
-<div class="panel">
-<div class="panel-header">Find Order</div>
-<div class="right-content">
-<div class="search-box">
-<input id="searchInput" class="input" placeholder="Search AWB / Order ID">
-<button class="btn btn-camera small-btn" onclick="searchOrder()">Search</button>
-<button id="updateSingleBtn" class="btn btn-save small-btn" style="display:none;">Update Sheet</button>
-<div id="searchResult" class="search-result"></div>
-</div>
-</div>
-</div>
-
-</div>
-
-<div id="loadingOverlay">Loading...</div>
 
 </body>
 
