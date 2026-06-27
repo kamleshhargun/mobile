@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logistics Scanner & Tracker</title>
+    <title>Logistics Scanner with Preview</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         .active-btn {
-            background-color: #1D4ED8 !important; /* Dark Blue */
+            background-color: #1D4ED8 !important; 
             color: white !important;
         }
     </style>
@@ -44,7 +44,26 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Enter AWB Number:</label>
             <div class="flex gap-2">
                 <input type="text" id="manual-awb" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 123456789">
-                <button onclick="processManualEntry()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900">Submit</button>
+                <button onclick="processManualEntry()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900">Fetch</button>
+            </div>
+        </div>
+
+        <div id="preview-section" class="hidden mb-6 bg-blue-50 p-4 rounded-lg border border-blue-200 shadow-inner">
+            <h3 class="text-sm font-bold text-blue-800 uppercase tracking-wider mb-3">📋 Data Preview</h3>
+            <div class="space-y-1 text-sm text-gray-700 mb-4">
+                <p><strong>Date:</strong> <span id="prev-date"></span></p>
+                <p><strong>Type:</strong> <span id="prev-type"></span></p>
+                <p><strong>AWB Number:</strong> <span id="prev-awb" class="font-mono text-blue-700 font-bold"></span></p>
+                <p><strong>Order ID:</strong> <span id="prev-order"></span></p>
+                <p><strong>Status:</strong> <span id="prev-status" class="font-semibold"></span></p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="saveDataToSheet()" class="w-2/3 bg-green-600 text-white font-bold py-2 rounded shadow hover:bg-green-700">
+                    💾 Save to Sheet
+                </button>
+                <button onclick="cancelPreview()" class="w-1/3 bg-red-100 text-red-700 font-medium py-2 rounded border border-red-200 hover:bg-red-200">
+                    Cancel
+                </button>
             </div>
         </div>
 
@@ -52,7 +71,7 @@
         
         <div class="border-t pt-4">
             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Live Logs:</span>
-            <div id="logs" class="text-xs bg-gray-900 text-green-400 p-3 rounded-md h-32 overflow-y-auto font-mono">
+            <div id="logs" class="text-xs bg-gray-900 text-green-400 p-3 rounded-md h-24 overflow-y-auto font-mono">
                 System ready... Mode: Pickup
             </div>
         </div>
@@ -60,22 +79,22 @@
 
     <script>
         // --- CONFIGURATION ---
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzI_IKfylIzB4EUgiYifpablVVuNGYBe_riclB1BHB6-t2Es1txRctFX9opNFsyxExC/exec"; // Apna Apps Script URL yahan dalein
-        const DELHIVERY_TOKEN = "ee805b36e342f1d79549ed95ea214bf062361556"; // Apna Delhivery token yahan dalein
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcuQ7Y7S2x51lp7_tWay7NScXxAPPXzlbMLk85NfPEnwmKvYX99anFMov-jI5sTEgc/exec"; // Naya Apps Script Web App URL yahan dalein
         
-        let currentMode = 'Pickup'; // Default Mode
+        let currentMode = 'Pickup'; 
         let html5QrcodeScanner = null;
+        let currentDataPayload = null; // Temp storage for preview
 
-        // Mode Switcher (Pickup/Return)
         function setMode(mode) {
             currentMode = mode;
             document.getElementById('btn-pickup').classList.toggle('active-btn', mode === 'Pickup');
             document.getElementById('btn-return').classList.toggle('active-btn', mode === 'Return');
-            log(`Mode changed to: ${mode}`);
+            log(`Mode switched to: ${mode}`);
+            hidePreview();
         }
 
-        // Input Method Toggle (Camera/Manual)
         function setInputMethod(method) {
+            hidePreview();
             if (method === 'camera') {
                 document.getElementById('camera-section').classList.remove('hidden');
                 document.getElementById('manual-section').classList.add('hidden');
@@ -87,45 +106,37 @@
             }
         }
 
-        // Log Function
         function log(message) {
             const logsDiv = document.getElementById('logs');
             logsDiv.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${message}`;
             logsDiv.scrollTop = logsDiv.scrollHeight;
         }
 
-        // Show Feedback Status
         function showStatus(text, isError = false) {
             const box = document.getElementById('status-box');
-            box.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            box.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700', 'bg-yellow-100', 'text-yellow-700');
             box.classList.add(isError ? 'bg-red-100' : 'bg-green-100');
             box.classList.add(isError ? 'text-red-700' : 'text-green-700');
             box.innerText = text;
+            box.classList.remove('hidden');
         }
 
-        // Date Formatter (DD-MM-YYYY)
         function getFormattedDate() {
             const today = new Date();
             const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // January 0 hai
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); 
             const yyyy = today.getFullYear();
             return `${dd}-${mm}-${yyyy}`;
         }
 
-        // Camera Processing
         function startCamera() {
             if (html5QrcodeScanner) stopCamera();
-            
             html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 150} }, false);
             html5QrcodeScanner.render((decodedText) => {
                 log(`Scanned AWB: ${decodedText}`);
-                showStatus(`Scanned: ${decodedText}. Fetching data...`);
-                // Scanner ko thodi der ke liye pause/stop karein taaki ek hi barcode baar-baar scan na ho
                 stopCamera();
-                fetchTrackingDetails(decodedText.trim());
-            }, (error) => {
-                // Background scan errors ko ignore karein
-            });
+                initiateWorkflow(decodedText.trim());
+            }, (error) => {});
         }
 
         function stopCamera() {
@@ -135,7 +146,6 @@
             }
         }
 
-        // Manual Entry Submit
         function processManualEntry() {
             const awbInput = document.getElementById('manual-awb');
             const awbValue = awbInput.value.trim();
@@ -144,88 +154,93 @@
                 return;
             }
             log(`Manual AWB Entered: ${awbValue}`);
-            fetchTrackingDetails(awbValue);
-            awbInput.value = ''; // Input clear karein
+            initiateWorkflow(awbValue);
+            awbInput.value = ''; 
         }
 
-        // Logistics API Tracking Fetching
-        async function fetchTrackingDetails(awb) {
-            let orderId = "N/A";
-            let status = "Unknown";
+        // Core Workflow: Duplicate Check -> Fetch Data -> Show Preview
+        function initiateWorkflow(awb) {
+            showStatus("Checking for duplicate entry...", false);
+            document.getElementById('status-box').className = "p-4 rounded-lg text-sm font-medium text-center mb-4 bg-yellow-100 text-yellow-700";
             
-            // 1. Boxd Logistics check (Agar AWB numeric ya boxd pattern match kare to)
-            // Aap apne hisab se logic change kar sakte hain, abhi hum pehle Boxd try kar rahe hain
-            try {
-                log("Trying Boxd Logistics API...");
-                let response = await fetch(`https://api.boxdlogistics.com/api/v1/shipments/track-shipment/?awb_number=${awb}`);
-                let resData = await response.json();
-                
-                if (resData && resData.status_code === 200) { // Boxd ke actual response key ke mutabik badlein
-                    status = resData.status || "Fetched (Boxd)";
-                    orderId = resData.order_id || "N/A";
-                    sendToGoogleSheet(awb, orderId, status);
-                    return;
-                }
-            } catch (e) {
-                log("Boxd API failed or cors issue, trying Delhivery...");
-            }
-
-            // 2. Delhivery Logistics check
-            try {
-                log("Trying Delhivery API...");
-                let response = await fetch(`https://track.delhivery.com/api/v1/packages/json/?waybill=${awb}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Token ${DELHIVERY_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                let resData = await response.json();
-                
-                if(resData && resData.ShipmentData && resData.ShipmentData.length > 0) {
-                    let shipInfo = resData.ShipmentData[0].Shipment;
-                    status = shipInfo.Status.Status || "Fetched (Delhivery)";
-                    orderId = shipInfo.ClientOrderNo || "N/A";
+            // Step A: Duplicate Check in Google Sheet
+            fetch(`${WEB_APP_URL}?action=checkDuplicate&awb=${awb}&type=${currentMode}`)
+            .then(res => res.json())
+            .then(dupRes => {
+                if (dupRes.isDuplicate) {
+                    showStatus(`Duplicate Error: This AWB is already saved as '${currentMode}'!`, true);
+                    log(`Aborted: Duplicate AWB detected for ${currentMode}.`);
                 } else {
-                    status = "AWB Not Found";
+                    // Step B: Fetch API tracking details
+                    log("No duplicate found. Fetching logistics tracking details...");
+                    showStatus("Fetching tracking information from server...", false);
+                    
+                    fetch(`${WEB_APP_URL}?action=fetchData&awb=${awb}`)
+                    .then(res => res.json())
+                    .then(apiRes => {
+                        // Setup Payload for Preview & eventual Saving
+                        currentDataPayload = {
+                            date: getFormattedDate(),
+                            type: currentMode,
+                            awb: awb,
+                            orderId: apiRes.orderId,
+                            status: apiRes.status
+                        };
+                        
+                        // Show Data in Preview Box
+                        document.getElementById('prev-date').innerText = currentDataPayload.date;
+                        document.getElementById('prev-type').innerText = currentDataPayload.type;
+                        document.getElementById('prev-awb').innerText = currentDataPayload.awb;
+                        document.getElementById('prev-order').innerText = currentDataPayload.orderId;
+                        document.getElementById('prev-status').innerText = currentDataPayload.status;
+                        
+                        document.getElementById('preview-section').classList.remove('hidden');
+                        showStatus("Data fetched successfully. Please review and save.", false);
+                        log("Preview displayed to user.");
+                    });
                 }
-            } catch (e) {
-                log("Delhivery API failed.");
-                status = "API Error/Network Issue";
-            }
-
-            // Google Sheet me data bhejein
-            sendToGoogleSheet(awb, orderId, status);
+            })
+            .catch(err => {
+                showStatus("Network or Configuration Error occurred.", true);
+                log(`Error: ${err}`);
+            });
         }
 
-        // Google Sheet par Data Post karna
-        function sendToGoogleSheet(awb, orderId, status) {
-            const payload = {
-                date: getFormattedDate(),
-                type: currentMode,
-                awb: awb,
-                orderId: orderId,
-                status: status
-            };
-
-            log("Sending data to Google Sheet...");
+        // Final Post to Google Sheet after user validation
+        function saveDataToSheet() {
+            if (!currentDataPayload) return;
+            
+            showStatus("Saving data to Google Sheet...", false);
+            log("Sending row data to sheet...");
 
             fetch(WEB_APP_URL, {
                 method: "POST",
-                mode: "no-cors", // No-cors rakhna padta hai Google Apps Script ke liye
+                mode: "no-cors", 
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(currentDataPayload)
             })
             .then(() => {
-                showStatus(`Data saved successfully for AWB: ${awb}`);
-                log(`Success! Saved to Sheet.`);
+                showStatus(`Successfully saved AWB: ${currentDataPayload.awb} into Google Sheet!`);
+                log(`Success! Data written to row.`);
+                hidePreview();
             })
             .catch(err => {
-                showStatus("Error saving to Google Sheet", true);
-                log(`Sheet Error: ${err}`);
+                showStatus("Error saving data to sheet", true);
+                log(`Post Error: ${err}`);
             });
+        }
+
+        function cancelPreview() {
+            log("User cancelled the entry operation.");
+            hidePreview();
+            showStatus("Operation cancelled.");
+        }
+
+        function hidePreview() {
+            document.getElementById('preview-section').classList.add('hidden');
+            currentDataPayload = null;
         }
     </script>
 </body>
