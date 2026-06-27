@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Scanner & Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        .active-btn {
+            background-color: #1D4ED8 !important; /* Dark Blue */
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans p-4 flex flex-col items-center">
+
+    <div class="w-full max-w-md bg-white rounded-xl shadow-md p-6 mt-4">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Logistics Tracker</h2>
+
+        <div class="flex gap-4 mb-6">
+            <button id="btn-pickup" onclick="setMode('Pickup')" class="w-1/2 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all active-btn shadow">
+                📦 Pickup
+            </button>
+            <button id="btn-return" onclick="setMode('Return')" class="w-1/2 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all shadow">
+                🔄 Return
+            </button>
+        </div>
+
+        <div class="flex gap-4 mb-6">
+            <button onclick="setInputMethod('camera')" class="w-1/2 py-2 bg-emerald-600 text-white font-medium rounded-md hover:bg-emerald-700">
+                📷 Camera Scan
+            </button>
+            <button onclick="setInputMethod('manual')" class="w-1/2 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700">
+                ✍️ Manual Entry
+            </button>
+        </div>
+
+        <div id="camera-section" class="hidden mb-6 border-2 border-dashed border-gray-300 rounded-lg p-2 bg-black">
+            <div id="reader" class="w-full"></div>
+        </div>
+
+        <div id="manual-section" class="hidden mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Enter AWB Number:</label>
+            <div class="flex gap-2">
+                <input type="text" id="manual-awb" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 123456789">
+                <button onclick="processManualEntry()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-900">Submit</button>
+            </div>
+        </div>
+
+        <div id="status-box" class="hidden p-4 rounded-lg text-sm font-medium text-center mb-4"></div>
+        
+        <div class="border-t pt-4">
+            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Live Logs:</span>
+            <div id="logs" class="text-xs bg-gray-900 text-green-400 p-3 rounded-md h-32 overflow-y-auto font-mono">
+                System ready... Mode: Pickup
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzI_IKfylIzB4EUgiYifpablVVuNGYBe_riclB1BHB6-t2Es1txRctFX9opNFsyxExC/exec"; // Apna Apps Script URL yahan dalein
+        const DELHIVERY_TOKEN = "ee805b36e342f1d79549ed95ea214bf062361556"; // Apna Delhivery token yahan dalein
+        
+        let currentMode = 'Pickup'; // Default Mode
+        let html5QrcodeScanner = null;
+
+        // Mode Switcher (Pickup/Return)
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-pickup').classList.toggle('active-btn', mode === 'Pickup');
+            document.getElementById('btn-return').classList.toggle('active-btn', mode === 'Return');
+            log(`Mode changed to: ${mode}`);
+        }
+
+        // Input Method Toggle (Camera/Manual)
+        function setInputMethod(method) {
+            if (method === 'camera') {
+                document.getElementById('camera-section').classList.remove('hidden');
+                document.getElementById('manual-section').classList.add('hidden');
+                startCamera();
+            } else {
+                document.getElementById('manual-section').classList.remove('hidden');
+                document.getElementById('camera-section').classList.add('hidden');
+                stopCamera();
+            }
+        }
+
+        // Log Function
+        function log(message) {
+            const logsDiv = document.getElementById('logs');
+            logsDiv.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        // Show Feedback Status
+        function showStatus(text, isError = false) {
+            const box = document.getElementById('status-box');
+            box.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            box.classList.add(isError ? 'bg-red-100' : 'bg-green-100');
+            box.classList.add(isError ? 'text-red-700' : 'text-green-700');
+            box.innerText = text;
+        }
+
+        // Date Formatter (DD-MM-YYYY)
+        function getFormattedDate() {
+            const today = new Date();
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // January 0 hai
+            const yyyy = today.getFullYear();
+            return `${dd}-${mm}-${yyyy}`;
+        }
+
+        // Camera Processing
+        function startCamera() {
+            if (html5QrcodeScanner) stopCamera();
+            
+            html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: {width: 250, height: 150} }, false);
+            html5QrcodeScanner.render((decodedText) => {
+                log(`Scanned AWB: ${decodedText}`);
+                showStatus(`Scanned: ${decodedText}. Fetching data...`);
+                // Scanner ko thodi der ke liye pause/stop karein taaki ek hi barcode baar-baar scan na ho
+                stopCamera();
+                fetchTrackingDetails(decodedText.trim());
+            }, (error) => {
+                // Background scan errors ko ignore karein
+            });
+        }
+
+        function stopCamera() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(err => console.log(err));
+                html5QrcodeScanner = null;
+            }
+        }
+
+        // Manual Entry Submit
+        function processManualEntry() {
+            const awbInput = document.getElementById('manual-awb');
+            const awbValue = awbInput.value.trim();
+            if (!awbValue) {
+                showStatus("Please enter a valid AWB number", true);
+                return;
+            }
+            log(`Manual AWB Entered: ${awbValue}`);
+            fetchTrackingDetails(awbValue);
+            awbInput.value = ''; // Input clear karein
+        }
+
+        // Logistics API Tracking Fetching
+        async function fetchTrackingDetails(awb) {
+            let orderId = "N/A";
+            let status = "Unknown";
+            
+            // 1. Boxd Logistics check (Agar AWB numeric ya boxd pattern match kare to)
+            // Aap apne hisab se logic change kar sakte hain, abhi hum pehle Boxd try kar rahe hain
+            try {
+                log("Trying Boxd Logistics API...");
+                let response = await fetch(`https://api.boxdlogistics.com/api/v1/shipments/track-shipment/?awb_number=${awb}`);
+                let resData = await response.json();
+                
+                if (resData && resData.status_code === 200) { // Boxd ke actual response key ke mutabik badlein
+                    status = resData.status || "Fetched (Boxd)";
+                    orderId = resData.order_id || "N/A";
+                    sendToGoogleSheet(awb, orderId, status);
+                    return;
+                }
+            } catch (e) {
+                log("Boxd API failed or cors issue, trying Delhivery...");
+            }
+
+            // 2. Delhivery Logistics check
+            try {
+                log("Trying Delhivery API...");
+                let response = await fetch(`https://track.delhivery.com/api/v1/packages/json/?waybill=${awb}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${DELHIVERY_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                let resData = await response.json();
+                
+                if(resData && resData.ShipmentData && resData.ShipmentData.length > 0) {
+                    let shipInfo = resData.ShipmentData[0].Shipment;
+                    status = shipInfo.Status.Status || "Fetched (Delhivery)";
+                    orderId = shipInfo.ClientOrderNo || "N/A";
+                } else {
+                    status = "AWB Not Found";
+                }
+            } catch (e) {
+                log("Delhivery API failed.");
+                status = "API Error/Network Issue";
+            }
+
+            // Google Sheet me data bhejein
+            sendToGoogleSheet(awb, orderId, status);
+        }
+
+        // Google Sheet par Data Post karna
+        function sendToGoogleSheet(awb, orderId, status) {
+            const payload = {
+                date: getFormattedDate(),
+                type: currentMode,
+                awb: awb,
+                orderId: orderId,
+                status: status
+            };
+
+            log("Sending data to Google Sheet...");
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors", // No-cors rakhna padta hai Google Apps Script ke liye
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                showStatus(`Data saved successfully for AWB: ${awb}`);
+                log(`Success! Saved to Sheet.`);
+            })
+            .catch(err => {
+                showStatus("Error saving to Google Sheet", true);
+                log(`Sheet Error: ${err}`);
+            });
+        }
+    </script>
+</body>
+</html>
