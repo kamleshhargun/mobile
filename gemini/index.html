@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logistics Scanner with Preview</title>
+    <title>Advanced Logistics Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
@@ -15,8 +15,19 @@
 </head>
 <body class="bg-gray-100 min-h-screen font-sans p-4 flex flex-col items-center">
 
-    <div class="w-full max-w-md bg-white rounded-xl shadow-md p-6 mt-4">
-        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Logistics Tracker</h2>
+    <audio id="sound-find" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-600.wav" preload="auto"></audio>
+    <audio id="sound-error" src="https://assets.mixkit.co/active_storage/sfx/2573/2573-600.wav" preload="auto"></audio>
+    <audio id="sound-duplicate" src="https://assets.mixkit.co/active_storage/sfx/950/950-600.wav" preload="auto"></audio>
+    <audio id="sound-save" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-600.wav" preload="auto"></audio>
+
+    <div class="w-full max-w-md bg-white rounded-xl shadow-md p-6 mt-4 relative">
+        
+        <div class="absolute top-4 right-4 flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-full border text-xs">
+            <span id="sync-dot" class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+            <span id="sync-text" class="font-medium text-gray-600">Connecting...</span>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 mt-2">Logistics System</h2>
 
         <div class="flex gap-4 mb-6">
             <button id="btn-pickup" onclick="setMode('Pickup')" class="w-1/2 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all active-btn shadow">
@@ -72,18 +83,52 @@
         <div class="border-t pt-4">
             <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Live Logs:</span>
             <div id="logs" class="text-xs bg-gray-900 text-green-400 p-3 rounded-md h-24 overflow-y-auto font-mono">
-                System ready... Mode: Pickup
+                System starting...
             </div>
         </div>
     </div>
 
     <script>
         // --- CONFIGURATION ---
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxcuQ7Y7S2x51lp7_tWay7NScXxAPPXzlbMLk85NfPEnwmKvYX99anFMov-jI5sTEgc/exec"; // Naya Apps Script Web App URL yahan dalein
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNunFbmgDLzFIVpl2LiDmU9PtelTRnPrjNKQmGkMT6qzmodxE7Jx5MTYvoPkL6csbm/exec"; // Apna Web App URL yahan dalein
         
         let currentMode = 'Pickup'; 
         let html5QrcodeScanner = null;
-        let currentDataPayload = null; // Temp storage for preview
+        let currentDataPayload = null;
+
+        // Sound Player Wrapper
+        function playSound(id) {
+            const sound = document.getElementById(id);
+            if(sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Sound play delayed until user interaction"));
+            }
+        }
+
+        // Live Link Checker Function
+        function checkSheetConnection() {
+            fetch(`${WEB_APP_URL}?action=ping`)
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'online') {
+                    document.getElementById('sync-dot').className = "w-2.5 h-2.5 bg-green-500 rounded-full";
+                    document.getElementById('sync-text').innerText = "Sheet Linked";
+                    log("Google Sheet real-time link active.");
+                }
+            })
+            .catch(() => {
+                document.getElementById('sync-dot').className = "w-2.5 h-2.5 bg-red-500 rounded-full";
+                document.getElementById('sync-text').innerText = "No Link";
+                log("Warning: Google Sheet connection failed.");
+            });
+        }
+
+        // On Page Load initialize connection verification
+        window.onload = () => {
+            checkSheetConnection();
+            setInterval(checkSheetConnection, 30000); // Check identity every 30s
+            log("System ready... Mode: Pickup");
+        };
 
         function setMode(mode) {
             currentMode = mode;
@@ -112,11 +157,12 @@
             logsDiv.scrollTop = logsDiv.scrollHeight;
         }
 
-        function showStatus(text, isError = false) {
+        function showStatus(text, type='success') {
             const box = document.getElementById('status-box');
-            box.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700', 'bg-yellow-100', 'text-yellow-700');
-            box.classList.add(isError ? 'bg-red-100' : 'bg-green-100');
-            box.classList.add(isError ? 'text-red-700' : 'text-green-700');
+            box.className = "p-4 rounded-lg text-sm font-medium text-center mb-4";
+            if (type === 'error') box.classList.add('bg-red-100', 'text-red-700');
+            else if (type === 'warn') box.classList.add('bg-yellow-100', 'text-yellow-700');
+            else box.classList.add('bg-green-100', 'text-green-700');
             box.innerText = text;
             box.classList.remove('hidden');
         }
@@ -150,7 +196,8 @@
             const awbInput = document.getElementById('manual-awb');
             const awbValue = awbInput.value.trim();
             if (!awbValue) {
-                showStatus("Please enter a valid AWB number", true);
+                showStatus("Please enter a valid AWB number", 'error');
+                playSound('sound-error');
                 return;
             }
             log(`Manual AWB Entered: ${awbValue}`);
@@ -158,27 +205,34 @@
             awbInput.value = ''; 
         }
 
-        // Core Workflow: Duplicate Check -> Fetch Data -> Show Preview
+        // Logic sequence update: Fetch Data -> Check Duplicate on fetched info -> Preview
         function initiateWorkflow(awb) {
-            showStatus("Checking for duplicate entry...", false);
-            document.getElementById('status-box').className = "p-4 rounded-lg text-sm font-medium text-center mb-4 bg-yellow-100 text-yellow-700";
+            showStatus("Contacting server logistics database...", 'warn');
+            hidePreview();
             
-            // Step A: Duplicate Check in Google Sheet
-            fetch(`${WEB_APP_URL}?action=checkDuplicate&awb=${awb}&type=${currentMode}`)
+            // Step 1: Fetch logistics data first to read context completely
+            fetch(`${WEB_APP_URL}?action=fetchData&awb=${awb}`)
             .then(res => res.json())
-            .then(dupRes => {
-                if (dupRes.isDuplicate) {
-                    showStatus(`Duplicate Error: This AWB is already saved as '${currentMode}'!`, true);
-                    log(`Aborted: Duplicate AWB detected for ${currentMode}.`);
-                } else {
-                    // Step B: Fetch API tracking details
-                    log("No duplicate found. Fetching logistics tracking details...");
-                    showStatus("Fetching tracking information from server...", false);
-                    
-                    fetch(`${WEB_APP_URL}?action=fetchData&awb=${awb}`)
-                    .then(res => res.json())
-                    .then(apiRes => {
-                        // Setup Payload for Preview & eventual Saving
+            .then(apiRes => {
+                if(!apiRes.success && apiRes.status === "Unknown") {
+                    showStatus(`AWB tracking details not found on Boxd or Delhivery.`, 'error');
+                    playSound('sound-error');
+                    log(`Fetch failed for AWB: ${awb}`);
+                    return;
+                }
+
+                // Step 2: Since AWB is active, verify that no duplicate registration exists for current action mode
+                fetch(`${WEB_APP_URL}?action=checkDuplicate&awb=${awb}&type=${currentMode}`)
+                .then(res => res.json())
+                .then(dupRes => {
+                    if (dupRes.isDuplicate) {
+                        showStatus(`Duplicate Detected: AWB already saved under '${currentMode}'!`, 'error');
+                        playSound('sound-duplicate');
+                        log(`Block: Duplicate entries disallowed.`);
+                    } else {
+                        // Success scan, trigger positive discovery audio
+                        playSound('sound-find');
+                        
                         currentDataPayload = {
                             date: getFormattedDate(),
                             type: currentMode,
@@ -187,7 +241,6 @@
                             status: apiRes.status
                         };
                         
-                        // Show Data in Preview Box
                         document.getElementById('prev-date').innerText = currentDataPayload.date;
                         document.getElementById('prev-type').innerText = currentDataPayload.type;
                         document.getElementById('prev-awb').innerText = currentDataPayload.awb;
@@ -195,45 +248,41 @@
                         document.getElementById('prev-status').innerText = currentDataPayload.status;
                         
                         document.getElementById('preview-section').classList.remove('hidden');
-                        showStatus("Data fetched successfully. Please review and save.", false);
-                        log("Preview displayed to user.");
-                    });
-                }
+                        showStatus("Verification clear. Review and hit save.", 'success');
+                    }
+                });
             })
             .catch(err => {
-                showStatus("Network or Configuration Error occurred.", true);
-                log(`Error: ${err}`);
+                showStatus("Network execution failure.", 'error');
+                playSound('sound-error');
+                log(`Process Error: ${err}`);
             });
         }
 
-        // Final Post to Google Sheet after user validation
         function saveDataToSheet() {
             if (!currentDataPayload) return;
-            
-            showStatus("Saving data to Google Sheet...", false);
-            log("Sending row data to sheet...");
+            showStatus("Writing details into row entries...", 'warn');
 
             fetch(WEB_APP_URL, {
                 method: "POST",
                 mode: "no-cors", 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(currentDataPayload)
             })
             .then(() => {
-                showStatus(`Successfully saved AWB: ${currentDataPayload.awb} into Google Sheet!`);
-                log(`Success! Data written to row.`);
+                playSound('sound-save');
+                showStatus(`Data row written successfully for AWB: ${currentDataPayload.awb}!`, 'success');
+                log(`Stored payload row safely.`);
                 hidePreview();
             })
             .catch(err => {
-                showStatus("Error saving data to sheet", true);
-                log(`Post Error: ${err}`);
+                showStatus("Error appending data.", 'error');
+                playSound('sound-error');
             });
         }
 
         function cancelPreview() {
-            log("User cancelled the entry operation.");
+            log("Transaction rolled back.");
             hidePreview();
             showStatus("Operation cancelled.");
         }
