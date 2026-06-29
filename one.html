@@ -1,1163 +1,809 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Pickup Return Daily Scanner</title>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
-<style>
-/* ==========================================
-   PREMIUM LIGHT THEME
-   PART-1
-========================================== */
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Segoe UI",Roboto,Arial,sans-serif;
-}
-
-:root{
-
---primary:#2563eb;
---primary-dark:#1d4ed8;
-
---green:#16a34a;
---green-dark:#15803d;
-
---red:#dc2626;
---red-dark:#b91c1c;
-
---gray:#475569;
---gray-dark:#334155;
-
---bg:#f4f7fb;
---card:#ffffff;
---border:#dbe4ee;
---text:#111827;
-
-}
-
-body{
-
-background:var(--bg);
-color:var(--text);
-padding:20px;
-
-}
-
-.container{
-
-max-width:760px;
-margin:auto;
-
-}
-
-.card{
-
-background:#fff;
-border-radius:22px;
-padding:22px;
-margin-bottom:22px;
-border:1px solid #e5e7eb;
-
-box-shadow:
-0 8px 25px rgba(0,0,0,.05),
-0 2px 8px rgba(0,0,0,.04);
-
-transition:.3s;
-
-}
-
-.card:hover{
-
-transform:translateY(-2px);
-
-box-shadow:
-0 15px 40px rgba(0,0,0,.08);
-
-}
-
-.title{
-
-font-size:30px;
-font-weight:700;
-text-align:center;
-margin-bottom:25px;
-color:#0f172a;
-
-}
-
-.row{
-
-display:flex;
-gap:14px;
-margin-bottom:14px;
-
-}
-
-.modeRow{
-
-margin-bottom:16px;
-
-}
-
-button{
-
-flex:1;
-height:56px;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-transition:.25s;
-border:none;
-outline:none;
-
-}
-
-button:hover{
-
-transform:translateY(-2px);
-
-box-shadow:
-0 10px 20px rgba(0,0,0,.12);
-
-}
-
-button:active{
-
-transform:scale(.97);
-
-}
-
-/* ===========================
-   PICKUP BUTTON
-=========================== */
-
-.pickupBtn{
-
-background:#fff;
-color:var(--green);
-
-border:2px solid var(--green);
-
-border-radius:40px;
-
-}
-
-.pickupBtn.active{
-
-background:var(--green);
-
-color:#fff;
-
-}
-
-/* ===========================
-   RETURN BUTTON
-=========================== */
-
-.returnBtn{
-
-background:#fff;
-color:var(--red);
-
-border:2px solid var(--red);
-
-border-radius:40px;
-
-}
-
-.returnBtn.active{
-
-background:var(--red);
-
-color:#fff;
-
-}
-
-/* ===========================
-   CAMERA BUTTON
-=========================== */
-
-.cameraBtn{
-
-background:#fff;
-
-color:var(--primary);
-
-border:2px solid var(--primary);
-
-border-radius:14px;
-
-}
-
-.cameraBtn.active{
-
-background:var(--primary);
-
-color:#fff;
-
-}
-
-/* ===========================
-   MANUAL BUTTON
-=========================== */
-
-.manualBtn{
-
-background:#fff;
-
-color:var(--gray);
-
-border:2px solid var(--gray);
-
-border-radius:14px;
-
-}
-
-.manualBtn.active{
-
-background:var(--gray);
-
-color:#fff;
-
-}
-
-/* ===========================
-SAVE
-=========================== */
-
-.saveBtn{
-
-background:var(--green);
-
-color:#fff;
-
-border-radius:14px;
-
-}
-
-/* ===========================
-NEXT
-=========================== */
-
-.nextBtn{
-
-background:var(--primary);
-
-color:#fff;
-
-border-radius:14px;
-
-}
-
-/* ===========================
-EDIT
-=========================== */
-
-.editBtn{
-
-background:#f59e0b;
-
-color:#fff;
-
-border-radius:14px;
-
-}
-
-/* ===========================
-LABEL
-=========================== */
-
-label{
-
-display:block;
-font-size:14px;
-font-weight:700;
-margin-bottom:6px;
-color:#64748b;
-
-}
-
-/* ===========================
-INPUT
-=========================== */
-
-input{
-
-width:100%;
-height:56px;
-
-padding:0 16px;
-
-font-size:15px;
-
-border-radius:14px;
-
-border:1px solid var(--border);
-
-background:#fff;
-
-outline:none;
-
-transition:.25s;
-
-margin-bottom:16px;
-
-}
-
-input:focus{
-
-border-color:var(--primary);
-
-box-shadow:
-0 0 0 4px rgba(37,99,235,.15);
-
-}
-
-::placeholder{
-
-color:#94a3b8;
-
-}
-/* ==========================================
-   PREMIUM LIGHT THEME
-   PART-2
-========================================== */
-
-/* ===========================
-   CAMERA CARD
-=========================== */
-
-.cameraCard{
-
-margin-top:18px;
-margin-bottom:18px;
-
-background:#fff;
-
-border-radius:20px;
-
-padding:12px;
-
-border:1px solid #e5e7eb;
-
-box-shadow:
-0 6px 20px rgba(0,0,0,.05);
-
-}
-
-/* ===========================
-   CAMERA
-=========================== */
-
-#reader{
-
-width:100%;
-height:340px;
-
-border-radius:16px;
-
-overflow:hidden;
-
-background:#f8fafc;
-
-border:2px dashed #cbd5e1;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-transition:.3s;
-
-}
-
-#reader:hover{
-
-border-color:#2563eb;
-
-}
-
-.cameraOff{
-
-font-size:22px;
-
-font-weight:700;
-
-color:#94a3b8;
-
-}
-
-/* ===========================
-STATUS
-=========================== */
-
-.statusBar{
-
-margin-top:18px;
-
-padding:16px;
-
-border-radius:14px;
-
-background:#eff6ff;
-
-border:1px solid #bfdbfe;
-
-color:#2563eb;
-
-font-weight:700;
-
-text-align:center;
-
-}
-
-/* ===========================
-RESULT CARD
-=========================== */
-
-.resultCard{
-
-background:#fff;
-
-border-radius:18px;
-
-padding:18px;
-
-border:1px solid #e5e7eb;
-
-box-shadow:
-0 5px 15px rgba(0,0,0,.05);
-
-margin-top:18px;
-
-}
-
-.resultItem{
-
-display:flex;
-
-justify-content:space-between;
-
-padding:12px 0;
-
-border-bottom:1px solid #eef2f7;
-
-}
-
-.resultItem:last-child{
-
-border-bottom:none;
-
-}
-
-/* ===========================
-LOADER
-=========================== */
-
-.loader{
-
-position:fixed;
-
-left:0;
-top:0;
-
-width:100%;
-height:100%;
-
-display:none;
-
-align-items:center;
-justify-content:center;
-
-background:rgba(255,255,255,.8);
-
-backdrop-filter:blur(5px);
-
-z-index:99999;
-
-}
-
-.loader div{
-
-width:65px;
-height:65px;
-
-border-radius:50%;
-
-border:6px solid #dbeafe;
-
-border-top:6px solid #2563eb;
-
-animation:spin 1s linear infinite;
-
-}
-
-@keyframes spin{
-
-100%{
-
-transform:rotate(360deg);
-
-}
-
-}
-
-/* ===========================
-TOAST
-=========================== */
-
-.toast{
-
-position:fixed;
-
-left:50%;
-bottom:25px;
-
-transform:translateX(-50%);
-
-padding:14px 24px;
-
-border-radius:14px;
-
-background:#111827;
-
-color:#fff;
-
-font-weight:600;
-
-display:none;
-
-box-shadow:
-0 10px 25px rgba(0,0,0,.2);
-
-z-index:999999;
-
-animation:fadeIn .3s;
-
-}
-
-@keyframes fadeIn{
-
-from{
-
-opacity:0;
-transform:translate(-50%,20px);
-
-}
-
-to{
-
-opacity:1;
-transform:translate(-50%,0);
-
-}
-
-}
-
-/* ===========================
-MOBILE
-=========================== */
-
-@media(max-width:768px){
-
-body{
-
-padding:14px;
-
-}
-
-.container{
-
-max-width:100%;
-
-}
-
-.card{
-
-padding:16px;
-
-border-radius:18px;
-
-}
-
-.title{
-
-font-size:22px;
-
-margin-bottom:18px;
-
-}
-
-/* Buttons horizontal */
-
-.row{
-
-display:flex;
-
-flex-direction:row;
-
-gap:10px;
-
-}
-
-button{
-
-height:50px;
-
-font-size:15px;
-
-}
-
-#reader{
-
-height:250px;
-
-}
-
-.statusBar{
-
-font-size:14px;
-
-padding:14px;
-
-}
-
-input{
-
-height:50px;
-
-font-size:14px;
-
-}
-
-}
-
-/* ===========================
-SMOOTH EFFECTS
-=========================== */
-
-button,
-input,
-.card,
-#reader{
-
-transition:.25s ease;
-
-}
-
-button:hover{
-
-transform:translateY(-2px);
-
-}
-
-button:active{
-
-transform:scale(.97);
-
-}
-
-.card:hover{
-
-transform:translateY(-2px);
-
-}
-
-/* Optional Active Glow */
-
-.pickupBtn.active,
-.returnBtn.active,
-.cameraBtn.active,
-.manualBtn.active{
-
-box-shadow:0 0 0 4px rgba(37,99,235,.08);
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsidhi Ventures - Next-Gen Operations Desk</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        :root {
+            --bg-workspace: #0b0f19; /* Dark Tech Minimalist Theme */
+            --surface-card: #1e293b;
+            --surface-inner: #0f172a;
+            --border-glow: #334155;
+            --text-main: #f8fafc;
+            --text-mute: #94a3b8;
+            --pickup-neon: #38bdf8;
+            --return-neon: #2dd4bf;
+            --accent-green: #34d399;
+            --accent-red: #fb7185;
+            --radius-xl: 20px;
+            --radius-md: 12px;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-sans);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--bg-workspace);
+            height: 100vh;
+            color: var(--text-main);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Unified Header */
+        .app-bar {
+            height: 60px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .brand-logo {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .brand-logo span { color: var(--pickup-neon); }
+
+        .system-status {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: var(--return-neon);
+            background: rgba(45, 212, 191, 0.1);
+            padding: 4px 12px;
+            border-radius: 100px;
+            border: 1px solid rgba(45, 212, 191, 0.2);
+        }
+
+        /* 2-Column Next Gen Layout */
+        .workspace-grid {
+            height: calc(100vh - 60px);
+            display: grid;
+            grid-template-columns: 360px 1fr; /* Left Utilities Control, Right Full Desk Workspace */
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Left Control Deck (Dashboard + Search + Bulk all inside one master scroll column) */
+        .control-deck {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-xl);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .deck-section-title {
+            padding: 16px 20px 8px 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-mute);
+        }
+
+        .deck-scroll {
+            padding: 0 16px 20px 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Right Focused Operational Workspace */
+        .operational-hub {
+            background: var(--surface-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: var(--radius-xl);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        /* Big Clean Action Selector */
+        .hub-mode-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: var(--surface-inner);
+            padding: 8px;
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .hub-btn {
+            height: 54px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 700;
+            background: transparent;
+            color: var(--text-mute);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hub-btn.active-pickup {
+            background: linear-gradient(135deg, #0284c7, var(--pickup-neon));
+            color: #fff;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+
+        .hub-btn.active-return {
+            background: linear-gradient(135deg, #0d9488, var(--return-neon));
+            color: #fff;
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.3);
+        }
+
+        /* Dashboard Metric Widgets */
+        .stats-matrix {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .mini-metric-card {
+            background: var(--surface-inner);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-glow);
+        }
+        .mini-metric-card p { font-size: 11px; color: var(--text-mute); font-weight: 500; }
+        .mini-metric-card h3 { font-size: 20px; font-weight: 700; font-family: var(--font-mono); margin-top: 4px; }
+        
+        .pk-text h3 { color: var(--pickup-neon); }
+        .rt-text h3 { color: var(--return-neon); }
+
+        /* Modern UI Cards inside scroll area */
+        .deck-card {
+            background: var(--surface-inner);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+
+        /* Form Inputs */
+        .tech-input {
+            width: 100%;
+            height: 44px;
+            background: #090d16;
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            padding: 0 14px;
+            outline: none;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .tech-input:focus {
+            border-color: var(--pickup-neon);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+        .tech-input-mono { font-family: var(--font-mono); }
+
+        /* Operational Dynamic Action Layout */
+        .console-arena {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Professional Scan Interface */
+        .scan-module {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #reader {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px dashed var(--border-glow);
+        }
+
+        /* Large Split Pane for Tracking Manifest and inputs */
+        .entry-deck-splitter {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        @media(max-width: 1200px){ .entry-deck-splitter { grid-template-columns: 1fr; } }
+
+        /* Huge Modern Invoice-Style Manifest Display */
+        .manifest-bill-card {
+            display: none;
+            background: #0f172a;
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            position: relative;
+        }
+
+        .manifest-bill-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--pickup-neon);
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Action Controls Buttons */
+        .action-desk { display: flex; gap: 12px; margin-top: 10px; }
+        .tech-btn {
+            height: 44px;
+            padding: 0 20px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .tech-btn:active { transform: scale(0.98); }
+        .tech-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-blue { background: var(--pickup-neon); color: #0b0f19; }
+        .btn-blue:hover { opacity: 0.9; }
+        .btn-slate { background: #334155; color: var(--text-main); }
+        .btn-slate:hover { background: #475569; }
+        .btn-green { background: var(--accent-green); color: #0b0f19; width: 100%; }
+        .btn-green:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-glow); color: var(--text-main); }
+        .btn-outline:hover { background: rgba(255,255,255,0.02); }
+
+        /* Badge Pills */
+        .status-pill {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+        .pill-pk { background: rgba(56, 189, 248, 0.15); color: var(--pickup-neon); }
+        .pill-rt { background: rgba(45, 212, 191, 0.15); color: var(--return-neon); }
+
+        /* Toast Alert Container */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--surface-card);
+            border: 1px solid var(--border-glow);
+            color: var(--text-main);
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            z-index: 9999;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--pickup-neon);
+        }
+
+        /* Glass Global Overlay Loader */
+        #loadingOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-family: var(--font-mono);
+            color: var(--pickup-neon);
+            gap: 12px;
+        }
+        .loader-ring {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(56, 189, 248, 0.2);
+            border-top-color: var(--pickup-neon);
+            border-radius: 50%;
+            animation: rotate 0.6s linear infinite;
+        }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+
+        /* Log List formatting */
+        .stream-log {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="loader" id="loader">
-    <div></div>
-</div>
+    <div class="app-bar">
+        <div class="brand-logo">Harsidhi <span>Ventures v2</span></div>
+        <div class="system-status">CORE NODE DISPATCHER ACCESS</div>
+    </div>
 
-<div class="toast" id="toast"></div>
+    <div class="workspace-grid">
 
-<div class="container">
-
-    <!-- Scanner Card -->
-    <div class="card">
-
-        <div class="title">
-            📦 Pickup Return Scanner
-        </div>
-
-        <!-- Pickup / Return -->
-        <div class="row modeRow">
-
-            <button id="pickupBtn" class="pickupBtn active">
-                📥 Pickup
-            </button>
-
-            <button id="returnBtn" class="returnBtn">
-                ↩ Return
-            </button>
-
-        </div>
-
-        <!-- Camera / Manual -->
-        <div class="row modeRow">
-
-            <button id="cameraBtn" class="cameraBtn active">
-                📷 Camera
-            </button>
-
-            <button id="manualBtn" class="manualBtn">
-                ⌨ Manual
-            </button>
-
-        </div>
-
-        <!-- Camera -->
-        <div class="cameraCard">
-
-            <div id="reader" class="cameraOff">
-                Camera OFF
+        <div class="control-deck">
+            <div class="deck-section-title">Operational Insights</div>
+            <div class="deck-scroll" style="max-height: 240px; border-bottom: 1px solid var(--border-glow);">
+                <div id="dashboardArea" class="stats-matrix"></div>
             </div>
 
+            <div class="deck-section-title">Archive Lookups & Database</div>
+            <div class="deck-scroll" style="max-height: 260px; border-bottom: 1px solid var(--border-glow);">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <input id="searchInput" class="tech-input tech-input-mono" placeholder="AWB / Order ID Reference">
+                    <button class="tech-btn btn-slate" style="height:36px; font-size:12px;" onclick="searchOrder()">🔍 Query Data Records</button>
+                    <div id="searchResult" style="display:flex; flex-direction:column; gap:10px;"></div>
+                </div>
+            </div>
+
+            <div class="deck-section-title">Bulk Pipeline Processes</div>
+            <div class="deck-scroll">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <input type="date" id="bulkDate" class="tech-input">
+                    <button class="tech-btn btn-outline" style="height:36px; font-size:12px;" onclick="loadBulkCounts()">🔄 Pre-Fetch Targeted Batches</button>
+                    <div id="bulkCounts" class="tech-input-mono" style="font-size:11px; padding:6px; background:#090d16; border-radius:6px; color:var(--text-mute)">Pickups: 0 | Returns: 0</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                        <button id="pickupUpdateBtn" class="tech-btn btn-blue" style="height:34px; font-size:11px;" onclick="startBulkUpdate('Pickup')">Sync Bulk Pk</button>
+                        <button id="returnUpdateBtn" class="tech-btn btn-blue" style="height:34px; font-size:11px; background:var(--return-neon)" onclick="startBulkUpdate('Return')">Sync Bulk Rt</button>
+                    </div>
+                    <div id="bulkProgress" style="font-size:11px; font-family:var(--font-mono); color:var(--pickup-neon)">Pipeline Status: Standing By...</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Status -->
-        <div class="statusBar" id="statusBar">
-            ✅ Ready
+        <div class="operational-hub">
+            <div class="hub-mode-selector">
+                <button id="pickupBtn" class="hub-btn" onclick="selectType('Pickup')">Initiate Pickup Processing</button>
+                <button id="returnBtn" class="hub-btn" onclick="selectType('Return')">Initiate Return Processing</button>
+            </div>
+
+            <div class="console-arena">
+                <div id="scanPanel" class="scan-module">
+                    
+                    <div style="display: flex; gap:12px; align-items:center;">
+                        <button class="tech-btn btn-blue" onclick="startCamera()">📷 Open Cam Engine</button>
+                        <button class="tech-btn btn-slate" onclick="focusAWB()">⌨ Device Laser Scan / Manual Mode</button>
+                    </div>
+
+                    <div id="reader"></div>
+
+                    <div class="entry-deck-splitter">
+                        
+                        <div style="display:flex; flex-direction:column; gap:14px;">
+                            <div style="display:flex; flex-direction:column; gap:6px;">
+                                <label style="font-size:11px; font-weight:700; color:var(--text-mute); text-transform:uppercase;">Airway Bill Code Identifier</label>
+                                <input id="awbInput" class="tech-input tech-input-mono" style="height:48px; font-size:15px;" placeholder="Capture Barcode Signal...">
+                            </div>
+
+                            <div id="manualInputBlock" style="display:flex; flex-direction:column; gap:6px;">
+                                <input id="orderInput" class="tech-input tech-input-mono" style="display:none;" placeholder="Input Fallback Order Identification Hash">
+                            </div>
+
+                            <div class="action-desk">
+                                <button class="tech-btn btn-green" onclick="saveEntry()">Save Entry & Proceed</button>
+                                <button class="tech-btn btn-outline" onclick="stopWork()">Clear Workspace</button>
+                            </div>
+                        </div>
+
+                        <div id="resultCard" class="manifest-bill-card"></div>
+
+                    </div>
+
+                </div>
+            </div>
         </div>
 
     </div>
 
-    <!-- Result Card -->
-    <div class="card">
+    <div id="loadingOverlay"><div class="loader-ring"></div> DISPATCHING REMOTE CLUSTER REQUEST DATA...</div>
 
-        <label>AWB</label>
-        <input id="awb" placeholder="Scan or Enter AWB">
+    <script>
+        /* ===================================
+        CORE SYSTEM PARAMS
+        =================================== */
+        const API_URL = "https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
 
-        <label>Order ID</label>
-        <input id="orderId" placeholder="Order ID">
+        let bulkRunning = false;
+        let currentType = "";
+        let currentTracking = null;
+        let html5QrCode = null;
+        const beep = new Audio("https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg");
 
-        <label>Courier</label>
-        <input id="courier" placeholder="Courier Name">
+        /* ===================================
+        INTERFACES ROUTINES CONTROLLERS
+        =================================== */
+        function selectType(type){
+            currentType = type;
+            document.getElementById("scanPanel").style.display = "flex";
+            document.getElementById("pickupBtn").className = "hub-btn";
+            document.getElementById("returnBtn").className = "hub-btn";
 
-        <label>Status</label>
-        <input id="status" placeholder="Current Status">
+            if(type === "Pickup"){
+                document.getElementById("pickupBtn").classList.add("active-pickup");
+                document.documentElement.style.setProperty('--pickup-neon', '#38bdf8');
+            } else {
+                document.getElementById("returnBtn").classList.add("active-return");
+                document.documentElement.style.setProperty('--pickup-neon', '#2dd4bf');
+            }
+            clearForm();
+            document.getElementById("awbInput").focus();
+        }
 
-        <div class="row">
+        function clearForm(){
+            currentTracking = null;
+            document.getElementById("awbInput").value = "";
+            document.getElementById("orderInput").value = "";
+            document.getElementById("orderInput").style.display = "none";
+            document.getElementById("resultCard").style.display = "none";
+            document.getElementById("resultCard").innerHTML = "";
+        }
 
-            <button id="saveBtn" class="saveBtn">
-                💾 Save
-            </button>
+        function focusAWB(){ document.getElementById("awbInput").focus(); }
 
-            <button id="nextBtn" class="nextBtn">
-                ➜ Next
-            </button>
+        /* ===================================
+        CAMERA CAPTURE ENGINE
+        =================================== */
+        async function startCamera(){
+            try {
+                if(html5QrCode){ await stopCamera(); }
+                document.getElementById("reader").style.display = "block";
+                html5QrCode = new Html5Qrcode("reader");
+                await html5QrCode.start(
+                    { facingMode: "environment" },
+                    { fps: 20, qrbox: { width: 280, height: 140 } },
+                    function(decodedText){
+                        document.getElementById("awbInput").value = decodedText;
+                        beep.play();
+                        stopCamera();
+                        trackShipment();
+                    }
+                );
+            } catch(err) {
+                toast("Optical Input Interface Failed");
+            }
+        }
 
-            <button id="editBtn" class="editBtn">
-                ✏ Edit
-            </button>
+        async function stopCamera(){
+            try {
+                if(html5QrCode){
+                    await html5QrCode.stop();
+                    await html5QrCode.clear();
+                    html5QrCode = null;
+                }
+            } catch(err){}
+            document.getElementById("reader").style.display = "none";
+        }
 
-        </div>
-
-    </div>
-
-</div>
-
-<script>
-
-const API_URL="https://script.google.com/macros/s/AKfycbx7tM4MntjtYN2221aGZAQP68KapgXMLpN6ftZZbAvQduxAGAH4S4d0b33lqDU3Efjs/exec";
-
-let TYPE="Pickup";
-let CAMERA=false;
-let qrScanner=null;
-let saving=false;
-
-const $=id=>document.getElementById(id);
-
-const fields=[
-"awb",
-"orderId",
-"courier",
-"status"
-];
-
-function toast(msg){
-const t=$("toast");
-t.innerHTML=msg;
-t.style.display="block";
-setTimeout(()=>t.style.display="none",2500);
-}
-
-function loader(v){
-$("loader").style.display=v?"flex":"none";
-}
-
-function setStatus(t){
-$("statusBar").innerHTML=t;
-}
-
-function clearForm(){
-
-fields.forEach(f=>$(f).value="");
-
-}
-
-function formData(){
-
-return{
-
-type:TYPE,
-awb:$("awb").value.trim(),
-orderId:$("orderId").value.trim(),
-courier:$("courier").value.trim(),
-status:$("status").value.trim(),
-customerName:$("customerName").value.trim(),
-city:$("city").value.trim(),
-state:$("state").value.trim(),
-destination:$("destination").value.trim(),
-pickupDate:$("pickupDate").value.trim(),
-deliveredDate:$("deliveredDate").value.trim(),
-expectedDate:$("expectedDate").value.trim(),
-isRTO:false
-
-};
-
-}
-
-
-
-
-async function api(action, data = {}) {
-
-    loader(true);
-
-    try {
-
-        const res = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify({
-                action,
-                ...data
-            })
+        /* ===================================
+        HARDWARE SCANNER EMULATOR
+        =================================== */
+        document.getElementById("awbInput").addEventListener("keydown", function(e){
+            if(e.key === "Enter"){ trackShipment(); }
         });
 
-        const json = await res.json();
+        let scannerBuffer = "";
+        document.addEventListener("keydown", function(e){
+            if(document.activeElement.id !== "awbInput"){ return; }
+            if(e.key === "Enter"){
+                e.preventDefault();
+                const awb = scannerBuffer.trim();
+                if(awb.length > 5){
+                    document.getElementById("awbInput").value = awb;
+                    trackShipment();
+                }
+                scannerBuffer = "";
+                return;
+            }
+            if(e.key.length === 1){ scannerBuffer += e.key; }
+        });
 
-        loader(false);
+        /* ===================================
+        REMOTE ENDPOINT NETWORK CONTROLLER
+        =================================== */
+        async function trackShipment(){
+            const awb = document.getElementById("awbInput").value.trim();
+            if(!awb){ toast("Payload Identity Context Empty"); return; }
+            showLoading();
 
-        return json;
+            try {
+                const response = await fetch(API_URL + "?action=trackShipment&awb=" + encodeURIComponent(awb));
+                const result = await response.json();
+                if(result.success){
+                    currentTracking = result;
+                    renderTracking(result);
+                    return;
+                }
+                openManualOrder();
+            } catch(err){
+                openManualOrder();
+            }
+        }
 
-    } catch (e) {
+        function openManualOrder(){
+            currentTracking = null;
+            const card = document.getElementById("resultCard");
+            card.style.display = "block";
+            card.innerHTML = `<h3 style="color:var(--accent-red); font-size:16px;">⚠️ Index Record Blank</h3>
+                              <p style="color:var(--text-mute); font-size:12px; margin-top:6px;">Target tracking trace could not be resolved on nodes. Proceed with manual index entries below.</p>`;
+            document.getElementById("orderInput").style.display = "block";
+            document.getElementById("orderInput").focus();
+        }
 
-        loader(false);
+        function renderTracking(data){
+            const card = document.getElementById("resultCard");
+            card.style.display = "block";
+            card.innerHTML = `
+                <div style="display:flex; justify-content:between; align-items:center; margin-bottom:12px;">
+                    <span class="status-pill ${currentType==='Pickup'?'pill-pk':'pill-rt'}">${currentType} Verified</span>
+                </div>
+                <h2 style="font-size:18px; margin-bottom:14px; font-family:var(--font-mono); color:var(--pickup-neon);">${data.awb || ""}</h2>
+                <div style="display:flex; flex-direction:column; gap:6px; font-size:13px; color:var(--text-mute)">
+                    <div><b style="color:#fff">Order Ref:</b> ${data.orderId || "N/A"}</div>
+                    <div><b style="color:#fff">Status Trace:</b> ${data.status || "N/A"}</div>
+                    <div><b style="color:#fff">Carrier Matrix:</b> ${data.courier || "N/A"}</div>
+                    <div><b style="color:#fff">Consignee ID:</b> ${data.customerName || "N/A"}</div>
+                    <div><b style="color:#fff">Terminal Hub:</b> ${data.city || "N/A"}</div>
+                </div>
+            `;
+            document.getElementById("orderInput").value = data.orderId || "";
+        }
 
-        toast(e.message || String(e));
+        function showLoading(){
+            const card = document.getElementById("resultCard");
+            card.style.display = "block";
+            card.innerHTML = `<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-mute)"><div class="loader-ring"></div> Stream handshake sequencing...</div>`;
+        }
 
-        return {
-            success: false,
-            message: e.message || String(e)
+        function stopWork(){
+            stopCamera();
+            currentType = "";
+            clearForm();
+            document.getElementById("scanPanel").style.display = "none";
+            document.getElementById("pickupBtn").className = "hub-btn";
+            document.getElementById("returnBtn").className = "hub-btn";
+        }
+
+        function toast(msg){
+            const t = document.createElement("div");
+            t.className = "toast";
+            t.innerHTML = `📡 <span>${msg}</span>`;
+            document.body.appendChild(t);
+            setTimeout(()=>t.remove(), 2500);
+        }
+
+        /* ===================================
+        CORE DATA COMMITS SUBMISSIONS
+        =================================== */
+        async function saveEntry(){
+            if(!currentType){ toast("Null Workspace Selection Matrix"); return; }
+            const awb = document.getElementById("awbInput").value.trim();
+            if(!awb){ toast("Identity Frame Bound Empty"); return; }
+
+            const payload = {
+                type: currentType,
+                awb: awb,
+                orderId: document.getElementById("orderInput").value.trim(),
+                courier: currentTracking?.courier || "",
+                status: currentTracking?.status || "",
+                customerName: currentTracking?.customerName || "",
+                city: currentTracking?.city || "",
+                state: currentTracking?.state || "",
+                destination: currentTracking?.destination || "",
+                pickupDate: currentTracking?.pickupDate || "",
+                deliveredDate: currentTracking?.deliveredDate || "",
+                expectedDate: currentTracking?.expectedDate || currentTracking?.estimatedDate || "",
+                isRTO: currentTracking?.isRTO || false
+            };
+
+            try {
+                showLoader();
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: "saveEntry", payload: payload })
+                });
+                const text = await response.text();
+                let result = JSON.parse(text);
+
+                hideLoader();
+                if(result.duplicate){
+                    toast("Identity Token Collided (Duplicate Detected)");
+                    return;
+                }
+                if(!result.success){ toast("Database Commit Rejected"); return; }
+
+                try { beep.currentTime = 0; beep.play(); } catch(e){}
+                toast("Data Manifest Committed!");
+                clearForm();
+                document.getElementById("awbInput").focus();
+                loadDashboard();
+            } catch(err){
+                hideLoader();
+                toast("Server Communication Error");
+            }
+        }
+
+        /* ===================================
+        ANALYTICS & SYNC LOG FETCH
+        =================================== */
+        async function loadDashboard(){
+            try {
+                const response = await fetch(API_URL + "?action=getDashboardCounts");
+                const data = await response.json();
+                
+                document.getElementById("dashboardArea").innerHTML = `
+                    <div class="mini-metric-card pk-text"><p>Today Pickup</p><h3>${data.todayPickup||0}</h3></div>
+                    <div class="mini-metric-card rt-text"><p>Today Return</p><h3>${data.todayReturn||0}</h3></div>
+                    <div class="mini-metric-card"><p>Yester Pk</p><h3>${data.yesterdayPickup||0}</h3></div>
+                    <div class="mini-metric-card"><p>Yester Rt</p><h3>${data.yesterdayReturn||0}</h3></div>
+                    <div class="mini-metric-card pk-text"><p>${data.monthName||'Mo'} Pk</p><h3>${data.monthPickup||0}</h3></div>
+                    <div class="mini-metric-card rt-text"><p>${data.monthName||'Mo'} Rt</p><h3>${data.monthReturn||0}</h3></div>
+                    <div id="recentArea" style="grid-column: span 2; display:flex; flex-direction:column; background:#090d16; border-radius:8px; border:1px solid var(--border-glow); padding:4px;"></div>
+                `;
+                loadRecentRecords();
+            } catch(err){}
+        }
+
+        async function loadRecentRecords(){
+            try {
+                const response = await fetch(API_URL + "?action=getRecentRecords");
+                const data = await response.json();
+                const box = document.getElementById("recentArea");
+                if(!box || !data.rows) return;
+                
+                let html = "";
+                data.rows.slice(0,3).forEach(r => {
+                    html += `
+                        <div class="stream-log">
+                            <div><span style="font-family:var(--font-mono); color:#fff;">${r.awb}</span></div>
+                            <span class="status-pill ${r.type==='Pickup'?'pill-pk':'pill-rt'}" style="font-size:9px; padding:2px 6px;">${r.type}</span>
+                        </div>
+                    `;
+                });
+                box.innerHTML = html;
+            } catch(err){}
+        }
+
+        /* ===================================
+        SEARCH & SYNC EXTENSIONS
+        =================================== */
+        async function searchOrder(){
+            const keyword = document.getElementById("searchInput").value.trim();
+            if(!keyword){ toast("Input Scope Target Missing"); return; }
+            const resultBox = document.getElementById("searchResult");
+            resultBox.innerHTML = `<div style="font-size:11px; color:var(--text-mute);"><div class="loader-ring" style="display:inline-block; vertical-align:middle; width:12px; height:12px;"></div> Crawling...</div>`;
+
+            try {
+                const response = await fetch(API_URL + "?action=searchOrder&keyword=" + encodeURIComponent(keyword));
+                const data = await response.json();
+                if(!data.success){
+                    resultBox.innerHTML = `<div style="font-size:12px; color:var(--accent-red); padding:4px;">No Records Discovered</div>`;
+                    return;
+                }
+                resultBox.innerHTML = `
+                    <div style="font-size:11px; background:#090d16; padding:10px; border-radius:6px; border:1px solid var(--border-glow); line-height:1.6">
+                        <b>AWB:</b> ${data.awb}<br><b>Order:</b> ${data.orderId}<br><b>Status:</b> ${data.status}<br>
+                        <button class="tech-btn btn-blue" style="height:26px; font-size:10px; padding:0 8px; margin-top:6px;" onclick="refreshCurrentStatus('${data.awb}')">Sync State</button>
+                    </div>`;
+            } catch(err){ resultBox.innerHTML = `<div>Lookup Error</div>`; }
+        }
+
+        let latestTrackingData = null;
+        async function refreshCurrentStatus(awb){
+            toast("Syncing Delta States...");
+            try {
+                const response = await fetch(API_URL + "?action=trackShipment&awb=" + encodeURIComponent(awb));
+                const data = await response.json();
+                if(!data.success) return;
+                latestTrackingData = data;
+                showLoader();
+                const res = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(data.awb));
+                const finalRes = await res.json();
+                hideLoader();
+                if(finalRes.success){ toast("Cache Overwritten Successfully"); searchOrder(); }
+            } catch(e){ hideLoader(); }
+        }
+
+        /* ===================================
+        AUTOMATION BULK CONSOLE RUNTIME
+        =================================== */
+        async function loadBulkCounts(){
+            const date = document.getElementById("bulkDate").value;
+            if(!date){ toast("Timeline Bounds Untargeted"); return; }
+            const formatted = formatInputDate(date);
+            try {
+                const response = await fetch(API_URL + "?action=getBulkCounts&date=" + encodeURIComponent(formatted));
+                const data = await response.json();
+                document.getElementById("bulkCounts").innerHTML = `Pickups: ${data.pickup || 0} | Returns: ${data.return || 0}`;
+            } catch(e){}
+        }
+
+        async function startBulkUpdate(type){
+            if(bulkRunning){ toast("Parallel Instancing Blocked"); return; }
+            const date = document.getElementById("bulkDate").value;
+            if(!date){ toast("Target Scope Timeline Null"); return; }
+            
+            bulkRunning = true;
+            document.getElementById("pickupUpdateBtn").disabled = true;
+            document.getElementById("returnUpdateBtn").disabled = true;
+
+            try {
+                const formatted = formatInputDate(date);
+                const response = await fetch(API_URL + "?action=getBulkRows&date=" + encodeURIComponent(formatted) + "&type=" + encodeURIComponent(type));
+                const result = await response.json();
+                const rows = result.rows || [];
+                let updated = 0;
+
+                for(let i=0; i<rows.length; i++){
+                    document.getElementById("bulkProgress").innerHTML = `Syncing Block: ${i+1}/${rows.length}...`;
+                    try {
+                        const res = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(rows[i].awb));
+                        const d = await res.json();
+                        if(d.success) updated++;
+                    } catch(e){}
+                }
+                document.getElementById("bulkProgress").innerHTML = `Batch Complete. Successfully Merged: ${updated}`;
+            } catch(err){
+            } finally {
+                bulkRunning = false;
+                document.getElementById("pickupUpdateBtn").disabled = false;
+                document.getElementById("returnUpdateBtn").disabled = false;
+            }
+        }
+
+        function formatInputDate(dateStr){
+            const d = new Date(dateStr);
+            return `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
+        }
+
+        window.onload = function(){
+            loadDashboard();
+            setInterval(loadDashboard, 30000);
+            setTimeout(() => { document.getElementById("awbInput").focus(); }, 200);
         };
 
-    }
-
-}
-
-function fillForm(d){
-$("awb").value=d.awb||"";
-$("orderId").value=d.orderId||"";
-$("courier").value=d.courier||"";
-$("status").value=d.status||"";
-$("customerName").value=d.customerName||"";
-$("city").value=d.city||"";
-$("state").value=d.state||"";
-$("destination").value=d.destination||"";
-$("pickupDate").value=d.pickupDate||"";
-$("deliveredDate").value=d.deliveredDate||"";
-$("expectedDate").value=d.expectedDate||"";
-}
-
-async function afterScan(code){
-
-if(!code)return;
-
-if(CAMERA){
-await stopCamera();
-}
-
-$("awb").value=code;
-
-setStatus("Checking Duplicate...");
-
-const dup=await api("duplicate",{awb:code,type:TYPE});
-
-if(dup.success&&dup.duplicate){
-toast(TYPE+" already exists");
-setStatus(TYPE+" already exists");
-return;
-}
-
-setStatus("Tracking...");
-
-const track=await api("track",{awb:code});
-
-if(track.success){
-fillForm(track);
-toast("Tracking Loaded");
-setStatus("Ready To Save");
-}else{
-toast(track.message||"Tracking Not Found");
-setStatus("Manual Entry");
-}
-
-}
-
-async function startCamera(){
-
-if(CAMERA)return;
-
-CAMERA=true;
-
-$("reader").classList.remove("cameraOff");
-
-$("reader").innerHTML="";
-
-qrScanner=new Html5Qrcode("reader");
-
-const reader = document.getElementById("reader");
-
-const size = Math.min(
-    reader.clientWidth,
-    reader.clientHeight
-);
-
-const config = {
-    fps: 10,
-    qrbox: {
-        width: size,
-        height: size
-    },
-    rememberLastUsedCamera: true
-};
-
-try{
-
-const cameras=await Html5Qrcode.getCameras();
-
-if(!cameras.length){
-toast("Camera Not Found");
-CAMERA=false;
-return;
-}
-
-await qrScanner.start(
-{facingMode:"environment"},
-config,
-decoded=>{
-afterScan(decoded);
-},
-err=>{}
-);
-
-setStatus("Camera ON");
-
-}catch(e){
-
-CAMERA=false;
-
-toast(e.message);
-
-$("reader").innerHTML="Camera OFF";
-
-$("reader").classList.add("cameraOff");
-
-}
-
-}
-
-async function stopCamera(){
-
-if(!CAMERA)return;
-
-try{
-
-await qrScanner.stop();
-
-await qrScanner.clear();
-
-}catch(e){}
-
-CAMERA=false;
-
-$("reader").classList.add("cameraOff");
-
-$("reader").innerHTML="Camera OFF";
-
-setStatus("Camera OFF");
-
-}
-
-async function saveRecord(){
-
-if(saving)return;
-
-saving=true;
-
-const data=formData();
-
-if(data.awb==""){
-toast("Enter AWB");
-saving=false;
-return;
-}
-
-const res=await api("save",data);
-
-saving=false;
-
-if(res.success){
-
-toast("Saved Successfully");
-
-setStatus("Saved Successfully");
-
-}else{
-
-toast(res.message||"Save Failed");
-
-setStatus("Save Failed");
-
-}
-
-}
-
-function nextRecord(){
-
-clearForm();
-
-$("awb").focus();
-
-setStatus("Next Record");
-
-}
-
-async function editRecord(){
-
-const data=formData();
-
-if(data.awb==""){
-toast("Enter AWB");
-return;
-}
-
-const res=await api("update",data);
-
-if(res.success){
-
-toast("Updated");
-
-setStatus("Updated Successfully");
-
-}else{
-
-toast(res.message);
-
-}
-
-}
-
-$("pickupBtn").onclick=()=>{
-
-TYPE="Pickup";
-
-$("pickupBtn").className="success";
-
-$("returnBtn").className="warning";
-
-setStatus("Pickup Mode");
-
-};
-
-$("returnBtn").onclick=()=>{
-
-TYPE="Return";
-
-$("pickupBtn").className="primary";
-
-$("returnBtn").className="success";
-
-setStatus("Return Mode");
-
-};
-
-$("cameraBtn").onclick=()=>{
-
-CAMERA?stopCamera():startCamera();
-
-};
-
-$("manualBtn").onclick=async()=>{
-
-await stopCamera();
-
-$("awb").focus();
-
-};
-
-$("saveBtn").onclick=saveRecord;
-
-$("nextBtn").onclick=nextRecord;
-
-$("editBtn").onclick=editRecord;
-
-$("awb").addEventListener("keydown",e=>{
-
-if(e.key==="Enter"){
-
-afterScan($("awb").value.trim());
-
-}
-
-});
-
-document.addEventListener("keydown",e=>{
-
-if(e.key==="F2")saveRecord();
-
-if(e.key==="F4")nextRecord();
-
-if(e.key==="Escape")stopCamera();
-
-});
-
-window.onload=()=>{
-
-setStatus("Ready");
-
-$("awb").focus();
-
-};
-pickupBtn.classList.add("active");
-returnBtn.classList.remove("active");
-
-cameraBtn.classList.add("active");
-manualBtn.classList.remove("active");
-/******************** END OF index.html PART 2 ********************/
-</script>
+        function showLoader(){ document.getElementById("loadingOverlay").style.display = "flex"; }
+        function hideLoader(){ document.getElementById("loadingOverlay").style.display = "none"; }
+    </script>
 </body>
 </html>
