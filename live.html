@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harsidhi Ventures - Live Logistic Search Desk</title>
+    <title>Harsidhi Ventures - Live Logistic Date Search Desk</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-live: #f8fafc; /* Professional Light Mode Background */
+            --bg-live: #f8fafc; /* Clean Corporate Light Mode Background */
             --surface: #ffffff;
             --surface-card: #ffffff;
             --border: #e2e8f0;
@@ -51,7 +51,7 @@
         .mode-btn.active-pickup { background: var(--accent-blue); color: #fff; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
         .mode-btn.active-return { background: var(--accent-teal); color: #fff; box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2); }
 
-        /* STEP 2: Input Operations Cluster (Bulk Paste Block) */
+        /* STEP 2: Input Operations Cluster (Bulk Paste Block for Dates) */
         .input-cluster { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
         .bulk-textarea { width: 100%; height: 80px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: var(--text-main); padding: 12px; font-size: 13px; font-family: var(--font-mono); outline: none; resize: none; transition: all 0.2s; }
         .bulk-textarea:focus { border-color: var(--accent-blue); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
@@ -98,7 +98,7 @@
 <body>
 
     <div class="header-bar">
-        <div class="title">Harsidhi Ventures <span>// Dynamic Bulk Search Desk</span></div>
+        <div class="title">Harsidhi Ventures <span>// Live Bulk Date Filtration Desk</span></div>
         <div class="clock" id="liveClock">DATABASE SYNC STANDBY</div>
     </div>
 
@@ -119,11 +119,11 @@
         </div>
 
         <div class="input-cluster">
-            <div style="font-size:12px; font-weight:700; color:var(--text-mute); text-transform:uppercase; letter-spacing:0.3px;">Copy Paste Column A (AWB Numbers Lines Grid) Below:</div>
-            <textarea id="bulkDataInput" class="bulk-textarea" placeholder="Paste AWB Rows here direct from Excel/Google Sheet Column A...&#10;Example:&#10;1234567890&#10;9876543210"></textarea>
+            <div style="font-size:12px; font-weight:700; color:var(--text-mute); text-transform:uppercase; letter-spacing:0.3px;">Copy Paste Column A (Dates/Tarikh List Rows) Below:</div>
+            <textarea id="bulkDataInput" class="bulk-textarea" placeholder="Paste Date Rows here direct from Excel/Google Sheet Column A...&#10;Example:&#10;24/01/2026&#10;25/01/2026"></textarea>
             
             <div class="control-row">
-                <button class="tech-btn btn-slate" onclick="parseAndFetchLocalLogs()">🔍 Search & Parse Logs</button>
+                <button class="tech-btn btn-slate" onclick="parseAndFetchDateLogs()">🔍 Search & Parse Date Logs</button>
                 <button class="tech-btn btn-submit-sync" onclick="syncAllVisibleSearchResults()">⚡ Update All Search Results To Sheet</button>
             </div>
         </div>
@@ -133,19 +133,19 @@
                 <table class="master-table">
                     <thead>
                         <tr>
-                            <th>Waybill Identifier (AWB Code)</th>
+                            <th>Sheet Date (Column A)</th>
+                            <th>Waybill Identifier (AWB)</th>
                             <th>Order Pointer</th>
                             <th>Current Selected Mode</th>
-                            <th>Current Sheet Tracking Status</th>
+                            <th>Tracking Status</th>
                             <th>Courier Engine</th>
-                            <th>Consignee Target</th>
                             <th style="text-align: center;">Operational Pipeline</th>
                         </tr>
                     </thead>
                     <tbody id="masterGridBody">
                         <tr>
                             <td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0; font-weight: 500;">
-                                Grid Interface Empty. Select operational mode, paste row tokens, and run search queries.
+                                Grid Interface Empty. Select operational mode, paste column A date rows, and run search queries.
                             </td>
                         </tr>
                     </tbody>
@@ -207,9 +207,9 @@
         }
 
         /* ===================================
-        PASTE MATCH LOGIC: SEARCH & MATCH PARSE DATA ROWS
+        PASTE MATCH LOGIC: DATE BASED SEARCH FILTER
         =================================== */
-        function parseAndFetchLocalLogs() {
+        function parseAndFetchDateLogs() {
             // Rule 1 Verification Check: Mode validation check bound
             if(!activeSelectedMode) {
                 alert("CRITICAL PAUSE: Please select either 'Process Selected As Pickups' or 'Process Selected As Returns' mode button first!");
@@ -218,63 +218,51 @@
 
             const textInput = document.getElementById("bulkDataInput").value.trim();
             if(!textInput) {
-                alert("Input text block empty. Please copy paste row strings from Column A.");
+                alert("Input text block empty. Please copy paste row strings from Column A (Dates).");
                 return;
             }
 
-            // Split and format text input by lines safely (ditto same Excel strings format mapping)
-            const inputAWBsArray = textInput.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+            // Split and format text input dates by lines safely
+            const inputDatesArray = textInput.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
             
-            if(inputAWBsArray.length === 0) {
-                alert("Zero valid tokens detected. Parse aborted.");
+            if(inputDatesArray.length === 0) {
+                alert("Zero valid date rows detected. Parse aborted.");
                 return;
             }
 
-            showBlocker("PARSING GRID PATTERNS & QUERIES...", "Searching local dataset indices...");
+            showBlocker("SCANNING CENTRAL SHARDS FOR DATES...", "Matching data against Column A indexes...");
 
-            // Cross reference lookup index vectors to generate results
             matchedGridResults = [];
-            inputAWBsArray.forEach(searchAWB => {
-                // Check if we have records existing for current waybill token in global cache sheet data
-                const matchedSheetRow = rawMasterRecordsCache.find(r => String(r.awb).trim() === searchAWB);
+            
+            // Loop through all data rows currently fetched from the sheet to match dates
+            rawMasterRecordsCache.forEach(sheetRow => {
+                // Agar row ki date humari pasted dates array me majood hai aur uska type matched hai
+                const cleanSheetDate = String(sheetRow.date).trim();
                 
-                if(matchedSheetRow) {
-                    // Item found: Fetch all existing details structure parameters mapping
+                if(inputDatesArray.includes(cleanSheetDate) && sheetRow.type === activeSelectedMode) {
                     matchedGridResults.push({
-                        awb: searchAWB,
-                        orderId: matchedSheetRow.orderId || "N/A",
-                        type: activeSelectedMode, // Apply current strictly selected mode override
-                        status: matchedSheetRow.status || "Pending Outward",
-                        courier: matchedSheetRow.courier || "Delhivery Network",
-                        customerName: matchedSheetRow.customerName || "N/A",
-                        city: matchedSheetRow.city || ""
-                    });
-                } else {
-                    // Item not found: Push raw fallback framework grid mapping placeholder
-                    matchedGridResults.push({
-                        awb: searchAWB,
-                        orderId: "Not Indexed Yet",
-                        type: activeSelectedMode,
-                        status: "New Entry Request",
-                        courier: "Logistics Hub Auto",
-                        customerName: "Unknown Trace",
-                        city: ""
+                        date: cleanSheetDate,
+                        awb: sheetRow.awb || "N/A",
+                        orderId: sheetRow.orderId || "N/A",
+                        type: activeSelectedMode, 
+                        status: sheetRow.status || "Pending Outward",
+                        courier: sheetRow.courier || "Delhivery Network"
                     });
                 }
             });
 
             renderSearchResultsGrid();
             hideBlocker();
-            toast(`Parsed ${matchedGridResults.length} data rows from input text array successfully.`);
+            toast(`Found ${matchedGridResults.length} rows matching the selected dates and mode.`);
         }
 
         /* DATA ROW MATRIX DOM BINDINGS GENERATOR */
         function renderSearchResultsGrid() {
             const tbody = document.getElementById("masterGridBody");
-            document.getElementById("tableRecordStats").innerText = `Loaded Buffer Dataset Context: ${matchedGridResults.length} target rows registered.`;
+            document.getElementById("tableRecordStats").innerText = `Loaded Buffer Dataset Context: ${matchedGridResults.length} matching rows found.`;
 
             if(matchedGridResults.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 30px;">Buffer registers empty. No search matches generated.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0;">No matching records found for the pasted dates under "${activeSelectedMode}" mode.</td></tr>`;
                 return;
             }
 
@@ -286,12 +274,12 @@
 
                 htmlBuffer += `
                     <tr>
+                        <td style="font-weight:600; color:var(--text-mute);">${row.date}</td>
                         <td style="font-family:var(--font-mono); font-weight:700; color:var(--text-main);">${row.awb}</td>
                         <td style="font-family:var(--font-mono); font-size:12px; color:var(--text-mute);">${row.orderId}</td>
                         <td><span class="pill ${row.type==='Pickup'?'pill-pk':'pill-rt'}">${row.type}</span></td>
                         <td><span class="status-badge ${badgeClass}">${row.status}</span></td>
                         <td><b style="color:var(--accent-blue)">${row.courier}</b></td>
-                        <td style="font-size:12px;">${row.customerName} <span style="color:var(--text-mute); font-size:11px;">(${row.city})</span></td>
                         <td style="text-align: center;">
                             <button class="row-action-btn" onclick="syncIndividualTargetRow('${row.awb}', ${index})">🛰️ Sync Row</button>
                         </td>
@@ -305,14 +293,14 @@
         INDIVIDUAL ROW REWRITE CONTROLLER
         =================================== */
         async function syncIndividualTargetRow(awb, arrayIndex) {
-            if(!awb) return;
+            if(!awb || awb === "N/A") return;
             showBlocker(`CONNECTING COURIER SATELLITE LINKS FOR TARGET AWB: ${awb}`);
             try {
                 const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(awb));
                 const result = await response.json();
                 
                 if(result.success) {
-                    toast(`Data Block Overwritten Successfully for AWB: ${awb}`);
+                    toast(`Data Block Patched Successfully for AWB: ${awb}`);
                     // Pull fresh context mapping frame update values
                     const listRes = await fetch(API_URL + "?action=getRecentRecords");
                     const listData = await listRes.json();
@@ -356,6 +344,8 @@
 
             for(let i = 0; i < matchedGridResults.length; i++) {
                 const currentTargetAWB = matchedGridResults[i].awb;
+                if(currentTargetAWB === "N/A") continue;
+                
                 document.getElementById("bulkStatusSubtext").innerText = `Processing Stream Array: Row ${i + 1} of ${matchedGridResults.length} // Targeting Waybill Code: ${currentTargetAWB}`;
                 
                 try {
@@ -379,7 +369,7 @@
             // Re-fetch clean system data bank frames status dump views
             showBlocker("RE-INDEXING DATABASE MATRIX FOR CURRENT SHIFT DATA...", "Refreshing records...");
             await fetchInitialCountsOnly();
-            parseAndFetchLocalLogs();
+            parseAndFetchDateLogs();
         }
 
         /* ===================================
