@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harsidhi Ventures - Live Logistic Intelligence Desk</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-live: #090d16; 
+            --surface: #131926;
+            --surface-card: #1e2538;
+            --border: #263147;
+            --text-main: #f8fafc;
+            --text-mute: #94a3b8;
+            --neon-blue: #38bdf8;
+            --neon-teal: #2dd4bf;
+            --neon-green: #34d399;
+            --neon-orange: #fb923c;
+            --neon-red: #fb7185;
+            --radius: 12px;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        body { background: var(--bg-live); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* Minimal Header */
+        .header-bar { height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(19, 25, 38, 0.7); backdrop-filter: blur(10px); }
+        .title { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--neon-blue); }
+        .clock { font-family: var(--font-mono); font-size: 12px; color: var(--text-mute); }
+
+        /* Main Scrollable Workspace */
+        .workspace { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+
+        /* 1. Daily Metrics Linear Row */
+        .metrics-bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        .metric-tile { background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); position: relative; }
+        .metric-tile p { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-mute); font-weight: 600; }
+        .metric-tile h3 { font-size: 22px; font-weight: 700; font-family: var(--font-mono); margin-top: 4px; }
+        .tile-pk h3 { color: var(--neon-blue); }
+        .tile-rt h3 { color: var(--neon-teal); }
+
+        /* 2. Control Pipeline (Master Search + Filters Group) */
+        .control-pipeline { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: center; }
+        .ctrl-input { height: 42px; background: #090d16; border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 0 14px; font-size: 13px; outline: none; width: 100%; transition: all 0.2s; }
+        .ctrl-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+        .ctrl-input-mono { font-family: var(--font-mono); }
+        
+        /* 3. Data Table Cluster Layout */
+        .data-cluster { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 400px; }
+        .table-scroll { flex: 1; overflow-auto: auto; }
+        .master-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        .master-table th { background: #182030; color: var(--text-main); padding: 12px 16px; font-weight: 600; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--border); }
+        .master-table td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-mute); vertical-align: middle; }
+        .master-table tr:hover td { background: rgba(255,255,255,0.01); color: #fff; }
+
+        /* Badges & Status Pills */
+        .pill { display: inline-flex; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; font-family: var(--font-mono); text-transform: uppercase; }
+        .pill-pk { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); }
+        .pill-rt { background: rgba(45, 212, 191, 0.1); color: var(--neon-teal); }
+        
+        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .status-del { background: rgba(52, 211, 153, 0.1); color: var(--neon-green); }
+        .status-pen { background: rgba(251, 146, 60, 0.1); color: var(--neon-orange); }
+
+        /* Modern Small Buttons */
+        .action-btn { height: 30px; padding: 0 12px; border-radius: 6px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; background: #263147; color: #fff; }
+        .action-btn:hover { background: var(--neon-blue); color: #090d16; }
+        .btn-refresh-all { background: var(--neon-blue); color: #090d16; height: 42px; padding: 0 16px; font-weight: 700; border-radius: 8px; }
+        .btn-refresh-all:hover { opacity: 0.9; }
+
+        /* 4. Smart Pagination Footer */
+        .pagination-footer { height: 50px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); background: #151c2a; font-size: 12px; color: var(--text-mute); }
+        .page-controls { display: flex; gap: 8px; }
+        .page-btn { height: 28px; padding: 0 10px; background: #263147; border: none; border-radius: 4px; color: #fff; font-size: 11px; cursor: pointer; }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Global Blocker Overlay */
+        #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(9, 13, 22, 0.8); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; font-size: 14px; font-family: var(--font-mono); color: var(--neon-blue); gap: 10px; }
+        .spinner { width: 18px; height: 18px; border: 2px solid rgba(56, 189, 248, 0.2); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface-card); border: 1px solid var(--border); color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 12px; z-index: 9999; border-left: 4px solid var(--neon-blue); }
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <div class="title">Harsidhi Logistics Cluster <span>// Live Sync Engine</span></div>
+        <div class="clock" id="liveClock">SYSTEM DECK ONLINE</div>
+    </div>
+
+    <div class="workspace">
+
+        <div class="metrics-bar" id="metricsRow">
+            <div class="metric-tile tile-pk"><p>Today Pickup</p><h3 id="m-tp">0</h3></div>
+            <div class="metric-tile tile-rt"><p>Today Return</p><h3 id="m-tr">0</h3></div>
+            <div class="metric-tile"><p>Yester Pickup</p><h3 id="m-yp">0</h3></div>
+            <div class="metric-tile"><p>Yester Return</p><h3 id="m-yr">0</h3></div>
+            <div class="metric-tile tile-pk"><p>Month Pickup</p><h3 id="m-mp">0</h3></div>
+            <div class="metric-tile tile-rt"><p>Month Return</p><h3 id="m-mr">0</h3></div>
+        </div>
+
+        <div class="control-pipeline">
+            <input id="masterSearch" class="ctrl-input ctrl-input-mono" placeholder="⚡ Instant Filter by AWB Code / Order Reference Number..." oninput="applyFilters()">
+            
+            <select id="filterType" class="ctrl-input" onchange="applyFilters()">
+                <option value="">-- All Registry Modes --</option>
+                <option value="Pickup">Pickup Orders Only</option>
+                <option value="Return">Return Orders Only</option>
+            </select>
+
+            <select id="filterCourier" class="ctrl-input" onchange="applyFilters()">
+                <option value="">-- All Logistic Nodes --</option>
+                <option value="Delhivery">Delhivery Network</option>
+                <option value="Boxberry">Boxd Logistic / Boxberry</option>
+                <option value="Xpressbees">Xpressbees Hub</option>
+            </select>
+
+            <select id="filterStatus" class="ctrl-input" onchange="applyFilters()">
+                <option value="">-- All Status States --</option>
+                <option value="Delivered">Delivered Logs</option>
+                <option value="In Transit">In Transit Logs</option>
+                <option value="Pending">Pending / Outward</option>
+                <option value="RTO">RTO Returned Flag</option>
+            </select>
+
+            <button class="action-btn btn-refresh-all" onclick="loadMasterData()">🔄 Pull Sheet Core Array</button>
+        </div>
+
+        <div class="data-cluster">
+            <div class="table-scroll">
+                <table class="master-table">
+                    <thead>
+                        <tr>
+                            <th>Waybill Identifier (AWB)</th>
+                            <th>Order Pointer</th>
+                            <th>Log Mode</th>
+                            <th>Current Tracking Status</th>
+                            <th>Courier Engine</th>
+                            <th>Consignee Target</th>
+                            <th style="text-align: center;">Operational Pipeline</th>
+                        </tr>
+                    </thead>
+                    <tbody id="masterGridBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0;">
+                                Dataset Cluster Idle. Click "Pull Sheet Core Array" to parse remote master matrix rows.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-footer">
+                <div id="paginationStats">Displaying Vector Segment: Row 0-0 of 0</div>
+                <div class="page-controls">
+                    <button id="btnPrevPage" class="page-btn" onclick="changePage(-1)">◀ Prev Segment</button>
+                    <button id="btnNextPage" class="page-btn" onclick="changePage(1)">Next Segment ▶</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="loadingOverlay"><div class="spinner"></div> PIPELINE HANDSHAKE ENGAGED WITH GOOGLE SHEET NODES...</div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
+
+        // Memory Array Caching Layers for Thousands of Rows
+        let rawSheetDatabase = [];
+        let filteredDatabase = [];
+        
+        // Pagination Chunking Limits
+        let currentPage = 1;
+        const rowsPerSegment = 50; // Ek baar me browser par sirf 50 rows render hongi jisse lag nahi hoga
+
+        /* ===================================
+        CORE RECOGNITION DATABASE LOAD
+        =================================== */
+        async function loadMasterData() {
+            showBlocker();
+            try {
+                // Live Dashboard Dynamic Counts Sync
+                const countRes = await fetch(API_URL + "?action=getDashboardCounts");
+                const counts = await countRes.json();
+                document.getElementById("m-tp").innerText = counts.todayPickup || 0;
+                document.getElementById("m-tr").innerText = counts.todayReturn || 0;
+                document.getElementById("m-yp").innerText = counts.yesterdayPickup || 0;
+                document.getElementById("m-yr").innerText = counts.yesterdayReturn || 0;
+                document.getElementById("m-mp").innerText = counts.monthPickup || 0;
+                document.getElementById("m-mr").innerText = counts.monthReturn || 0;
+
+                // Live Core Grid Thousands Matrix Data Sync
+                const listRes = await fetch(API_URL + "?action=getRecentRecords");
+                const listData = await listRes.json();
+                
+                rawSheetDatabase = listData.rows || [];
+                filteredDatabase = [...rawSheetDatabase]; // Sync initial stream state
+                
+                currentPage = 1; // Reset to page segment alpha
+                renderGridSegment();
+                toast(`Parsed ${rawSheetDatabase.length} cluster nodes successfully.`);
+            } catch(e) {
+                toast("Data Pipeline Sync Dropout Fault.");
+            } finally {
+                hideBlocker();
+            }
+        }
+
+        /* ===================================
+        EFFICIENT MATRIX DATA RENDER ENGINE
+        =================================== */
+        function renderGridSegment() {
+            const tbody = document.getElementById("masterGridBody");
+            if (filteredDatabase.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 30px;">Null set condition match. Zero items to filter.</td></tr>`;
+                updatePaginationControls();
+                return;
+            }
+
+            // Calculations for Page Index Framing
+            const startIndex = (currentPage - 1) * rowsPerSegment;
+            const endIndex = Math.min(startIndex + rowsPerSegment, filteredDatabase.length);
+            const paginatedChunk = filteredDatabase.slice(startIndex, endIndex);
+
+            let htmlSegmentBuffer = "";
+            paginatedChunk.forEach(row => {
+                const statusClean = (row.status || 'Pending').toLowerCase();
+                let statusBadgeClass = "status-pen";
+                if(statusClean.includes('deliv') || statusClean.includes('done')) { statusBadgeClass = "status-del"; }
+
+                htmlSegmentBuffer += `
+                    <tr>
+                        <td style="font-family:var(--font-mono); font-weight:600; color:#fff;">${row.awb || 'N/A'}</td>
+                        <td style="font-family:var(--font-mono); font-size:12px;">${row.orderId || 'N/A'}</td>
+                        <td><span class="pill ${row.type==='Pickup'?'pill-pk':'pill-rt'}">${row.type || 'N/A'}</span></td>
+                        <td><span class="status-badge ${statusBadgeClass}">${row.status || 'Outward'}</span></td>
+                        <td><b style="color:var(--neon-blue)">${row.courier || 'Delhivery'}</b></td>
+                        <td style="font-size:12px;">${row.customerName || 'N/A'} <span style="color:var(--text-mute); font-size:11px;">(${row.city || ''})</span></td>
+                        <td style="text-align: center;">
+                            <button class="action-btn" onclick="syncIndividualRowAPI('${row.awb}')">🛰️ Sync & Update</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = htmlSegmentBuffer;
+            updatePaginationControls();
+        }
+
+        /* ===================================
+        INSTANT CLIENT-SIDE FILTER TRACING
+        =================================== */
+        function applyFilters() {
+            const searchVal = document.getElementById("masterSearch").value.trim().toLowerCase();
+            const typeVal = document.getElementById("filterType").value;
+            const courierVal = document.getElementById("filterCourier").value.toLowerCase();
+            const statusVal = document.getElementById("filterStatus").value.toLowerCase();
+
+            filteredDatabase = rawSheetDatabase.filter(item => {
+                const matchSearch = !searchVal || 
+                                    (item.awb && item.awb.toLowerCase().includes(searchVal)) || 
+                                    (item.orderId && item.orderId.toLowerCase().includes(searchVal)) ||
+                                    (item.customerName && item.customerName.toLowerCase().includes(searchVal));
+                
+                const matchType = !typeVal || item.type === typeVal;
+                
+                const matchCourier = !courierVal || (item.courier && item.courier.toLowerCase().includes(courierVal));
+                
+                let matchStatus = true;
+                if(statusVal) {
+                    const currStat = (item.status || '').toLowerCase();
+                    if(statusVal === 'rto') {
+                        matchStatus = currStat.includes('rto') || item.isRTO === true;
+                    } else {
+                        matchStatus = currStat.includes(statusVal);
+                    }
+                }
+
+                return matchSearch && matchType && matchCourier && matchStatus;
+            });
+
+            currentPage = 1; // Back to first page after filtration
+            renderGridSegment();
+        }
+
+        /* ===================================
+        PAGINATION HANDLER VECTOR ADJUSTMENTS
+        =================================== */
+        function updatePaginationControls() {
+            const totalItems = filteredDatabase.length;
+            const totalPages = Math.ceil(totalItems / rowsPerSegment) || 1;
+            const startRow = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerSegment + 1;
+            const endRow = Math.min(currentPage * rowsPerSegment, totalItems);
+
+            document.getElementById("paginationStats").innerText = `Displaying Vector Segment: Row ${startRow}-${endRow} of ${totalItems} (Page ${currentPage}/${totalPages})`;
+            document.getElementById("btnPrevPage").disabled = (currentPage === 1);
+            document.getElementById("btnNextPage").disabled = (currentPage === totalPages);
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            renderGridSegment();
+            document.querySelector(".table-scroll").scrollTop = 0; // Back to segment top scroll
+        }
+
+        /* ===================================
+        INDIVIDUAL LIVE API LOGISTIC SYNC OVERWRITE
+        =================================== */
+        async function syncIndividualRowAPI(awb) {
+            if(!awb) return;
+            toast(`Tracing current active endpoint for AWB: ${awb}`);
+            showBlocker();
+            try {
+                // Background me Delhivery/Boxd API tracking function update pipeline activate karega
+                const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(awb));
+                const result = await response.json();
+                
+                if(result.success) {
+                    toast(`Data Block Overwritten Successfully for AWB: ${awb}`);
+                    // Database stream lookup update internally karke dynamic state save karega
+                    loadMasterData(); 
+                } else {
+                    toast(result.message || "Write transaction sequence dropped.");
+                }
+            } catch(e) {
+                toast("Handshake Timeout Event on Route Nodes.");
+            } finally {
+                hideBlocker();
+            }
+        }
+
+        /* ===================================
+        UTILITIES
+        =================================== */
+        function toast(msg) {
+            const t = document.createElement("div");
+            t.className = "toast";
+            t.innerHTML = `📬 <span>${msg}</span>`;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+
+        function showBlocker() { document.getElementById("loadingOverlay").style.display = "flex"; }
+        function hideBlocker() { document.getElementById("loadingOverlay").style.display = "none"; }
+
+        // System Initialize hooks
+        window.onload = function() {
+            loadMasterData();
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById("liveClock").innerText = `CLUSTER TIME MATRIX // ${now.toLocaleTimeString()}`;
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
