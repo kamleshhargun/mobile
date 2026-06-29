@@ -172,14 +172,6 @@
         .pk-text h3 { color: var(--pickup-neon); }
         .rt-text h3 { color: var(--return-neon); }
 
-        /* Modern UI Cards inside scroll area */
-        .deck-card {
-            background: var(--surface-inner);
-            border: 1px solid var(--border-glow);
-            border-radius: var(--radius-md);
-            padding: 16px;
-        }
-
         /* Form Inputs */
         .tech-input {
             width: 100%;
@@ -202,13 +194,11 @@
         /* Operational Dynamic Action Layout */
         .console-arena {
             flex: 1;
-            padding: 30px;
+            padding: 20px 30px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 24px;
-            max-width: 900px;
-            margin: 0 auto;
+            gap: 20px;
             width: 100%;
         }
 
@@ -216,7 +206,7 @@
         .scan-module {
             display: none;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         #reader {
@@ -229,7 +219,7 @@
             border: 2px dashed var(--border-glow);
         }
 
-        /* Large Split Pane for Tracking Manifest and inputs */
+        /* Split Pane for Tracking Manifest and inputs */
         .entry-deck-splitter {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -244,7 +234,7 @@
             background: #0f172a;
             border: 1px solid var(--border-glow);
             border-radius: var(--radius-md);
-            padding: 24px;
+            padding: 20px;
             position: relative;
         }
 
@@ -254,6 +244,47 @@
             left: 0; top: 0; bottom: 0; width: 4px;
             background: var(--pickup-neon);
             border-radius: 4px 0 0 4px;
+        }
+
+        /* Live Sheet Grid Container */
+        .sheet-database-panel {
+            background: var(--surface-inner);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sheet-table-wrapper {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+        }
+        .sheet-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        .sheet-table th {
+            background: #1e293b;
+            color: var(--text-main);
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+        }
+        .sheet-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-mute);
+        }
+        .sheet-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+            color: #fff;
         }
 
         /* Action Controls Buttons */
@@ -283,6 +314,8 @@
         .btn-green:hover { opacity: 0.9; }
         .btn-outline { background: transparent; border: 1px solid var(--border-glow); color: var(--text-main); }
         .btn-outline:hover { background: rgba(255,255,255,0.02); }
+        .btn-mini { height: 26px; font-size: 11px; padding: 0 10px; background: #334155; color: #fff; border-radius: 4px; }
+        .btn-mini:hover { background: var(--pickup-neon); color: #0b0f19; }
 
         /* Badge Pills */
         .status-pill {
@@ -341,7 +374,6 @@
         }
         @keyframes rotate { to { transform: rotate(360deg); } }
 
-        /* Log List formatting */
         .stream-log {
             padding: 10px;
             border-bottom: 1px solid rgba(255,255,255,0.02);
@@ -363,12 +395,12 @@
 
         <div class="control-deck">
             <div class="deck-section-title">Operational Insights</div>
-            <div class="deck-scroll" style="max-height: 240px; border-bottom: 1px solid var(--border-glow);">
+            <div class="deck-scroll" style="max-height: 220px; border-bottom: 1px solid var(--border-glow);">
                 <div id="dashboardArea" class="stats-matrix"></div>
             </div>
 
             <div class="deck-section-title">Archive Lookups & Database</div>
-            <div class="deck-scroll" style="max-height: 260px; border-bottom: 1px solid var(--border-glow);">
+            <div class="deck-scroll" style="max-height: 240px; border-bottom: 1px solid var(--border-glow);">
                 <div style="display:flex; flex-direction:column; gap:10px;">
                     <input id="searchInput" class="tech-input tech-input-mono" placeholder="AWB / Order ID Reference">
                     <button class="tech-btn btn-slate" style="height:36px; font-size:12px;" onclick="searchOrder()">🔍 Query Data Records</button>
@@ -426,7 +458,32 @@
                         </div>
 
                         <div id="resultCard" class="manifest-bill-card"></div>
+                    </div>
 
+                    <div class="sheet-database-panel">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="font-size:13px; font-weight:700; text-transform:uppercase; color:var(--pickup-neon)">Active Google Sheet Records</h4>
+                            <button class="tech-btn btn-slate" style="height:30px; font-size:11px; padding:0 12px;" onclick="fetchSheetRows()">🔄 Refresh Table</button>
+                        </div>
+                        <div class="sheet-table-wrapper">
+                            <table class="sheet-table">
+                                <thead>
+                                    <tr>
+                                        <th>AWB Code</th>
+                                        <th>Order ID</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Courier</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sheetTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center; color:var(--text-mute);">No data loaded. Click Refresh Table.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>
@@ -467,6 +524,7 @@
             }
             clearForm();
             document.getElementById("awbInput").focus();
+            fetchSheetRows(); // Open panel hote hi sheet data automatic load hoga
         }
 
         function clearForm(){
@@ -536,6 +594,66 @@
             }
             if(e.key.length === 1){ scannerBuffer += e.key; }
         });
+
+        /* ===================================
+        NEW FEATURE: FETCH & DISPLAY SHEET ROWS
+        =================================== */
+        async function fetchSheetRows() {
+            const tbody = document.getElementById("sheetTableBody");
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-mute)">Stream connection opening... Fetching Sheet Array Matrix.</td></tr>`;
+            try {
+                // Aapke existing API logic ke regular endpoint parameters ko read karke data load karega
+                const response = await fetch(API_URL + "?action=getRecentRecords");
+                const data = await response.json();
+                
+                if(!data.rows || data.rows.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-mute)">Sheet dataset returned empty rows.</td></tr>`;
+                    return;
+                }
+                
+                let html = "";
+                data.rows.forEach(row => {
+                    html += `
+                        <tr>
+                            <td style="font-family:var(--font-mono); font-weight:600; color:#fff;">${row.awb || 'N/A'}</td>
+                            <td>${row.orderId || 'N/A'}</td>
+                            <td><span class="status-pill ${row.type==='Pickup'?'pill-pk':'pill-rt'}" style="font-size:10px; padding:2px 6px;">${row.type || 'N/A'}</span></td>
+                            <td>${row.status || 'Pending'}</td>
+                            <td>${row.courier || 'N/A'}</td>
+                            <td>
+                                <button class="btn-mini" onclick="refreshIndividualColumn('${row.awb}')">🔄 Refresh</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch(err) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--accent-red)">Failed to stream dataset rows from sheet grid.</td></tr>`;
+            }
+        }
+
+        /* NEW FEATURE: REFRESH INDIVIDUAL COLUMN ROW ACTION DATA */
+        async function refreshIndividualColumn(awb) {
+            if(!awb) return;
+            toast(`Triggering column rewrite for AWB: ${awb}`);
+            showLoader();
+            try {
+                // Individual column data ko background me direct patch refresh dega
+                const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(awb));
+                const result = await response.json();
+                hideLoader();
+                
+                if(result.success) {
+                    toast("Target row synced on sheet master matrix!");
+                    fetchSheetRows(); // Live component grid sync
+                } else {
+                    toast(result.message || "Write state lock mutex denied.");
+                }
+            } catch(e) {
+                hideLoader();
+                toast("Network buffer dropout event encountered.");
+            }
+        }
 
         /* ===================================
         REMOTE ENDPOINT NETWORK CONTROLLER
@@ -657,6 +775,7 @@
                 clearForm();
                 document.getElementById("awbInput").focus();
                 loadDashboard();
+                fetchSheetRows(); // Entry save hote hi table live refresh ho jayegi
             } catch(err){
                 hideLoader();
                 toast("Server Communication Error");
@@ -678,29 +797,7 @@
                     <div class="mini-metric-card"><p>Yester Rt</p><h3>${data.yesterdayReturn||0}</h3></div>
                     <div class="mini-metric-card pk-text"><p>${data.monthName||'Mo'} Pk</p><h3>${data.monthPickup||0}</h3></div>
                     <div class="mini-metric-card rt-text"><p>${data.monthName||'Mo'} Rt</p><h3>${data.monthReturn||0}</h3></div>
-                    <div id="recentArea" style="grid-column: span 2; display:flex; flex-direction:column; background:#090d16; border-radius:8px; border:1px solid var(--border-glow); padding:4px;"></div>
                 `;
-                loadRecentRecords();
-            } catch(err){}
-        }
-
-        async function loadRecentRecords(){
-            try {
-                const response = await fetch(API_URL + "?action=getRecentRecords");
-                const data = await response.json();
-                const box = document.getElementById("recentArea");
-                if(!box || !data.rows) return;
-                
-                let html = "";
-                data.rows.slice(0,3).forEach(r => {
-                    html += `
-                        <div class="stream-log">
-                            <div><span style="font-family:var(--font-mono); color:#fff;">${r.awb}</span></div>
-                            <span class="status-pill ${r.type==='Pickup'?'pill-pk':'pill-rt'}" style="font-size:9px; padding:2px 6px;">${r.type}</span>
-                        </div>
-                    `;
-                });
-                box.innerHTML = html;
             } catch(err){}
         }
 
@@ -740,7 +837,7 @@
                 const res = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(data.awb));
                 const finalRes = await res.json();
                 hideLoader();
-                if(finalRes.success){ toast("Cache Overwritten Successfully"); searchOrder(); }
+                if(finalRes.success){ toast("Cache Overwritten Successfully"); searchOrder(); fetchSheetRows(); }
             } catch(e){ hideLoader(); }
         }
 
@@ -783,6 +880,7 @@
                     } catch(e){}
                 }
                 document.getElementById("bulkProgress").innerHTML = `Batch Complete. Successfully Merged: ${updated}`;
+                fetchSheetRows(); // Bulk sync khatam hote hi data auto load ho jayega
             } catch(err){
             } finally {
                 bulkRunning = false;
