@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harsidhi Ventures - Live Logistic Date Search Desk</title>
+    <title>Harsidhi Ventures - Smart Date Cluster Control</title>
     
+    <!-- Premium UI Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-live: #f8fafc; /* Clean Corporate Light Mode Background */
+            --bg-live: #f8fafc; /* Premium Light Dashboard Background */
             --surface: #ffffff;
-            --surface-card: #ffffff;
             --border: #e2e8f0;
             --text-main: #0f172a;
             --text-mute: #475569;
@@ -45,25 +45,23 @@
         .tile-pk h3 { color: var(--accent-blue); }
         .tile-rt h3 { color: var(--accent-teal); }
 
-        /* Segmented Registry Selection Mode Bar */
-        .mode-container { display: flex; background: #e2e8f0; padding: 4px; border-radius: var(--radius); gap: 4px; width: 100%; max-width: 450px; flex-shrink: 0; }
-        .mode-btn { flex: 1; height: 40px; border-radius: 8px; border: none; font-weight: 700; font-size: 13px; background: transparent; color: var(--text-mute); cursor: pointer; transition: all 0.2s ease; }
+        /* STEP 2: Intelligent Control Pipeline (Calendar + Mode Switch) */
+        .control-pipeline { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); display: grid; grid-template-columns: 1.2fr 2fr auto auto; gap: 14px; align-items: center; flex-shrink: 0; }
+        
+        .calendar-input { height: 42px; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 14px; font-size: 14px; outline: none; background: #fff; color: var(--text-main); font-weight: 600; width: 100%; }
+        .calendar-input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+        .mode-container { display: flex; background: #e2e8f0; padding: 4px; border-radius: 8px; gap: 4px; width: 100%; }
+        .mode-btn { flex: 1; height: 34px; border-radius: 6px; border: none; font-weight: 700; font-size: 13px; background: transparent; color: var(--text-mute); cursor: pointer; transition: all 0.2s ease; }
         .mode-btn.active-pickup { background: var(--accent-blue); color: #fff; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
         .mode-btn.active-return { background: var(--accent-teal); color: #fff; box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2); }
 
-        /* STEP 2: Input Operations Cluster (Bulk Paste Block for Dates) */
-        .input-cluster { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
-        .bulk-textarea { width: 100%; height: 80px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: var(--text-main); padding: 12px; font-size: 13px; font-family: var(--font-mono); outline: none; resize: none; transition: all 0.2s; }
-        .bulk-textarea:focus { border-color: var(--accent-blue); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        
-        /* Action Button Row */
-        .control-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-        .tech-btn { height: 40px; padding: 0 16px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .tech-btn { height: 42px; padding: 0 18px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
         .tech-btn:active { transform: scale(0.98); }
-        .btn-slate { background: #475569; color: #fff; }
+        .btn-slate { background: #475569; color: #fff; font-weight: 700; }
         .btn-slate:hover { background: #334155; }
-        .btn-submit-sync { background: var(--accent-blue); color: #fff; font-weight: 700; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
-        .btn-submit-sync:hover { background: #1d4ed8; }
+        .btn-submit-sync { background: linear-gradient(135deg, var(--accent-blue), #1d4ed8); color: #fff; font-weight: 700; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
+        .btn-submit-sync:hover { opacity: 0.95; }
 
         /* STEP 3: Scrollable Active Data Table Area */
         .data-cluster { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; box-shadow: var(--shadow); }
@@ -97,13 +95,16 @@
 </head>
 <body>
 
+    <!-- Top App Header -->
     <div class="header-bar">
-        <div class="title">Harsidhi Ventures <span>// Live Bulk Date Filtration Desk</span></div>
+        <div class="title">Harsidhi Ventures <span>// Dynamic Date & Time Cluster Selector</span></div>
         <div class="clock" id="liveClock">DATABASE SYNC STANDBY</div>
     </div>
 
+    <!-- Core Dynamic Screen Interface -->
     <div class="workspace">
 
+        <!-- STEP 1: Linear Top Analytics Counter Box Cards Row -->
         <div class="metrics-bar" id="metricsRow">
             <div class="metric-tile tile-pk"><p>Today Pickup</p><h3 id="m-tp">0</h3></div>
             <div class="metric-tile tile-rt"><p>Today Return</p><h3 id="m-tr">0</h3></div>
@@ -113,31 +114,35 @@
             <div class="metric-tile tile-rt"><p>Month Return</p><h3 id="m-mr">0</h3></div>
         </div>
 
+        <!-- Mode Select Area Block -->
         <div class="mode-container">
-            <button id="pickupBtn" class="mode-btn" onclick="setRegistryMode('Pickup')">Process Selected As Pickups</button>
-            <button id="returnBtn" class="mode-btn" onclick="setRegistryMode('Return')">Process Selected As Returns</button>
+            <button id="pickupBtn" class="mode-btn" onclick="setRegistryMode('Pickup')">Log Mode: Pickups</button>
+            <button id="returnBtn" class="mode-btn" onclick="setRegistryMode('Return')">Log Mode: Returns</button>
         </div>
 
-        <div class="input-cluster">
-            <div style="font-size:12px; font-weight:700; color:var(--text-mute); text-transform:uppercase; letter-spacing:0.3px;">Copy Paste Column A (Dates/Tarikh List Rows) Below:</div>
-            <textarea id="bulkDataInput" class="bulk-textarea" placeholder="Paste Date Rows here direct from Excel/Google Sheet Column A...&#10;Example:&#10;24/01/2026&#10;25/01/2026"></textarea>
-            
-            <div class="control-row">
-                <button class="tech-btn btn-slate" onclick="parseAndFetchDateLogs()">🔍 Search & Parse Date Logs</button>
-                <button class="tech-btn btn-submit-sync" onclick="syncAllVisibleSearchResults()">⚡ Update All Search Results To Sheet</button>
+        <!-- STEP 2: Calendar & Multi-Format Date/Time Parser Pipeline -->
+        <div class="control-pipeline">
+            <div>
+                <input type="date" id="targetCalendar" class="calendar-input" onchange="parseAndFetchDateCluster()">
             </div>
+            
+            <div style="font-size: 12px; color: var(--text-mute); font-weight: 600;">* Handles mixed Time formats automatically</div>
+
+            <button class="tech-btn btn-slate" onclick="parseAndFetchDateCluster()">🔍 Scan Sheet Data</button>
+            <button class="tech-btn btn-submit-sync" onclick="syncAllClusterSearchResults()">⚡ Sync All Visible Matches</button>
         </div>
 
+        <!-- STEP 3: Scrollable Table Grid Area -->
         <div class="data-cluster">
             <div class="table-scroll">
                 <table class="master-table">
                     <thead>
                         <tr>
-                            <th>Sheet Date (Column A)</th>
+                            <th>Sheet Raw Timestamp (Col A)</th>
                             <th>Waybill Identifier (AWB)</th>
                             <th>Order Pointer</th>
-                            <th>Current Selected Mode</th>
-                            <th>Tracking Status</th>
+                            <th>Selected Mode</th>
+                            <th>Current Tracking Status</th>
                             <th>Courier Engine</th>
                             <th style="text-align: center;">Operational Pipeline</th>
                         </tr>
@@ -145,18 +150,20 @@
                     <tbody id="masterGridBody">
                         <tr>
                             <td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0; font-weight: 500;">
-                                Grid Interface Empty. Select operational mode, paste column A date rows, and run search queries.
+                                Workspace Clean. Please pick a date from calendar and lock action mode to index rows.
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="table-stats-footer" id="tableRecordStats">Loaded Buffer Dataset Context: 0 rows registered.</div>
+            <!-- Active Data Count Footer Tracking Panel -->
+            <div class="table-stats-footer" id="tableRecordStats">Loaded Buffer Dataset Context: 0 rows clustered.</div>
         </div>
 
     </div>
 
+    <!-- Full Frame Overlay Thread Loader Screen Blockers -->
     <div id="loadingOverlay">
         <div class="spinner"></div> 
         <div id="bulkStatusText" style="margin-top: 10px; font-weight: 700;">CONNECTING CLUSTER SHUTTLE ENDPOINTS...</div>
@@ -166,13 +173,12 @@
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
 
-        // Local Memory Framework Repositories
         let activeSelectedMode = ""; 
         let rawMasterRecordsCache = []; 
         let matchedGridResults = []; 
 
         /* ===================================
-        REGISTRY MANAGEMENT VALIDATOR HANDLERS
+        REGISTRY CONTROLS & VALIDATORS
         =================================== */
         function setRegistryMode(mode) {
             activeSelectedMode = mode;
@@ -184,10 +190,11 @@
             } else {
                 document.getElementById("returnBtn").classList.add("active-return");
             }
-            toast(`Operational Execution Strategy Locked to: ${mode} mode.`);
+            if(document.getElementById("targetCalendar").value) {
+                parseAndFetchDateCluster(); 
+            }
         }
 
-        /* INITIAL APP ARRAY REFRESH HOOKS */
         async function fetchInitialCountsOnly() {
             try {
                 const countRes = await fetch(API_URL + "?action=getDashboardCounts");
@@ -199,49 +206,57 @@
                 document.getElementById("m-mp").innerText = counts.monthPickup || 0;
                 document.getElementById("m-mr").innerText = counts.monthReturn || 0;
                 
-                // Fetch central record references silently for seamless search parsing matches
                 const listRes = await fetch(API_URL + "?action=getRecentRecords");
                 const listData = await listRes.json();
                 rawMasterRecordsCache = listData.rows || [];
-            } catch(e) { console.log("Silent repository cache mismatch event."); }
+            } catch(e) { console.log("Cache offline handshake fallback."); }
         }
 
         /* ===================================
-        PASTE MATCH LOGIC: DATE BASED SEARCH FILTER
+        SMART DATE & TIME EXTRACTOR PARSER ENGINE
         =================================== */
-        function parseAndFetchDateLogs() {
-            // Rule 1 Verification Check: Mode validation check bound
+        function parseAndFetchDateCluster() {
             if(!activeSelectedMode) {
-                alert("CRITICAL PAUSE: Please select either 'Process Selected As Pickups' or 'Process Selected As Returns' mode button first!");
+                alert("Please select either 'Log Mode: Pickups' or 'Log Mode: Returns' first!");
                 return;
             }
 
-            const textInput = document.getElementById("bulkDataInput").value.trim();
-            if(!textInput) {
-                alert("Input text block empty. Please copy paste row strings from Column A (Dates).");
-                return;
-            }
+            const calendarValue = document.getElementById("targetCalendar").value; // Formats as YYYY-MM-DD
+            if(!calendarValue) return;
 
-            // Split and format text input dates by lines safely
-            const inputDatesArray = textInput.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
-            
-            if(inputDatesArray.length === 0) {
-                alert("Zero valid date rows detected. Parse aborted.");
-                return;
-            }
+            showBlocker("FILTERING AND EXTRACTING TIMESTAMPS...", "Ignoring raw time fields to match dates...");
 
-            showBlocker("SCANNING CENTRAL SHARDS FOR DATES...", "Matching data against Column A indexes...");
+            const [year, month, day] = calendarValue.split("-");
+            const intDay = parseInt(day, 10);
+            const intMonth = parseInt(month, 10);
+
+            // Possible variants of date part inside Sheet Column A string
+            const format1 = `${day}/${month}/${year}`;                   // 29/06/2026
+            const format2 = `${day}-${month}-${year}`;                   // 29-06-2026
+            const format3 = `${intDay}/${intMonth}/${year}`;             // 29/6/2026
+            const format4 = `${year}-${month}-${day}`;                  // 2026-06-29
 
             matchedGridResults = [];
-            
-            // Loop through all data rows currently fetched from the sheet to match dates
+
             rawMasterRecordsCache.forEach(sheetRow => {
-                // Agar row ki date humari pasted dates array me majood hai aur uska type matched hai
-                const cleanSheetDate = String(sheetRow.date).trim();
+                const sheetRawTimestamp = String(sheetRow.date).trim();
                 
-                if(inputDatesArray.includes(cleanSheetDate) && sheetRow.type === activeSelectedMode) {
+                // Pure target date string isolation (extracting date string before spaces if time exists)
+                const isolatedDatePart = sheetRawTimestamp.split(" ")[0];
+
+                const isDateMatched = (
+                    isolatedDatePart === format1 || 
+                    isolatedDatePart === format2 || 
+                    isolatedDatePart === format3 || 
+                    isolatedDatePart === format4 ||
+                    sheetRawTimestamp.includes(format1) ||
+                    sheetRawTimestamp.includes(format2) ||
+                    sheetRawTimestamp.includes(format3)
+                );
+
+                if(isDateMatched && sheetRow.type === activeSelectedMode) {
                     matchedGridResults.push({
-                        date: cleanSheetDate,
+                        date: sheetRawTimestamp, // Displays full original timestamp from sheet row
                         awb: sheetRow.awb || "N/A",
                         orderId: sheetRow.orderId || "N/A",
                         type: activeSelectedMode, 
@@ -253,16 +268,15 @@
 
             renderSearchResultsGrid();
             hideBlocker();
-            toast(`Found ${matchedGridResults.length} rows matching the selected dates and mode.`);
+            toast(`Clustered ${matchedGridResults.length} matching rows securely.`);
         }
 
-        /* DATA ROW MATRIX DOM BINDINGS GENERATOR */
         function renderSearchResultsGrid() {
             const tbody = document.getElementById("masterGridBody");
-            document.getElementById("tableRecordStats").innerText = `Loaded Buffer Dataset Context: ${matchedGridResults.length} matching rows found.`;
+            document.getElementById("tableRecordStats").innerText = `Loaded Buffer Dataset Context: ${matchedGridResults.length} matching cluster nodes found.`;
 
             if(matchedGridResults.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0;">No matching records found for the pasted dates under "${activeSelectedMode}" mode.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0;">No matching records discovered inside sheet array for this specific date and filter.</td></tr>`;
                 return;
             }
 
@@ -274,12 +288,12 @@
 
                 htmlBuffer += `
                     <tr>
-                        <td style="font-weight:600; color:var(--text-mute);">${row.date}</td>
-                        <td style="font-family:var(--font-mono); font-weight:700; color:var(--text-main);">${row.awb}</td>
+                        <td style="font-weight:600; color:#475569; font-family:var(--font-mono); font-size:12px;">${row.date}</td>
+                        <td style="font-family:var(--font-mono); font-weight:700; color:var(--accent-blue);">${row.awb}</td>
                         <td style="font-family:var(--font-mono); font-size:12px; color:var(--text-mute);">${row.orderId}</td>
                         <td><span class="pill ${row.type==='Pickup'?'pill-pk':'pill-rt'}">${row.type}</span></td>
                         <td><span class="status-badge ${badgeClass}">${row.status}</span></td>
-                        <td><b style="color:var(--accent-blue)">${row.courier}</b></td>
+                        <td><b>${row.courier}</b></td>
                         <td style="text-align: center;">
                             <button class="row-action-btn" onclick="syncIndividualTargetRow('${row.awb}', ${index})">🛰️ Sync Row</button>
                         </td>
@@ -290,18 +304,17 @@
         }
 
         /* ===================================
-        INDIVIDUAL ROW REWRITE CONTROLLER
+        INDIVIDUAL ROW CONTROL SYNC
         =================================== */
         async function syncIndividualTargetRow(awb, arrayIndex) {
             if(!awb || awb === "N/A") return;
-            showBlocker(`CONNECTING COURIER SATELLITE LINKS FOR TARGET AWB: ${awb}`);
+            showBlocker(`CONNECTING COURIER NETWORKS FOR TARGET AWB: ${awb}`);
             try {
                 const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(awb));
                 const result = await response.json();
                 
                 if(result.success) {
                     toast(`Data Block Patched Successfully for AWB: ${awb}`);
-                    // Pull fresh context mapping frame update values
                     const listRes = await fetch(API_URL + "?action=getRecentRecords");
                     const listData = await listRes.json();
                     rawMasterRecordsCache = listData.rows || [];
@@ -310,34 +323,32 @@
                     if(updatedRow && arrayIndex !== undefined) {
                         matchedGridResults[arrayIndex].status = updatedRow.status || matchedGridResults[arrayIndex].status;
                         matchedGridResults[arrayIndex].courier = updatedRow.courier || matchedGridResults[arrayIndex].courier;
-                        matchedGridResults[arrayIndex].orderId = updatedRow.orderId || matchedGridResults[arrayIndex].orderId;
                         renderSearchResultsGrid();
                     }
                 } else {
-                    // Safety Fallback Rule Applied: Sheet remains completely untouched
-                    toast(`No data received. Sheet row protected & unmodified for AWB: ${awb}`);
+                    toast(`Data fetch skipped. Sheet record protected for AWB: ${awb}`);
                 }
             } catch(e) {
-                toast("Handshake exception dropout. Sheet records original values safe.");
+                toast("Handshake exception dropout. Original value safe.");
             } finally {
                 hideBlocker();
             }
         }
 
         /* ===================================
-        MASS INTEGRATION EXECUTION ENGINE (SYNC ALL ACTION)
+        MASS FILTERED CLUSTER PROCESSOR (SYNC ALL ACTIVE)
         =================================== */
-        async function syncAllVisibleSearchResults() {
+        async function syncAllClusterSearchResults() {
             if(matchedGridResults.length === 0) {
                 toast("Zero rows mapped inside active table buffer stack to sync.");
                 return;
             }
 
-            if(!confirm(`SYSTEM MUTEX CHALLENGE: Are you sure you want to chain process and execute bulk update parameters across all ${matchedGridResults.length} currently listed rows?`)) {
+            if(!confirm(`Are you sure you want to sequential sync updates across all ${matchedGridResults.length} currently listed rows?`)) {
                 return;
             }
 
-            showBlocker("BULK SYSTEM DESK OPERATIONS TRIGGERED...", "Initializing sequential write transaction slots...");
+            showBlocker("BATCH OPERATIONS PROCESSING ENGAGED...", "Initializing write transaction slots...");
             
             let successfulLogs = 0;
             let protectedLogs = 0;
@@ -346,7 +357,7 @@
                 const currentTargetAWB = matchedGridResults[i].awb;
                 if(currentTargetAWB === "N/A") continue;
                 
-                document.getElementById("bulkStatusSubtext").innerText = `Processing Stream Array: Row ${i + 1} of ${matchedGridResults.length} // Targeting Waybill Code: ${currentTargetAWB}`;
+                document.getElementById("bulkStatusSubtext").innerText = `Processing: Row ${i + 1} of ${matchedGridResults.length} // Targeting: ${currentTargetAWB}`;
                 
                 try {
                     const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(currentTargetAWB));
@@ -355,25 +366,23 @@
                     if(result.success) {
                         successfulLogs++;
                     } else {
-                        // Safety Fallback execution pass: Row remains un-altered if search find fails
                         protectedLogs++;
                     }
                 } catch(err) {
-                    protectedLogs++; // Skip and hold safety fallback boundary safe
+                    protectedLogs++;
                 }
             }
 
             hideBlocker();
-            alert(`Execution complete. Successful Sync Updates: ${successfulLogs} rows. Protected/Skipped: ${protectedLogs} rows.`);
+            alert(`Execution complete. Successful Updates: ${successfulLogs} rows. Protected/Skipped: ${protectedLogs} rows.`);
             
-            // Re-fetch clean system data bank frames status dump views
-            showBlocker("RE-INDEXING DATABASE MATRIX FOR CURRENT SHIFT DATA...", "Refreshing records...");
+            showBlocker("RE-INDEXING WORKSPACE FOR FRESH MATRIX DUMP VIEWS...", "Refreshing records...");
             await fetchInitialCountsOnly();
-            parseAndFetchDateLogs();
+            parseAndFetchDateCluster();
         }
 
         /* ===================================
-        UTILITY APPARATUS HOOKS
+        UTILITIES
         =================================== */
         function toast(msg) {
             const t = document.createElement("div");
@@ -394,10 +403,11 @@
         }
 
         window.onload = function() {
-            fetchInitialCountsOnly();
+            showBlocker("INITIALIZING LOGISTIC HUB INTELLIGENCE CORE...", "Loading system metrics...");
+            fetchInitialCountsOnly().then(() => hideBlocker());
             setInterval(() => {
                 const now = new Date();
-                document.getElementById("liveClock").innerText = `LIVE SYSTEM DECK TIME MATRIX // ${now.toLocaleTimeString()}`;
+                document.getElementById("liveClock").innerText = `SYSTEM GRID TIME MATRIX // ${now.toLocaleTimeString()}`;
             }, 1000);
         };
     </script>
