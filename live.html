@@ -3,99 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harsidhi Ventures - Live Logistic Intelligence Desk</title>
+    <title>Harsidhi Ventures - Live Logistic Search Desk</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
-    :root {
-            --bg-live: #090d16; 
-            --surface: #131926;
-            --surface-card: #1e2538;
-            --border: #263147;
-            --text-main: #f8fafc;
-            --text-mute: #94a3b8;
-            --neon-blue: #38bdf8;
-            --neon-teal: #2dd4bf;
-            --neon-green: #34d399;
-            --neon-orange: #fb923c;
-            --neon-red: #fb7185;
+        :root {
+            --bg-live: #f8fafc; /* Professional Light Mode Background */
+            --surface: #ffffff;
+            --surface-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-mute: #475569;
+            --accent-blue: #2563eb;
+            --accent-teal: #0d9488;
+            --accent-green: #10b981;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
             --radius: 12px;
             --font-mono: 'JetBrains Mono', monospace;
+            --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         body { background: var(--bg-live); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Minimal Header */
-        .header-bar { height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(19, 25, 38, 0.7); backdrop-filter: blur(10px); flex-shrink: 0; }
-        .title { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--neon-blue); }
-        .clock { font-family: var(--font-mono); font-size: 12px; color: var(--text-mute); }
+        /* Minimal Header Bar */
+        .header-bar { height: 60px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.02); flex-shrink: 0; }
+        .title { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-main); }
+        .title span { color: var(--accent-blue); }
+        .clock { font-family: var(--font-mono); font-size: 12px; color: var(--text-mute); font-weight: 500; }
 
-        /* Main Workspace Container */
+        /* Workspace Grid Matrix */
         .workspace { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
 
-        /* 1. Daily Metrics Linear Row */
+        /* STEP 1: Linear Dashboard Metrics Row */
         .metrics-bar { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; flex-shrink: 0; }
-        .metric-tile { background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); }
-        .metric-tile p { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-mute); font-weight: 600; }
-        .metric-tile h3 { font-size: 22px; font-weight: 700; font-family: var(--font-mono); margin-top: 4px; }
-        .tile-pk h3 { color: var(--neon-blue); }
-        .tile-rt h3 { color: var(--neon-teal); }
+        .metric-tile { background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .metric-tile p { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-mute); font-weight: 600; }
+        .metric-tile h3 { font-size: 24px; font-weight: 700; font-family: var(--font-mono); margin-top: 4px; color: var(--text-main); }
+        .tile-pk h3 { color: var(--accent-blue); }
+        .tile-rt h3 { color: var(--accent-teal); }
 
-        /* 2. Control Pipeline (Master Search + Filters Group) */
-        .control-pipeline { background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto auto; gap: 10px; align-items: center; flex-shrink: 0; }
-        .ctrl-input { height: 40px; background: #090d16; border: 1px solid var(--border); border-radius: 8px; color: #fff; padding: 0 14px; font-size: 13px; outline: none; width: 100%; transition: all 0.2s; }
-        .ctrl-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
-        .ctrl-input-mono { font-family: var(--font-mono); }
+        /* Segmented Registry Selection Mode Bar */
+        .mode-container { display: flex; background: #e2e8f0; padding: 4px; border-radius: var(--radius); gap: 4px; width: 100%; max-width: 450px; flex-shrink: 0; }
+        .mode-btn { flex: 1; height: 40px; border-radius: 8px; border: none; font-weight: 700; font-size: 13px; background: transparent; color: var(--text-mute); cursor: pointer; transition: all 0.2s ease; }
+        .mode-btn.active-pickup { background: var(--accent-blue); color: #fff; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); }
+        .mode-btn.active-return { background: var(--accent-teal); color: #fff; box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2); }
+
+        /* STEP 2: Input Operations Cluster (Bulk Paste Block) */
+        .input-cluster { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; }
+        .bulk-textarea { width: 100%; height: 80px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; color: var(--text-main); padding: 12px; font-size: 13px; font-family: var(--font-mono); outline: none; resize: none; transition: all 0.2s; }
+        .bulk-textarea:focus { border-color: var(--accent-blue); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        /* 3. Data Table Cluster Layout (With Absolute Fix for Scrolling) */
-        .data-cluster { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-        .table-scroll { flex: 1; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        /* Action Button Row */
+        .control-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .tech-btn { height: 40px; padding: 0 16px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .tech-btn:active { transform: scale(0.98); }
+        .btn-slate { background: #475569; color: #fff; }
+        .btn-slate:hover { background: #334155; }
+        .btn-submit-sync { background: var(--accent-blue); color: #fff; font-weight: 700; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15); }
+        .btn-submit-sync:hover { background: #1d4ed8; }
+
+        /* STEP 3: Scrollable Active Data Table Area */
+        .data-cluster { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; box-shadow: var(--shadow); }
+        .table-scroll { flex: 1; overflow-y: auto; overflow-x: auto; }
         .master-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
-        .master-table th { background: #182030; color: var(--text-main); padding: 12px 16px; font-weight: 600; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--border); }
-        .master-table td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03); color: var(--text-mute); vertical-align: middle; }
-        .master-table tr:hover td { background: rgba(255,255,255,0.01); color: #fff; }
+        .master-table th { background: #f1f5f9; color: var(--text-main); padding: 12px 16px; font-weight: 600; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--border); }
+        .master-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle; }
+        .master-table tr:hover td { background: #f8fafc; }
 
-        /* Badges & Status Pills */
+        /* Status Pills Setup */
         .pill { display: inline-flex; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; font-family: var(--font-mono); text-transform: uppercase; }
-        .pill-pk { background: rgba(56, 189, 248, 0.1); color: var(--neon-blue); }
-        .pill-rt { background: rgba(45, 212, 191, 0.1); color: var(--neon-teal); }
+        .pill-pk { background: #eff6ff; color: var(--accent-blue); }
+        .pill-rt { background: #f0fdfa; color: var(--accent-teal); }
         
-        .status-badge { padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-        .status-del { background: rgba(52, 211, 153, 0.1); color: var(--neon-green); }
-        .status-pen { background: rgba(251, 146, 60, 0.1); color: var(--neon-orange); }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .status-del { background: #d1fae5; color: #065f46; }
+        .status-pen { background: #ffedd5; color: #9a3412; }
 
-        /* Buttons Layout */
-        .action-btn { height: 30px; padding: 0 12px; border-radius: 6px; border: none; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; background: #263147; color: #fff; }
-        .action-btn:hover { background: var(--neon-blue); color: #090d16; }
-        
-        .btn-refresh-all { background: #1e293b; color: #fff; border: 1px solid var(--border); height: 40px; padding: 0 14px; font-weight: 600; border-radius: 8px; cursor: pointer; }
-        .btn-refresh-all:hover { background: #2d3748; }
-        
-        .btn-bulk-sync { background: linear-gradient(135deg, #0284c7, var(--neon-blue)); color: #090d16; height: 40px; padding: 0 16px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; font-size: 12px; box-shadow: 0 0 12px rgba(56, 189, 248, 0.2); }
-        .btn-bulk-sync:hover { opacity: 0.95; transform: translateY(-1px); }
+        .row-action-btn { height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 600; background: #fff; color: var(--text-main); cursor: pointer; }
+        .row-action-btn:hover { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
 
-        /* 4. Smart Pagination Footer */
-        .pagination-footer { height: 48px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); background: #151c2a; font-size: 12px; color: var(--text-mute); flex-shrink: 0; }
-        .page-controls { display: flex; gap: 8px; }
-        .page-btn { height: 28px; padding: 0 10px; background: #263147; border: none; border-radius: 4px; color: #fff; font-size: 11px; cursor: pointer; }
-        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-
-        /* Global Blocker Overlay */
-        #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(9, 13, 22, 0.85); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; font-size: 14px; font-family: var(--font-mono); color: var(--neon-blue); gap: 10px; flex-direction: column; text-align: center; }
-        .spinner { width: 24px; height: 24px; border: 3px solid rgba(56, 189, 248, 0.2); border-top-color: var(--neon-blue); border-radius: 50%; animation: spin 0.6s linear infinite; }
+        /* Master Global Loader Overlay Screens */
+        #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(6px); z-index: 99999; align-items: center; justify-content: center; font-size: 14px; font-family: var(--font-mono); color: var(--text-main); gap: 10px; flex-direction: column; text-align: center; }
+        .spinner { width: 28px; height: 28px; border: 3px solid #e2e8f0; border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .toast { position: fixed; bottom: 20px; right: 20px; background: var(--surface-card); border: 1px solid var(--border); color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 12px; z-index: 9999; border-left: 4px solid var(--neon-blue); box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        #bulkStatusSubtext { font-size: 11px; color: var(--text-mute); margin-top: 4px; }
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #0f172a; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 12px; z-index: 9999; border-left: 4px solid var(--accent-blue); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        #bulkStatusSubtext { font-size: 12px; color: var(--text-mute); margin-top: 4px; font-weight: 500; }
+        .table-stats-footer { height: 40px; padding: 0 16px; background: #f1f5f9; border-top: 1px solid var(--border); display: flex; align-items: center; font-size: 12px; color: var(--text-mute); font-weight: 500; flex-shrink: 0; }
     </style>
 </head>
 <body>
 
     <div class="header-bar">
-        <div class="title">Harsidhi Logistics Cluster <span>// Live Control Grid</span></div>
-        <div class="clock" id="liveClock">SYSTEM DECK SECURE</div>
+        <div class="title">Harsidhi Ventures <span>// Dynamic Bulk Search Desk</span></div>
+        <div class="clock" id="liveClock">DATABASE SYNC STANDBY</div>
     </div>
 
     <div class="workspace">
@@ -109,32 +113,19 @@
             <div class="metric-tile tile-rt"><p>Month Return</p><h3 id="m-mr">0</h3></div>
         </div>
 
-        <div class="control-pipeline">
-            <input id="masterSearch" class="ctrl-input ctrl-input-mono" placeholder="⚡ Type to Filter AWB / Order Code / Client Name..." oninput="applyFilters()">
+        <div class="mode-container">
+            <button id="pickupBtn" class="mode-btn" onclick="setRegistryMode('Pickup')">Process Selected As Pickups</button>
+            <button id="returnBtn" class="mode-btn" onclick="setRegistryMode('Return')">Process Selected As Returns</button>
+        </div>
+
+        <div class="input-cluster">
+            <div style="font-size:12px; font-weight:700; color:var(--text-mute); text-transform:uppercase; letter-spacing:0.3px;">Copy Paste Column A (AWB Numbers Lines Grid) Below:</div>
+            <textarea id="bulkDataInput" class="bulk-textarea" placeholder="Paste AWB Rows here direct from Excel/Google Sheet Column A...&#10;Example:&#10;1234567890&#10;9876543210"></textarea>
             
-            <select id="filterType" class="ctrl-input" onchange="applyFilters()">
-                <option value="">-- All Registry Modes --</option>
-                <option value="Pickup">Pickup Orders Only</option>
-                <option value="Return">Return Orders Only</option>
-            </select>
-
-            <select id="filterCourier" class="ctrl-input" onchange="applyFilters()">
-                <option value="">-- All Logistic Nodes --</option>
-                <option value="Delhivery">Delhivery Network</option>
-                <option value="Boxberry">Boxd Logistic / Boxberry</option>
-                <option value="Xpressbees">Xpressbees Hub</option>
-            </select>
-
-            <select id="filterStatus" class="ctrl-input" onchange="applyFilters()">
-                <option value="">-- All Status States --</option>
-                <option value="Delivered">Delivered Logs</option>
-                <option value="In Transit">In Transit Logs</option>
-                <option value="Pending">Pending / Outward</option>
-                <option value="RTO">RTO Returned Flag</option>
-            </select>
-
-            <button class="btn-refresh-all" onclick="loadMasterData()">🔄 Pull Array</button>
-            <button class="btn-bulk-sync" onclick="syncAllVisibleRows()">⚡ Sync All Visible</button>
+            <div class="control-row">
+                <button class="tech-btn btn-slate" onclick="parseAndFetchLocalLogs()">🔍 Search & Parse Logs</button>
+                <button class="tech-btn btn-submit-sync" onclick="syncAllVisibleSearchResults()">⚡ Update All Search Results To Sheet</button>
+            </div>
         </div>
 
         <div class="data-cluster">
@@ -142,10 +133,10 @@
                 <table class="master-table">
                     <thead>
                         <tr>
-                            <th>Waybill Identifier (AWB)</th>
+                            <th>Waybill Identifier (AWB Code)</th>
                             <th>Order Pointer</th>
-                            <th>Log Mode</th>
-                            <th>Current Tracking Status</th>
+                            <th>Current Selected Mode</th>
+                            <th>Current Sheet Tracking Status</th>
                             <th>Courier Engine</th>
                             <th>Consignee Target</th>
                             <th style="text-align: center;">Operational Pipeline</th>
@@ -153,49 +144,52 @@
                     </thead>
                     <tbody id="masterGridBody">
                         <tr>
-                            <td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0;">
-                                Dataset Cluster Idle. Click "Pull Array" to parse master matrix rows.
+                            <td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0; font-weight: 500;">
+                                Grid Interface Empty. Select operational mode, paste row tokens, and run search queries.
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="pagination-footer">
-                <div id="paginationStats">Displaying Vector Segment: Row 0-0 of 0</div>
-                <div class="page-controls">
-                    <button id="btnPrevPage" class="page-btn" onclick="changePage(-1)">◀ Prev Segment</button>
-                    <button id="btnNextPage" class="page-btn" onclick="changePage(1)">Next Segment ▶</button>
-                </div>
-            </div>
+            <div class="table-stats-footer" id="tableRecordStats">Loaded Buffer Dataset Context: 0 rows registered.</div>
         </div>
 
     </div>
 
     <div id="loadingOverlay">
         <div class="spinner"></div> 
-        <div id="bulkStatusText" style="margin-top: 10px; font-weight: 600;">PIPELINE ENGAGED WITH MASTER DATABASE NODES...</div>
+        <div id="bulkStatusText" style="margin-top: 10px; font-weight: 700;">CONNECTING CLUSTER SHUTTLE ENDPOINTS...</div>
         <div id="bulkStatusSubtext"></div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbzCx2cLgXw_rgA0T8_dgfAqRAGtTpBsIhM-xeysJcCbbrpn7mH0g1g13Au4KpiCPH8/exec";
 
-        // Local Memory Buffers
-        let rawSheetDatabase = [];
-        let filteredDatabase = [];
-        
-        // Pagination Engine Controls
-        let currentPage = 1;
-        const rowsPerSegment = 50; 
+        // Local Memory Framework Repositories
+        let activeSelectedMode = ""; 
+        let rawMasterRecordsCache = []; 
+        let matchedGridResults = []; 
 
         /* ===================================
-        CORE RECOGNITION DATABASE DATA INGESTION
+        REGISTRY MANAGEMENT VALIDATOR HANDLERS
         =================================== */
-        async function loadMasterData() {
-            showBlocker("STREAMING DATA ARRAYS FROM REMOTE SERVERS...");
+        function setRegistryMode(mode) {
+            activeSelectedMode = mode;
+            document.getElementById("pickupBtn").className = "mode-btn";
+            document.getElementById("returnBtn").className = "mode-btn";
+
+            if(mode === "Pickup") {
+                document.getElementById("pickupBtn").classList.add("active-pickup");
+            } else {
+                document.getElementById("returnBtn").classList.add("active-return");
+            }
+            toast(`Operational Execution Strategy Locked to: ${mode} mode.`);
+        }
+
+        /* INITIAL APP ARRAY REFRESH HOOKS */
+        async function fetchInitialCountsOnly() {
             try {
-                // Live Dashboard Dynamic Counts Sync
                 const countRes = await fetch(API_URL + "?action=getDashboardCounts");
                 const counts = await countRes.json();
                 document.getElementById("m-tp").innerText = counts.todayPickup || 0;
@@ -204,193 +198,197 @@
                 document.getElementById("m-yr").innerText = counts.yesterdayReturn || 0;
                 document.getElementById("m-mp").innerText = counts.monthPickup || 0;
                 document.getElementById("m-mr").innerText = counts.monthReturn || 0;
-
-                // Live Core Grid Thousands Rows Data Sync
+                
+                // Fetch central record references silently for seamless search parsing matches
                 const listRes = await fetch(API_URL + "?action=getRecentRecords");
                 const listData = await listRes.json();
-                
-                rawSheetDatabase = listData.rows || [];
-                filteredDatabase = [...rawSheetDatabase]; 
-                
-                currentPage = 1; 
-                renderGridSegment();
-                toast(`Successfully loaded ${rawSheetDatabase.length} entries.`);
-            } catch(e) {
-                toast("Data Pipeline Sync Dropout Fault.");
-            } finally {
-                hideBlocker();
-            }
+                rawMasterRecordsCache = listData.rows || [];
+            } catch(e) { console.log("Silent repository cache mismatch event."); }
         }
 
         /* ===================================
-        EFFICIENT MATRIX DATA RENDER ENGINE
+        PASTE MATCH LOGIC: SEARCH & MATCH PARSE DATA ROWS
         =================================== */
-        function renderGridSegment() {
-            const tbody = document.getElementById("masterGridBody");
-            if (filteredDatabase.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 40px 0;">Null set condition match. Zero items to filter.</td></tr>`;
-                updatePaginationControls();
+        function parseAndFetchLocalLogs() {
+            // Rule 1 Verification Check: Mode validation check bound
+            if(!activeSelectedMode) {
+                alert("CRITICAL PAUSE: Please select either 'Process Selected As Pickups' or 'Process Selected As Returns' mode button first!");
                 return;
             }
 
-            const startIndex = (currentPage - 1) * rowsPerSegment;
-            const endIndex = Math.min(startIndex + rowsPerSegment, filteredDatabase.length);
-            const paginatedChunk = filteredDatabase.slice(startIndex, endIndex);
+            const textInput = document.getElementById("bulkDataInput").value.trim();
+            if(!textInput) {
+                alert("Input text block empty. Please copy paste row strings from Column A.");
+                return;
+            }
 
-            let htmlSegmentBuffer = "";
-            paginatedChunk.forEach(row => {
-                const statusClean = (row.status || 'Pending').toLowerCase();
-                let statusBadgeClass = "status-pen";
-                if(statusClean.includes('deliv') || statusClean.includes('done')) { statusBadgeClass = "status-del"; }
+            // Split and format text input by lines safely (ditto same Excel strings format mapping)
+            const inputAWBsArray = textInput.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+            
+            if(inputAWBsArray.length === 0) {
+                alert("Zero valid tokens detected. Parse aborted.");
+                return;
+            }
 
-                htmlSegmentBuffer += `
+            showBlocker("PARSING GRID PATTERNS & QUERIES...", "Searching local dataset indices...");
+
+            // Cross reference lookup index vectors to generate results
+            matchedGridResults = [];
+            inputAWBsArray.forEach(searchAWB => {
+                // Check if we have records existing for current waybill token in global cache sheet data
+                const matchedSheetRow = rawMasterRecordsCache.find(r => String(r.awb).trim() === searchAWB);
+                
+                if(matchedSheetRow) {
+                    // Item found: Fetch all existing details structure parameters mapping
+                    matchedGridResults.push({
+                        awb: searchAWB,
+                        orderId: matchedSheetRow.orderId || "N/A",
+                        type: activeSelectedMode, // Apply current strictly selected mode override
+                        status: matchedSheetRow.status || "Pending Outward",
+                        courier: matchedSheetRow.courier || "Delhivery Network",
+                        customerName: matchedSheetRow.customerName || "N/A",
+                        city: matchedSheetRow.city || ""
+                    });
+                } else {
+                    // Item not found: Push raw fallback framework grid mapping placeholder
+                    matchedGridResults.push({
+                        awb: searchAWB,
+                        orderId: "Not Indexed Yet",
+                        type: activeSelectedMode,
+                        status: "New Entry Request",
+                        courier: "Logistics Hub Auto",
+                        customerName: "Unknown Trace",
+                        city: ""
+                    });
+                }
+            });
+
+            renderSearchResultsGrid();
+            hideBlocker();
+            toast(`Parsed ${matchedGridResults.length} data rows from input text array successfully.`);
+        }
+
+        /* DATA ROW MATRIX DOM BINDINGS GENERATOR */
+        function renderSearchResultsGrid() {
+            const tbody = document.getElementById("masterGridBody");
+            document.getElementById("tableRecordStats").innerText = `Loaded Buffer Dataset Context: ${matchedGridResults.length} target rows registered.`;
+
+            if(matchedGridResults.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-mute); padding: 30px;">Buffer registers empty. No search matches generated.</td></tr>`;
+                return;
+            }
+
+            let htmlBuffer = "";
+            matchedGridResults.forEach((row, index) => {
+                const cleanStat = (row.status || '').toLowerCase();
+                let badgeClass = "status-pen";
+                if(cleanStat.includes('deliv') || cleanStat.includes('done')) badgeClass = "status-del";
+
+                htmlBuffer += `
                     <tr>
-                        <td style="font-family:var(--font-mono); font-weight:600; color:#fff;">${row.awb || 'N/A'}</td>
-                        <td style="font-family:var(--font-mono); font-size:12px;">${row.orderId || 'N/A'}</td>
-                        <td><span class="pill ${row.type==='Pickup'?'pill-pk':'pill-rt'}">${row.type || 'N/A'}</span></td>
-                        <td><span class="status-badge ${statusBadgeClass}">${row.status || 'Outward'}</span></td>
-                        <td><b style="color:var(--neon-blue)">${row.courier || 'Delhivery'}</b></td>
-                        <td style="font-size:12px;">${row.customerName || 'N/A'} <span style="color:var(--text-mute); font-size:11px;">(${row.city || ''})</span></td>
+                        <td style="font-family:var(--font-mono); font-weight:700; color:var(--text-main);">${row.awb}</td>
+                        <td style="font-family:var(--font-mono); font-size:12px; color:var(--text-mute);">${row.orderId}</td>
+                        <td><span class="pill ${row.type==='Pickup'?'pill-pk':'pill-rt'}">${row.type}</span></td>
+                        <td><span class="status-badge ${badgeClass}">${row.status}</span></td>
+                        <td><b style="color:var(--accent-blue)">${row.courier}</b></td>
+                        <td style="font-size:12px;">${row.customerName} <span style="color:var(--text-mute); font-size:11px;">(${row.city})</span></td>
                         <td style="text-align: center;">
-                            <button class="action-btn" onclick="syncIndividualRowAPI('${row.awb}')">🛰️ Sync</button>
+                            <button class="row-action-btn" onclick="syncIndividualTargetRow('${row.awb}', ${index})">🛰️ Sync Row</button>
                         </td>
                     </tr>
                 `;
             });
-
-            tbody.innerHTML = htmlSegmentBuffer;
-            updatePaginationControls();
+            tbody.innerHTML = htmlBuffer;
         }
 
         /* ===================================
-        INSTANT CLIENT-SIDE FILTER TRACING
+        INDIVIDUAL ROW REWRITE CONTROLLER
         =================================== */
-        function applyFilters() {
-            const searchVal = document.getElementById("masterSearch").value.trim().toLowerCase();
-            const typeVal = document.getElementById("filterType").value;
-            const courierVal = document.getElementById("filterCourier").value.toLowerCase();
-            const statusVal = document.getElementById("filterStatus").value.toLowerCase();
-
-            filteredDatabase = rawSheetDatabase.filter(item => {
-                const matchSearch = !searchVal || 
-                                    (item.awb && item.awb.toLowerCase().includes(searchVal)) || 
-                                    (item.orderId && item.orderId.toLowerCase().includes(searchVal)) ||
-                                    (item.customerName && item.customerName.toLowerCase().includes(searchVal));
-                
-                const matchType = !typeVal || item.type === typeVal;
-                const matchCourier = !courierVal || (item.courier && item.courier.toLowerCase().includes(courierVal));
-                
-                let matchStatus = true;
-                if(statusVal) {
-                    const currStat = (item.status || '').toLowerCase();
-                    if(statusVal === 'rto') {
-                        matchStatus = currStat.includes('rto') || item.isRTO === true;
-                    } else {
-                        matchStatus = currStat.includes(statusVal);
-                    }
-                }
-
-                return matchSearch && matchType && matchCourier && matchStatus;
-            });
-
-            currentPage = 1; 
-            renderGridSegment();
-        }
-
-        /* ===================================
-        PAGINATION ENGINE CONFIGS
-        =================================== */
-        function updatePaginationControls() {
-            const totalItems = filteredDatabase.length;
-            const totalPages = Math.ceil(totalItems / rowsPerSegment) || 1;
-            const startRow = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerSegment + 1;
-            const endRow = Math.min(currentPage * rowsPerSegment, totalItems);
-
-            document.getElementById("paginationStats").innerText = `Segment Matrix: Row ${startRow}-${endRow} of ${totalItems} (Page ${currentPage}/${totalPages})`;
-            document.getElementById("btnPrevPage").disabled = (currentPage === 1);
-            document.getElementById("btnNextPage").disabled = (currentPage === totalPages);
-        }
-
-        function changePage(direction) {
-            currentPage += direction;
-            renderGridSegment();
-            document.querySelector(".table-scroll").scrollTop = 0; 
-        }
-
-        /* ===================================
-        INDIVIDUAL LIVE API LOGISTIC SYNC 
-        =================================== */
-        async function syncIndividualRowAPI(awb) {
+        async function syncIndividualTargetRow(awb, arrayIndex) {
             if(!awb) return;
-            showBlocker(`CONNECTING COURIER ENGINE PATHWAYS FOR AWB: ${awb}`);
+            showBlocker(`CONNECTING COURIER SATELLITE LINKS FOR TARGET AWB: ${awb}`);
             try {
                 const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(awb));
                 const result = await response.json();
                 
                 if(result.success) {
-                    toast(`Data Block Patched Successfully for AWB: ${awb}`);
-                    loadMasterData(); 
+                    toast(`Data Block Overwritten Successfully for AWB: ${awb}`);
+                    // Pull fresh context mapping frame update values
+                    const listRes = await fetch(API_URL + "?action=getRecentRecords");
+                    const listData = await listRes.json();
+                    rawMasterRecordsCache = listData.rows || [];
+                    
+                    const updatedRow = rawMasterRecordsCache.find(r => String(r.awb).trim() === awb);
+                    if(updatedRow && arrayIndex !== undefined) {
+                        matchedGridResults[arrayIndex].status = updatedRow.status || matchedGridResults[arrayIndex].status;
+                        matchedGridResults[arrayIndex].courier = updatedRow.courier || matchedGridResults[arrayIndex].courier;
+                        matchedGridResults[arrayIndex].orderId = updatedRow.orderId || matchedGridResults[arrayIndex].orderId;
+                        renderSearchResultsGrid();
+                    }
                 } else {
-                    // Safety Rule Applied: If script data returns success false or skipped, row remains unmodified
-                    toast(result.message || "No data trace fetched. Sheet row unmodified.");
+                    // Safety Fallback Rule Applied: Sheet remains completely untouched
+                    toast(`No data received. Sheet row protected & unmodified for AWB: ${awb}`);
                 }
             } catch(e) {
-                toast("Handshake Error. Original sheet data protected.");
+                toast("Handshake exception dropout. Sheet records original values safe.");
             } finally {
                 hideBlocker();
             }
         }
 
         /* ===================================
-        NEW FEATURE: SYNC ALL CURRENT VISIBLE FILTERED ROWS
+        MASS INTEGRATION EXECUTION ENGINE (SYNC ALL ACTION)
         =================================== */
-        async function syncAllVisibleRows() {
-            const targets = [...filteredDatabase];
-            if(targets.length === 0) {
-                toast("Zero visible records to cycle sync.");
-                return;
-            }
-            
-            if(!confirm(`Are you sure you want to sequential update all ${targets.length} visible filtered rows?`)) {
+        async function syncAllVisibleSearchResults() {
+            if(matchedGridResults.length === 0) {
+                toast("Zero rows mapped inside active table buffer stack to sync.");
                 return;
             }
 
-            showBlocker("BULK CLUSTER PARSING PIPELINE ENGAGED...", `Initializing execution queue...`);
-            
-            let successfulSyncs = 0;
-            let skippedSyncs = 0;
+            if(!confirm(`SYSTEM MUTEX CHALLENGE: Are you sure you want to chain process and execute bulk update parameters across all ${matchedGridResults.length} currently listed rows?`)) {
+                return;
+            }
 
-            for(let i = 0; i < targets.length; i++) {
-                const currentAWB = targets[i].awb;
-                document.getElementById("bulkStatusSubtext").innerText = `Processing: Row ${i + 1} of ${targets.length} // Targeting: ${currentAWB}`;
+            showBlocker("BULK SYSTEM DESK OPERATIONS TRIGGERED...", "Initializing sequential write transaction slots...");
+            
+            let successfulLogs = 0;
+            let protectedLogs = 0;
+
+            for(let i = 0; i < matchedGridResults.length; i++) {
+                const currentTargetAWB = matchedGridResults[i].awb;
+                document.getElementById("bulkStatusSubtext").innerText = `Processing Stream Array: Row ${i + 1} of ${matchedGridResults.length} // Targeting Waybill Code: ${currentTargetAWB}`;
                 
                 try {
-                    const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(currentAWB));
+                    const response = await fetch(API_URL + "?action=updateSingleAWB&awb=" + encodeURIComponent(currentTargetAWB));
                     const result = await response.json();
                     
                     if(result.success) {
-                        successfulSyncs++;
+                        successfulLogs++;
                     } else {
-                        // Data na milne par row purani state me rahegi bina alteration ke
-                        skippedSyncs++;
+                        // Safety Fallback execution pass: Row remains un-altered if search find fails
+                        protectedLogs++;
                     }
                 } catch(err) {
-                    skippedSyncs++; // Safe fall through error
+                    protectedLogs++; // Skip and hold safety fallback boundary safe
                 }
             }
 
             hideBlocker();
-            toast(`Bulk Chain Settled. Synced: ${successfulSyncs} | Skipped/Protected: ${skippedSyncs}`);
-            loadMasterData(); // Final fresh state view dump
+            alert(`Execution complete. Successful Sync Updates: ${successfulLogs} rows. Protected/Skipped: ${protectedLogs} rows.`);
+            
+            // Re-fetch clean system data bank frames status dump views
+            showBlocker("RE-INDEXING DATABASE MATRIX FOR CURRENT SHIFT DATA...", "Refreshing records...");
+            await fetchInitialCountsOnly();
+            parseAndFetchLocalLogs();
         }
 
         /* ===================================
-        UTILITIES
+        UTILITY APPARATUS HOOKS
         =================================== */
         function toast(msg) {
             const t = document.createElement("div");
             t.className = "toast";
-            t.innerHTML = `📬 <span>${msg}</span>`;
+            t.innerHTML = `⚙️ <span>${msg}</span>`;
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 4000);
         }
@@ -406,10 +404,10 @@
         }
 
         window.onload = function() {
-            loadMasterData();
+            fetchInitialCountsOnly();
             setInterval(() => {
                 const now = new Date();
-                document.getElementById("liveClock").innerText = `GRID TIME MATRIX // ${now.toLocaleTimeString()}`;
+                document.getElementById("liveClock").innerText = `LIVE SYSTEM DECK TIME MATRIX // ${now.toLocaleTimeString()}`;
             }, 1000);
         };
     </script>
