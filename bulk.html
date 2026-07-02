@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Scan Dashboard</title>
+    <title>Daily Scan Dashboard - Bulk Sync Engine</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -165,6 +165,15 @@
             background: var(--primary-hover);
             border-color: var(--primary-hover);
         }
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+            border-color: var(--success);
+        }
+        .btn-success:hover:not(:disabled) {
+            background: #16a34a;
+            border-color: #16a34a;
+        }
 
         .input-search {
             min-width: 280px;
@@ -218,6 +227,36 @@
             font-size: 20px;
             font-weight: 700;
             color: var(--text-main);
+        }
+
+        /* Bulk Progress Live Output Bar */
+        .bulk-progress-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .progress-bg {
+            width: 100%;
+            background: var(--border);
+            height: 8px;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         /* Table Architecture */
@@ -389,10 +428,21 @@
                     <button class="btn" id="btnRefresh" onclick="refreshData()">Refresh</button>
                     <input type="text" id="txtSearch" class="input-search" placeholder="Filter by AWB, Order, Courier, Status..." oninput="handleSearch(this.value)">
                     <button class="btn btn-primary" id="btnLoad" onclick="loadPage(1)">Load Records</button>
+                    <button class="btn btn-success" id="btnSync" disabled onclick="bulkSyncCurrentPage()">Sync Loaded Rows</button>
                     <label class="checkbox-container">
                         <input type="checkbox" id="chkAutoRefresh" onchange="toggleAutoRefresh(this.checked)">
                         Auto Refresh
                     </label>
+                </div>
+            </div>
+
+            <div id="bulkProgressWrapper" class="bulk-progress-card hidden">
+                <div class="progress-meta">
+                    <span id="bulkProgressStatus" class="text-slate-600">Processing dynamic active queues...</span>
+                    <span id="bulkProgressPercent" class="text-blue-600">0%</span>
+                </div>
+                <div class="progress-bg">
+                    <div id="bulkProgressBar" class="progress-fill"></div>
                 </div>
             </div>
             
@@ -452,6 +502,7 @@
         let globalTotalPages = 1;
         let autoRefreshIntervalId = null;
         let activeSearchQuery = "";
+        let isBulkProcessing = false;
 
         // Core API Wrapper
         async function apiRequest(queryString) {
@@ -475,6 +526,7 @@
 
         // Health check pipeline
         async function checkHealth() {
+            if (isBulkProcessing) return;
             setGlobalLoader(true);
             const data = await apiRequest("?action=healthCheck");
             setGlobalLoader(false);
@@ -487,6 +539,7 @@
 
         // Load targeted paginated record chunks
         async function loadPage(pageNumber) {
+            if (isBulkProcessing) return;
             setGlobalLoader(true);
             const data = await apiRequest(`?action=getPaginatedRecords&page=${pageNumber}&limit=100`);
             setGlobalLoader(false);
@@ -506,6 +559,8 @@
 
                 renderTableRows(currentDataset);
                 updatePaginationControls();
+                
+                document.getElementById("btnSync").disabled = (currentDataset.length === 0);
                 
                 if (activeSearchQuery) {
                     handleSearch(activeSearchQuery);
@@ -542,14 +597,13 @@
                 return;
             }
 
-            // Create fragment matrix
             const fragment = document.createDocumentFragment();
 
             dataset.forEach(row => {
                 const tr = document.createElement("tr");
                 tr.setAttribute("data-awb", row.awb);
+                tr.id = `row-${row.awb}`;
 
-                // Setup appropriate class mapping for badges
                 const st = String(row.status || '').toLowerCase();
                 let badgeClass = "badge-others";
                 if (st === "delivered") badgeClass = "badge-delivered";
@@ -565,7 +619,7 @@
                     <td>${row.courier || ''}</td>
                     <td><span class="badge ${badgeClass}" id="badge-${row.awb}">${row.status || 'Unknown'}</span></td>
                     <td>
-                        <button class="btn-table-action" onclick="updateSingleRow('${row.awb}', this)">Update</button>
+                        <button class="btn-table-action" id="action-btn-${row.awb}" onclick="updateSingleRow('${row.awb}', this)">Update</button>
                     </td>
                 `;
                 fragment.appendChild(tr);
@@ -574,51 +628,129 @@
             tbody.appendChild(fragment);
         }
 
-        // Mutation pipeline per individual table records safely
-        async function updateSingleRow(awb, buttonElement) {
-            const originalContent = buttonElement.innerHTML;
-            buttonElement.disabled = true;
-            buttonElement.innerHTML = `<span class="spinner-sm"></span>`;
+        // Process dynamic sequential loops for the entire page's active items
+        async function bulkSyncCurrentPage() {
+            if (isBulkProcessing || currentDataset.length === 0) return;
+
+            // Filter active non-final records to preserve logistics rate limits
+            const activeQueue = currentDataset.filter(row => {
+                const cleanSt = String(row.status || '').toLowerCase().trim();
+                return row.awb && cleanSt !== "delivered" && cleanSt !== "rto" && cleanSt !== "dto";
+            });
+
+            if (activeQueue.length === 0) {
+                showToast("All loaded rows on this block are already finalized/locked.", "blue");
+                return;
+            }
+
+            if (!confirm(`Identified ${activeQueue.length} un-finalized rows on Page ${globalCurrentPage}. Start safe bulk sync now?`)) return;
+
+            // Lock controls to prevent overlapping execution tracks
+            isBulkProcessing = true;
+            toggleControlInteractions(false);
             
-            showToast(`Syncing snapshot vectors for AWB: ${awb}`, "blue");
+            const progressWrapper = document.getElementById("bulkProgressWrapper");
+            const progressBar = document.getElementById("bulkProgressBar");
+            const progressTxt = document.getElementById("bulkProgressStatus");
+            const progressPct = document.getElementById("bulkProgressPercent");
+
+            progressWrapper.classList.remove("hidden");
+            
+            let successHits = 0;
+            const totalItems = activeQueue.length;
+
+            for (let i = 0; i < totalItems; i++) {
+                const item = activeQueue[i];
+                progressTxt.innerText = `Syncing target sequence (${i + 1}/${totalItems}) | AWB: ${item.awb}`;
+                
+                const targetBtn = document.getElementById(`action-btn-${item.awb}`);
+                
+                // Call core functional mutation router parameters sequentially
+                await executeRowSyncUpdate(item.awb, targetBtn);
+                
+                successHits++;
+                
+                // Update live dynamic layout rendering structures
+                const computedPercent = Math.round((successHits / totalItems) * 100);
+                progressBar.style.width = `${computedPercent}%`;
+                progressPct.innerText = `${computedPercent}%`;
+
+                // Safe anti-throttle pause interval delay: 1200ms
+                if (i < totalItems - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1200));
+                }
+            }
+
+            // Cleanup & release lock states
+            isBulkProcessing = false;
+            toggleControlInteractions(true);
+            progressWrapper.classList.add("hidden");
+            progressBar.style.width = "0%";
+            
+            showToast(`Bulk pagination sequence complete! Successfully refreshed metadata profiles.`, "success");
+            loadPage(globalCurrentPage);
+        }
+
+        // Core row level synchronization worker blueprint
+        async function executeRowSyncUpdate(awb, buttonElement) {
+            let originalContent = "Update";
+            if (buttonElement) {
+                originalContent = buttonElement.innerHTML;
+                buttonElement.disabled = true;
+                buttonElement.innerHTML = `<span class="spinner-sm"></span>`;
+            }
+            
             const data = await apiRequest(`?action=updateSingleAWB&awb=${awb}`);
             
-            buttonElement.disabled = false;
-            buttonElement.innerHTML = originalContent;
+            if (buttonElement) {
+                buttonElement.disabled = false;
+                buttonElement.innerHTML = originalContent;
+            }
 
             if (data && data.success) {
-                if (data.skipped) {
-                    showToast(`AWB ${awb} scan verification skipped by sheet configuration rules.`, "blue");
-                } else {
-                    showToast(`AWB ${awb} status synchronized to tracking indexes cleanly.`, "success");
+                const targetBadge = document.getElementById(`badge-${awb}`);
+                if (targetBadge && data.status) {
+                    targetBadge.innerText = data.status;
+                    targetBadge.className = "badge";
                     
-                    // Direct dynamic UI Mutation instantly without resetting structural view grids
-                    const targetBadge = document.getElementById(`badge-${awb}`);
-                    if (targetBadge && data.status) {
-                        targetBadge.innerText = data.status;
-                        
-                        // Remap badge layouts dynamically
-                        targetBadge.className = "badge";
-                        const ns = String(data.status).toLowerCase();
-                        let badgeClass = "badge-others";
-                        if (ns === "delivered") badgeClass = "badge-delivered";
-                        else if (ns === "pending") badgeClass = "badge-pending";
-                        else if (ns === "rto") badgeClass = "badge-rto";
-                        else if (ns === "dto") badgeClass = "badge-dto";
-                        targetBadge.classList.add(badgeClass);
-                        
-                        // Overwrite cached entry safely to maintain filtering stability
-                        const recordIndex = currentDataset.findIndex(r => r.awb === awb);
-                        if (recordIndex !== -1) currentDataset[recordIndex].status = data.status;
-                    }
+                    const ns = String(data.status).toLowerCase();
+                    let badgeClass = "badge-others";
+                    if (ns === "delivered") badgeClass = "badge-delivered";
+                    else if (ns === "pending") badgeClass = "badge-pending";
+                    else if (ns === "rto") badgeClass = "badge-rto";
+                    else if (ns === "dto") badgeClass = "badge-dto";
+                    targetBadge.classList.add(badgeClass);
+                    
+                    const idx = currentDataset.findIndex(r => r.awb === awb);
+                    if (idx !== -1) currentDataset[idx].status = data.status;
                 }
-            } else {
-                showToast(`Failed to update records for tracking vector ${awb}`, "error");
             }
+        }
+
+        // Manual individual execution triggers wrapper
+        async function updateSingleRow(awb, buttonElement) {
+            if (isBulkProcessing) return;
+            showToast(`Querying live tracking telemetry for AWB: ${awb}`, "blue");
+            await executeRowSyncUpdate(awb, buttonElement);
+            showToast(`Individual verification sequence processed for node ${awb}`, "success");
+        }
+
+        // Toggle button lockouts during batch synchronization
+        function toggleControlInteractions(isEnabled) {
+            document.getElementById("btnHealth").disabled = !isEnabled;
+            document.getElementById("btnRefresh").disabled = !isEnabled;
+            document.getElementById("btnLoad").disabled = !isEnabled;
+            document.getElementById("btnSync").disabled = !isEnabled;
+            document.getElementById("btnPrev").disabled = !isEnabled || (globalCurrentPage <= 1);
+            document.getElementById("btnNext").disabled = !isEnabled || (globalCurrentPage >= globalTotalPages);
+            
+            const rowButtons = document.querySelectorAll(".btn-table-action");
+            rowButtons.forEach(btn => btn.disabled = !isEnabled);
         }
 
         // Basic pagination navigation
         function navigatePage(direction) {
+            if (isBulkProcessing) return;
             const nextTarget = globalCurrentPage + direction;
             if (nextTarget >= 1 && nextTarget <= globalTotalPages) {
                 loadPage(nextTarget);
@@ -631,6 +763,7 @@
         }
 
         function refreshData() {
+            if (isBulkProcessing) return;
             loadPage(globalCurrentPage);
         }
 
@@ -639,7 +772,7 @@
             if (isEnabled) {
                 showToast("Automated background background sync worker enabled (30s interval clock).", "blue");
                 autoRefreshIntervalId = setInterval(() => {
-                    if (!isSyncingActive()) {
+                    if (!isBulkProcessing) {
                         refreshData();
                     }
                 }, 30000);
@@ -650,11 +783,6 @@
                 }
                 showToast("Automated background background sync worker detached safely.", "blue");
             }
-        }
-
-        function isSyncingActive() {
-            const activeButtons = document.querySelectorAll(".btn-table-action:disabled");
-            return activeButtons.length > 0;
         }
 
         // Beautiful custom Toast engine injection mechanics
@@ -670,7 +798,6 @@
             
             container.appendChild(toast);
             
-            // Garbage collection schedule routine automatically inside 4.5 seconds
             setTimeout(() => {
                 if (toast && toast.parentElement) {
                     toast.style.opacity = "0";
