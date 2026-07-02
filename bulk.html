@@ -1,295 +1,684 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logistics Reverse Engine Manager</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <style>
-    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    .progress-fill { transition: width 0.25s ease-in-out; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Scan Dashboard</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            
+            --success: #22c55e;
+            --warning: #f97316;
+            --danger: #ef4444;
+            --purple: #a855f7;
+            --info: #3b82f6;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+            --radius-sm: 6px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 24px;
+        }
+
+        /* Fullscreen Loader */
+        .fullscreen-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .fullscreen-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner-sm {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Dashboard Container */
+        .dashboard {
+            max-w: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Control Panel Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 24px;
+        }
+
+        .header-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .action-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Form Elements & Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            white-space: nowrap;
+        }
+        .btn:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: var(--text-muted);
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .input-search {
+            min-width: 280px;
+            padding: 10px 14px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+        .input-search:focus {
+            border-color: var(--primary);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            user-select: none;
+            cursor: pointer;
+        }
+        .checkbox-container input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Stats Grid */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+        }
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Table Architecture */
+        .table-card {
+            padding: 0;
+            overflow: hidden;
+        }
+        .table-scroll {
+            overflow-x: auto;
+            max-height: 650px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            padding: 14px 20px;
+            border-bottom: 2px solid var(--border);
+            z-index: 10;
+        }
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+        tr:hover td {
+            background-color: #f1f5f9 !important;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            text-transform: capitalize;
+        }
+        .badge-delivered { background-color: #dcfce7; color: #166534; }
+        .badge-pending { background-color: #ffedd5; color: #9a3412; }
+        .badge-rto { background-color: #fee2e2; color: #991b1b; }
+        .badge-dto { background-color: #f3e8ff; color: #6b21a8; }
+        .badge-others { background-color: #dbeafe; color: #1e40af; }
+
+        /* Row Action Button */
+        .btn-table-action {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .btn-table-action:hover:not(:disabled) {
+            background: var(--primary-hover);
+        }
+        .btn-table-action:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        /* Pagination Architecture */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+        }
+        .page-indicator {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .page-indicator span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Toast Engine */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10000;
+            max-width: 360px;
+            width: 100%;
+        }
+        .toast {
+            background: var(--surface);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow-md);
+            border-radius: 6px;
+            padding: 14px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            animation: slideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transition: all 0.2s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast.toast-success { border-left-color: var(--success); }
+        .toast.toast-error { border-left-color: var(--danger); }
+        .toast.toast-blue { border-left-color: var(--info); }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 1;
+            margin-left: 12px;
+        }
+
+        /* Responsiveness Media Rules */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .title-row { flex-direction: column; align-items: start; }
+            .action-cluster { width: 100%; }
+            .input-search { width: 100%; min-width: unset; }
+            .pagination-bar { flex-direction: column; gap: 12px; text-align: center; }
+        }
+    </style>
 </head>
-<body class="text-slate-800 antialiased">
+<body>
 
-  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <div class="flex items-center gap-2.5">
-          <i class="fa-solid fa-arrows-spin text-blue-600 text-xl animate-spin-slow"></i>
-          <span class="text-lg font-bold text-slate-900">Reverse Chunk Optimizer</span>
-        </div>
-        <div>
-          <span id="conn-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-            <i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> Connecting Pipeline...
-          </span>
-        </div>
-      </div>
+    <div id="fullscreenLoader" class="fullscreen-loader hidden">
+        <div class="spinner"></div>
     </div>
-  </nav>
 
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-
-    <section class="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-5">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 class="text-base font-bold text-slate-900">Reverse 100-Row Chunk Controller</h2>
-          <p class="text-xs text-slate-500 mt-0.5">Scans rows starting from bottom (Latest first). Updates active entries sequentially.</p>
-        </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <button onclick="loadTargetPage(1)" id="btn-load" class="flex-1 sm:flex-initial inline-flex justify-center items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-xl text-xs hover:bg-blue-700 transition shadow-xs cursor-pointer">
-            <i class="fa-solid fa-download mr-1.5"></i> Load Last 100 Rows
-          </button>
-          <button onclick="syncCurrentBlock()" id="btn-sync" disabled class="flex-1 sm:flex-initial inline-flex justify-center items-center px-4 py-2 bg-emerald-600 text-white font-semibold rounded-xl text-xs hover:bg-emerald-700 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed transition shadow-xs cursor-pointer">
-            <i class="fa-solid fa-cloud-arrow-up mr-1.5"></i> Sync Loaded Rows
-          </button>
-        </div>
-      </div>
-
-      <div id="progress-card" class="hidden border border-slate-100 rounded-xl p-4 bg-slate-50 space-y-2.5">
-        <div class="flex justify-between text-xs font-semibold">
-          <span id="progress-txt" class="text-slate-600">Starting sync processing...</span>
-          <span id="progress-pct" class="text-blue-600">0%</span>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-          <div id="progress-bar" class="progress-fill bg-blue-600 h-1.5 w-0"></div>
-        </div>
-        <div class="flex gap-4 text-[11px] font-mono text-slate-500 pt-0.5">
-          <div>Synced Successfully: <span id="sync-ok" class="text-emerald-600 font-bold">0</span></div>
-          <div>Skipped/Failed: <span id="sync-fail" class="text-rose-500 font-bold">0</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
-          <thead class="bg-slate-50 text-slate-500 uppercase font-semibold tracking-wider">
-            <tr>
-              <th class="px-6 py-3.5">Row ID</th>
-              <th class="px-6 py-3.5">Date</th>
-              <th class="px-6 py-3.5">Type</th>
-              <th class="px-6 py-3.5">AWB Number</th>
-              <th class="px-6 py-3.5">Order ID</th>
-              <th class="px-6 py-3.5">Courier</th>
-              <th class="px-6 py-3.5">Status</th>
-            </tr>
-          </thead>
-          <tbody id="table-body" class="divide-y divide-slate-200 bg-white text-slate-600">
-            <tr>
-              <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-                <i class="fa-solid fa-database text-xl block mb-2 text-slate-300"></i>
-                Pipeline ready. Click "Load Last 100 Rows" to stream live index.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div id="footer-controls" class="hidden bg-slate-50 px-6 py-3.5 border-t border-slate-200 flex items-center justify-between">
-        <div class="text-[11px] font-medium text-slate-500">
-          Showing <span id="view-range" class="text-slate-800 font-bold">0-0</span> of <span id="view-total" class="text-slate-800 font-bold">0</span> rows
-        </div>
-        <div class="flex items-center gap-1" id="pagination-nav-btns"></div>
-      </div>
-    </section>
-
-  </main>
-
-  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-xs font-medium"></div>
-
-  <script>
-    // ⚠️ PASTE YOUR COPIED GOOGLE APPS SCRIPT WEB APP URL HERE
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwxarrUNubFjQzgIRbXVgocDD5RLsjm5rme3iIuWnYyy8Dz1eESVfRcqNwlh8bWwz2NVQ/exec"; 
-
-    let activeBlockData = [];
-    let currentActivePage = 1;
-    let isSyncingActive = false;
-
-    function triggerToast(msg, isErr = false) {
-      const toast = document.getElementById('toast');
-      toast.className = `fixed bottom-5 right-5 z-50 transition-all duration-300 px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-xs font-medium ${isErr ? 'bg-rose-600 text-white' : 'bg-slate-900 text-white'}`;
-      toast.innerHTML = `<i class="fa-solid ${isErr ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i> ${msg}`;
-      toast.style.transform = 'translateY(0)';
-      toast.style.opacity = '1';
-      setTimeout(() => {
-        toast.style.transform = 'translateY(20px)';
-        toast.style.opacity = '0';
-      }, 3500);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if(WEB_APP_URL.includes("YOUR_APPS_SCRIPT_WEB_APP_URL_HERE")) {
-        triggerToast("Config Alert: Please set your Web App URL in index.html line 86.", true);
-        return;
-      }
-      testPipelineConnection();
-    });
-
-    async function testPipelineConnection() {
-      try {
-        const response = await fetch(`${WEB_APP_URL}?action=healthCheck`);
-        const data = await response.json();
-        if(data.success) {
-          const badge = document.getElementById('conn-badge');
-          badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200";
-          badge.innerHTML = `<i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse text-emerald-500"></i> Pipeline Active`;
-        }
-      } catch (err) {
-        const badge = document.getElementById('conn-badge');
-        badge.className = "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200";
-        badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Stream Offline`;
-      }
-    }
-
-    // Dynamic Chunk Pagination Loader
-    async function loadTargetPage(pageNum) {
-      if(isSyncingActive) return triggerToast("Sync processing currently active. Please hold.", true);
-      currentActivePage = pageNum;
-      
-      const tbody = document.getElementById('table-body');
-      tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Streaming reverse block index data for Page ${pageNum}...</td></tr>`;
-      
-      try {
-        const res = await fetch(`${WEB_APP_URL}?action=getPaginatedRecords&page=${pageNum}&limit=100`);
-        const data = await res.json();
+    <div class="dashboard">
         
-        if(data.success && data.rows && data.rows.length > 0) {
-          activeBlockData = data.rows;
-          renderUIElementsTable(activeBlockData);
-          buildPaginationFooterControls(data.currentPage, data.totalPages, data.totalRows);
-          document.getElementById('btn-sync').disabled = false;
-        } else {
-          tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-400">Spreadsheet array returned empty. No row profiles found.</td></tr>`;
-          document.getElementById('btn-sync').disabled = true;
-          document.getElementById('footer-controls').classList.add('hidden');
-        }
-      } catch(e) {
-        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-rose-500 font-medium">Failed to read cloud metadata stream response.</td></tr>`;
-      }
-    }
+        <header class="card header-panel">
+            <div class="title-row">
+                <h1>Daily Scan Dashboard</h1>
+                <div class="action-cluster">
+                    <button class="btn" id="btnHealth" onclick="checkHealth()">Health Check</button>
+                    <button class="btn" id="btnRefresh" onclick="refreshData()">Refresh</button>
+                    <input type="text" id="txtSearch" class="input-search" placeholder="Filter by AWB, Order, Courier, Status..." oninput="handleSearch(this.value)">
+                    <button class="btn btn-primary" id="btnLoad" onclick="loadPage(1)">Load Records</button>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="chkAutoRefresh" onchange="toggleAutoRefresh(this.checked)">
+                        Auto Refresh
+                    </label>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="stat-label">Current Page</span>
+                    <span class="stat-value" id="valCurrentPage">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Pages</span>
+                    <span class="stat-value" id="valTotalPages">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Rows</span>
+                    <span class="stat-value" id="valTotalRows">0</span>
+                </div>
+            </div>
+        </header>
 
-    function renderUIElementsTable(rows) {
-      const tbody = document.getElementById('table-body');
-      tbody.innerHTML = rows.map(row => {
-        const cleanSt = (row.status || 'Pending').toLowerCase().trim();
-        const isClosedState = cleanSt === 'delivered' || cleanSt === 'rto' || cleanSt === 'dto';
-        
-        return `
-          <tr class="hover:bg-slate-50/70 transition-colors ${isClosedState ? 'bg-slate-50/50 text-slate-400' : ''}">
-            <td class="px-6 py-3 font-mono font-bold text-slate-400">#${row.row}</td>
-            <td class="px-6 py-3 whitespace-nowrap">${row.date || 'N/A'}</td>
-            <td class="px-6 py-3 whitespace-nowrap">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold ${row.type === 'Pickup' ? 'bg-blue-50 text-blue-700 border border-blue-100' : 'bg-rose-50 text-rose-700 border border-rose-100'}">${row.type || 'N/A'}</span>
-            </td>
-            <td class="px-6 py-3 whitespace-nowrap font-semibold text-slate-900">${row.awb || 'N/A'}</td>
-            <td class="px-6 py-3 whitespace-nowrap font-medium">${row.orderId || 'N/A'}</td>
-            <td class="px-6 py-3 whitespace-nowrap text-slate-500">${row.courier || 'N/A'}</td>
-            <td class="px-6 py-3 whitespace-nowrap">
-              <span class="px-2 py-0.5 rounded-md font-bold text-[10px] ${isClosedState ? 'bg-slate-100 text-slate-500' : 'bg-amber-50 text-amber-700 border border-amber-100'}">${row.status || 'Active'}</span>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
+        <section class="card table-card">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>AWB</th>
+                            <th>Order ID</th>
+                            <th>Courier</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">No records loaded. Click 'Load Records' to sync with API.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination-bar">
+                <button class="btn" id="btnPrev" onclick="navigatePage(-1)" disabled>Previous</button>
+                <div class="page-indicator">Page <span id="lblCurrentPage">0</span> of <span id="lblTotalPages">0</span></div>
+                <button class="btn" id="btnNext" onclick="navigatePage(1)" disabled>Next</button>
+            </div>
+        </section>
+    </div>
 
-    function buildPaginationFooterControls(current, maxPages, totalItems) {
-      document.getElementById('footer-controls').classList.remove('hidden');
-      
-      const entryFrom = ((current - 1) * 100) + 1;
-      const entryTo = Math.min(entryFrom + 99, totalItems);
-      document.getElementById('view-range').innerText = `${entryFrom}-${entryTo}`;
-      document.getElementById('view-total').innerText = totalItems;
+    <div id="toastContainer" class="toast-container"></div>
 
-      const navContainer = document.getElementById('pagination-nav-btns');
-      navContainer.innerHTML = '';
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwVEohTpMO-oGYpimvIHQYbxi0TIuotWCTpLYgt2QMVe7AKwSQYhW2ByHuleZd0-qvrVQ/exec";
 
-      let pageWindowStart = Math.max(1, current - 2);
-      let pageWindowEnd = Math.min(maxPages, pageWindowStart + 4);
-      if (pageWindowEnd - pageWindowStart < 4) pageWindowStart = Math.max(1, pageWindowEnd - 4);
+        let currentDataset = [];
+        let globalCurrentPage = 1;
+        let globalTotalPages = 1;
+        let autoRefreshIntervalId = null;
+        let activeSearchQuery = "";
 
-      if(current > 1) {
-        navContainer.innerHTML += `<button onclick="loadTargetPage(${current - 1})" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 bg-white hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-chevron-left"></i></button>`;
-      }
-
-      for (let p = pageWindowStart; p <= pageWindowEnd; p++) {
-        navContainer.innerHTML += `
-          <button onclick="loadTargetPage(${p})" class="px-2.5 py-1 text-xs font-semibold rounded-lg border ${p === current ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-slate-300 text-slate-600 hover:bg-slate-50'} cursor-pointer">
-            ${p}
-          </button>
-        `;
-      }
-
-      if(current < maxPages) {
-        navContainer.innerHTML += `<button onclick="loadTargetPage(${current + 1})" class="px-2.5 py-1 text-xs rounded-lg border border-slate-300 bg-white hover:bg-slate-50 cursor-pointer"><i class="fa-solid fa-chevron-right"></i></button>`;
-      }
-    }
-
-    // Process Safe Non-Blocking Updates for the Page Chunk Array
-    async function syncCurrentBlock() {
-      if(isSyncingActive || activeBlockData.length === 0) return;
-      
-      const unverifiedAWBs = activeBlockData.filter(row => {
-        const rawStatus = (row.status || '').toLowerCase().trim();
-        return row.awb && rawStatus !== 'delivered' && rawStatus !== 'rto' && rawStatus !== 'dto';
-      });
-
-      if(unverifiedAWBs.length === 0) {
-        return triggerToast("Verification complete. All rows on this chunk profile match locked states.");
-      }
-
-      if(!confirm(`Identified ${unverifiedAWBs.length} active rows to sync. Proceed with queue stream?`)) return;
-
-      isSyncingActive = true;
-      document.getElementById('btn-sync').disabled = true;
-      document.getElementById('btn-load').disabled = true;
-      
-      const pCard = document.getElementById('progress-card');
-      pCard.classList.remove('hidden');
-
-      let goodHits = 0;
-      let badHits = 0;
-      const totalToProcess = unverifiedAWBs.length;
-
-      for (let i = 0; i < totalToProcess; i++) {
-        const item = unverifiedAWBs[i];
-        document.getElementById('progress-txt').innerText = `[Row #${item.row}] Querying AWB API token: ${item.awb}`;
-
-        try {
-          const res = await fetch(`${WEB_APP_URL}?action=updateSingleAWB&awb=${encodeURIComponent(item.awb)}`);
-          const payload = await res.json();
-          
-          if(payload.success && !payload.skipped) goodHits++;
-          else badHits++;
-        } catch(e) {
-          badHits++;
+        // Core API Wrapper
+        async function apiRequest(queryString) {
+            try {
+                const response = await fetch(`${API_URL}${queryString}`);
+                if (!response.ok) throw new Error(`HTTP Error status code: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error("API Request Defect:", error);
+                showToast(`API Request Failed: ${error.message}`, "error");
+                return null;
+            }
         }
 
-        // Increment dynamic UI status nodes
-        document.getElementById('sync-ok').innerText = goodHits;
-        document.getElementById('sync-fail').innerText = badHits;
-        
-        const runtimePercentage = Math.round(((i + 1) / totalToProcess) * 100);
-        document.getElementById('progress-bar').style.width = `${runtimePercentage}%`;
-        document.getElementById('progress-percent').innerText = `${runtimePercentage}%`;
-
-        // Anti-throttle load-balancing mechanism: 1.25s interval safety
-        if(i < totalToProcess - 1) {
-          await new Promise(r => setTimeout(r, 1250));
+        // Global UI Loader Management
+        function setGlobalLoader(isVisible) {
+            const loader = document.getElementById("fullscreenLoader");
+            if (isVisible) loader.classList.remove("hidden");
+            else loader.classList.add("hidden");
         }
-      }
 
-      isSyncingActive = false;
-      document.getElementById('btn-load').disabled = false;
-      document.getElementById('progress-txt').innerText = `Batch stream processing finished for Page ${currentActivePage}!`;
-      triggerToast(`Chunk sync finalized. ${goodHits} operations integrated successfully.`);
-      
-      // Auto-reload current snapshot matrix safely
-      loadTargetPage(currentActivePage);
-    }
-  </script>
+        // Health check pipeline
+        async function checkHealth() {
+            setGlobalLoader(true);
+            const data = await apiRequest("?action=healthCheck");
+            setGlobalLoader(false);
+            if (data && data.success) {
+                showToast(data.message || "Health Check Passed! Connection healthy.", "success");
+            } else {
+                showToast("Health Check Validation Failed.", "error");
+            }
+        }
+
+        // Load targeted paginated record chunks
+        async function loadPage(pageNumber) {
+            setGlobalLoader(true);
+            const data = await apiRequest(`?action=getPaginatedRecords&page=${pageNumber}&limit=100`);
+            setGlobalLoader(false);
+            
+            if (data && data.success) {
+                currentDataset = data.rows || [];
+                globalCurrentPage = data.currentPage || 1;
+                globalTotalPages = data.totalPages || 1;
+                
+                // Set metadata nodes
+                document.getElementById("valCurrentPage").innerText = globalCurrentPage;
+                document.getElementById("valTotalPages").innerText = globalTotalPages;
+                document.getElementById("valTotalRows").innerText = data.totalRows || 0;
+                
+                document.getElementById("lblCurrentPage").innerText = globalCurrentPage;
+                document.getElementById("lblTotalPages").innerText = globalTotalPages;
+
+                renderTableRows(currentDataset);
+                updatePaginationControls();
+                
+                if (activeSearchQuery) {
+                    handleSearch(activeSearchQuery);
+                }
+            }
+        }
+
+        // Handle structural multi-column in-memory searching instantly
+        function handleSearch(query) {
+            activeSearchQuery = query.trim().toLowerCase();
+            if (!activeSearchQuery) {
+                renderTableRows(currentDataset);
+                return;
+            }
+
+            const filtered = currentDataset.filter(row => {
+                return (
+                    String(row.awb || '').toLowerCase().includes(activeSearchQuery) ||
+                    String(row.orderId || '').toLowerCase().includes(activeSearchQuery) ||
+                    String(row.courier || '').toLowerCase().includes(activeSearchQuery) ||
+                    String(row.status || '').toLowerCase().includes(activeSearchQuery)
+                );
+            });
+            renderTableRows(filtered);
+        }
+
+        // Render routine inside dataset arrays
+        function renderTableRows(dataset) {
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+
+            if (dataset.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">No matching transactional matching indices found.</td></tr>`;
+                return;
+            }
+
+            // Create fragment matrix
+            const fragment = document.createDocumentFragment();
+
+            dataset.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.setAttribute("data-awb", row.awb);
+
+                // Setup appropriate class mapping for badges
+                const st = String(row.status || '').toLowerCase();
+                let badgeClass = "badge-others";
+                if (st === "delivered") badgeClass = "badge-delivered";
+                else if (st === "pending") badgeClass = "badge-pending";
+                else if (st === "rto") badgeClass = "badge-rto";
+                else if (st === "dto") badgeClass = "badge-dto";
+
+                tr.innerHTML = `
+                    <td>${row.date || ''}</td>
+                    <td>${row.type || ''}</td>
+                    <td style="font-weight: 600;">${row.awb || ''}</td>
+                    <td>${row.orderId || ''}</td>
+                    <td>${row.courier || ''}</td>
+                    <td><span class="badge ${badgeClass}" id="badge-${row.awb}">${row.status || 'Unknown'}</span></td>
+                    <td>
+                        <button class="btn-table-action" onclick="updateSingleRow('${row.awb}', this)">Update</button>
+                    </td>
+                `;
+                fragment.appendChild(tr);
+            });
+
+            tbody.appendChild(fragment);
+        }
+
+        // Mutation pipeline per individual table records safely
+        async function updateSingleRow(awb, buttonElement) {
+            const originalContent = buttonElement.innerHTML;
+            buttonElement.disabled = true;
+            buttonElement.innerHTML = `<span class="spinner-sm"></span>`;
+            
+            showToast(`Syncing snapshot vectors for AWB: ${awb}`, "blue");
+            const data = await apiRequest(`?action=updateSingleAWB&awb=${awb}`);
+            
+            buttonElement.disabled = false;
+            buttonElement.innerHTML = originalContent;
+
+            if (data && data.success) {
+                if (data.skipped) {
+                    showToast(`AWB ${awb} scan verification skipped by sheet configuration rules.`, "blue");
+                } else {
+                    showToast(`AWB ${awb} status synchronized to tracking indexes cleanly.`, "success");
+                    
+                    // Direct dynamic UI Mutation instantly without resetting structural view grids
+                    const targetBadge = document.getElementById(`badge-${awb}`);
+                    if (targetBadge && data.status) {
+                        targetBadge.innerText = data.status;
+                        
+                        // Remap badge layouts dynamically
+                        targetBadge.className = "badge";
+                        const ns = String(data.status).toLowerCase();
+                        let badgeClass = "badge-others";
+                        if (ns === "delivered") badgeClass = "badge-delivered";
+                        else if (ns === "pending") badgeClass = "badge-pending";
+                        else if (ns === "rto") badgeClass = "badge-rto";
+                        else if (ns === "dto") badgeClass = "badge-dto";
+                        targetBadge.classList.add(badgeClass);
+                        
+                        // Overwrite cached entry safely to maintain filtering stability
+                        const recordIndex = currentDataset.findIndex(r => r.awb === awb);
+                        if (recordIndex !== -1) currentDataset[recordIndex].status = data.status;
+                    }
+                }
+            } else {
+                showToast(`Failed to update records for tracking vector ${awb}`, "error");
+            }
+        }
+
+        // Basic pagination navigation
+        function navigatePage(direction) {
+            const nextTarget = globalCurrentPage + direction;
+            if (nextTarget >= 1 && nextTarget <= globalTotalPages) {
+                loadPage(nextTarget);
+            }
+        }
+
+        function updatePaginationControls() {
+            document.getElementById("btnPrev").disabled = (globalCurrentPage <= 1);
+            document.getElementById("btnNext").disabled = (globalCurrentPage >= globalTotalPages);
+        }
+
+        function refreshData() {
+            loadPage(globalCurrentPage);
+        }
+
+        // Auto polling engine scheduler logic
+        function toggleAutoRefresh(isEnabled) {
+            if (isEnabled) {
+                showToast("Automated background background sync worker enabled (30s interval clock).", "blue");
+                autoRefreshIntervalId = setInterval(() => {
+                    if (!isSyncingActive()) {
+                        refreshData();
+                    }
+                }, 30000);
+            } else {
+                if (autoRefreshIntervalId) {
+                    clearInterval(autoRefreshIntervalId);
+                    autoRefreshIntervalId = null;
+                }
+                showToast("Automated background background sync worker detached safely.", "blue");
+            }
+        }
+
+        function isSyncingActive() {
+            const activeButtons = document.querySelectorAll(".btn-table-action:disabled");
+            return activeButtons.length > 0;
+        }
+
+        // Beautiful custom Toast engine injection mechanics
+        function showToast(message, variant = "blue") {
+            const container = document.getElementById("toastContainer");
+            const toast = document.createElement("div");
+            toast.className = `toast toast-${variant}`;
+            
+            toast.innerHTML = `
+                <span>${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Garbage collection schedule routine automatically inside 4.5 seconds
+            setTimeout(() => {
+                if (toast && toast.parentElement) {
+                    toast.style.opacity = "0";
+                    toast.style.transform = "translateY(20px)";
+                    setTimeout(() => toast.remove(), 200);
+                }
+            }, 4500);
+        }
+    </script>
 </body>
 </html>
