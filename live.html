@@ -1,421 +1,360 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logistics & Inventory Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>लॉजिस्टिक्स ट्रैकिंग एवं इन्वेंटरी डैशबोर्ड</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+    .tab-btn.active { border-bottom-color: #3b82f6; color: #3b82f6; font-weight: 600; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="text-slate-800 antialiased">
 
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-blue-600 text-white p-2 rounded-xl shadow-md shadow-blue-200">
-                    <i data-lucide="box" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-gray-900 tracking-tight">ScanTrack Pro</h1>
-                    <p class="text-xs text-gray-500">Logistics & Inventory Hub</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-xs font-medium border border-emerald-200">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>System Connected</span>
-            </div>
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-truck-fast text-blue-600 text-2xl"></i>
+          <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Logistics Hub</span>
         </div>
-    </header>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <nav class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn active flex items-center justify-center space-x-2 bg-white border border-gray-200 p-3.5 rounded-xl text-sm font-semibold shadow-sm text-blue-600 border-blue-500 bg-blue-50/10 transition-all hover:bg-gray-50">
-                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                <span>Overview Dashboard</span>
-            </button>
-            <button onclick="switchTab('tracking')" id="btn-tracking" class="tab-btn flex items-center justify-center space-x-2 bg-white border border-gray-200 p-3.5 rounded-xl text-sm font-semibold shadow-sm text-gray-600 transition-all hover:bg-gray-50">
-                <i data-lucide="search" class="w-4 h-4"></i>
-                <span>Track & Search</span>
-            </button>
-            <button onclick="switchTab('records')" id="btn-records" class="tab-btn flex items-center justify-center space-x-2 bg-white border border-gray-200 p-3.5 rounded-xl text-sm font-semibold shadow-sm text-gray-600 transition-all hover:bg-gray-50">
-                <i data-lucide="history" class="w-4 h-4"></i>
-                <span>Recent Scan Logs</span>
-            </button>
-            <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn flex items-center justify-center space-x-2 bg-white border border-gray-200 p-3.5 rounded-xl text-sm font-semibold shadow-sm text-gray-600 transition-all hover:bg-gray-50">
-                <i data-lucide="warehouse" class="w-4 h-4"></i>
-                <span>Inventory Manager</span>
-            </button>
-        </nav>
-
-        <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-5 py-3 rounded-xl shadow-xl flex items-center space-x-3 text-sm animate-bounce">
-            <i data-lucide="info" class="w-4 h-4 text-blue-400"></i>
-            <span id="toast-msg">Notification Message</span>
+        <div class="flex items-center gap-2">
+          <span id="connection-status" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+            <i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> कनेक्टिंग...
+          </span>
         </div>
-
-        <div id="tab-dashboard" class="tab-content active space-y-6">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Today's Pickups</p>
-                    <h3 id="stat-today-pickup" class="text-3xl font-bold text-gray-900 mt-2">0</h3>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Today's Returns</p>
-                    <h3 id="stat-today-return" class="text-3xl font-bold text-gray-900 mt-2">0</h3>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Month Pickups (<span id="month-lbl">...</span>)</p>
-                    <h3 id="stat-month-pickup" class="text-3xl font-bold text-blue-600 mt-2">0</h3>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400">Month Returns</p>
-                    <h3 id="stat-month-return" class="text-3xl font-bold text-amber-600 mt-2">0</h3>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm lg:col-span-2">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-gray-900">Performance Trend</h4>
-                        <button onclick="loadDashboardCounts()" class="text-gray-400 hover:text-gray-600"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
-                    </div>
-                    <div class="h-64 flex items-center justify-center bg-gray-50 rounded-xl">
-                        <p class="text-gray-400 text-xs">Chart Visualizing Data (Auto-loads from Sheet Data)</p>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-                    <h4 class="font-bold text-gray-900 flex items-center space-x-2">
-                        <i data-lucide="plus-circle" class="w-5 h-5 text-blue-500"></i>
-                        <span>Quick Log Entry</span>
-                    </h4>
-                    <form id="entryForm" onsubmit="handleSaveEntry(event)" class="space-y-3">
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Scan Type</label>
-                            <select id="entry-type" class="w-full mt-1 border border-gray-200 rounded-lg p-2 bg-gray-50 text-sm focus:outline-blue-500" required>
-                                <option value="Pickup">Pickup</option>
-                                <option value="Return">Return</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">AWB Number / Waybill</label>
-                            <input type="text" id="entry-awb" placeholder="Enter or Scan AWB" class="w-full mt-1 border border-gray-200 rounded-lg p-2 text-sm focus:outline-blue-500" required>
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-gray-500">Order ID (Optional)</label>
-                            <input type="text" id="entry-orderid" placeholder="Ref Order ID" class="w-full mt-1 border border-gray-200 rounded-lg p-2 text-sm focus:outline-blue-500">
-                        </div>
-                        <button type="submit" class="w-full bg-gray-900 hover:bg-gray-800 text-white rounded-lg p-2.5 text-sm font-medium shadow-sm transition-all flex items-center justify-center space-x-2">
-                            <i data-lucide="save" class="w-4 h-4"></i>
-                            <span>Save to Sheet</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-tracking" class="tab-content space-y-6">
-            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm max-w-2xl mx-auto">
-                <h3 class="text-lg font-bold mb-2">Track Smart Shipments</h3>
-                <p class="text-gray-500 text-xs mb-4">Search real-time order status via internal databases, BOXD API, or Delhivery Engine.</p>
-                
-                <div class="flex space-x-2">
-                    <div class="relative flex-1">
-                        <i data-lucide="search" class="w-5 h-5 absolute left-3 top-3.5 text-gray-400"></i>
-                        <input type="text" id="search-keyword" placeholder="Enter AWB or Order Number..." class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-blue-500">
-                    </div>
-                    <button onclick="executeSearch()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-xl text-sm shadow-sm transition-all flex items-center space-x-2">
-                        <span>Search</span>
-                    </button>
-                </div>
-
-                <div class="mt-4 flex space-x-2">
-                    <button onclick="triggerSingleAWBUpdate()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-3 py-1.5 rounded-lg border border-gray-200 transition-all">
-                        Force Update Courier Status
-                    </button>
-                </div>
-            </div>
-
-            <div id="search-result-card" class="hidden bg-white rounded-2xl border border-gray-100 shadow-md p-6 max-w-2xl mx-auto">
-                <div class="flex justify-between items-start border-b pb-4 mb-4">
-                    <div>
-                        <span id="res-type" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">-</span>
-                        <h4 id="res-awb" class="text-xl font-bold mt-2 text-gray-900">-</h4>
-                        <p class="text-xs text-gray-400 mt-1">Order Ref: <span id="res-orderid" class="font-medium text-gray-600">-</span></p>
-                    </div>
-                    <div class="text-right">
-                        <span id="res-status" class="inline-block px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">-</span>
-                        <p id="res-updated" class="text-[10px] text-gray-400 mt-2">Sync: -</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
-                    <div><p class="text-gray-400">Customer</p><p id="res-cust" class="font-semibold text-gray-800 mt-0.5">-</p></div>
-                    <div><p class="text-gray-400">Courier Partner</p><p id="res-courier" class="font-semibold text-gray-800 mt-0.5">-</p></div>
-                    <div><p class="text-gray-400">Destination</p><p id="res-dest" class="font-semibold text-gray-800 mt-0.5">-</p></div>
-                    <div><p class="text-gray-400">Pickup Date</p><p id="res-pickup" class="font-semibold text-gray-800 mt-0.5">-</p></div>
-                    <div><p class="text-gray-400">Delivered Date</p><p id="res-delivery" class="font-semibold text-gray-800 mt-0.5">-</p></div>
-                    <div><p class="text-gray-400">Expected Delivery</p><p id="res-expect" class="font-semibold text-gray-800 mt-0.5">-</p></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-records" class="tab-content space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold text-gray-900">Live Sheets Activity Records</h3>
-                <div class="flex space-x-2">
-                    <button onclick="fetchRecords('today')" class="bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-50 text-gray-700">Today</button>
-                    <button onclick="fetchRecords('yesterday')" class="bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-50 text-gray-700">Yesterday</button>
-                    <button onclick="fetchRecords('recent')" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-700 shadow-sm">Load Last 100</button>
-                </div>
-            </div>
-
-            <div class="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50/70 border-b border-gray-100 text-[11px] font-bold uppercase tracking-wider text-gray-400">
-                                <th class="p-4">Row</th>
-                                <th class="p-4">Date</th>
-                                <th class="p-4">Type</th>
-                                <th class="p-4">AWB Number</th>
-                                <th class="p-4">Order ID</th>
-                                <th class="p-4">Courier Partner</th>
-                                <th class="p-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body" class="divide-y divide-gray-50 text-sm text-gray-600">
-                            <tr>
-                                <td colspan="7" class="p-8 text-center text-gray-400 text-xs">No records requested yet. Click button above to execute sync.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-inventory" class="tab-content space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
-                    <p class="text-xs font-semibold text-gray-400 uppercase">Total Inventory SKU</p>
-                    <h3 id="inv-total-skus" class="text-2xl font-bold mt-1 text-gray-900">-</h3>
-                </div>
-                <div class="bg-amber-50 border border-amber-200 p-5 rounded-xl">
-                    <p class="text-xs font-semibold text-amber-600 uppercase">Alert: Low Stock Alerts</p>
-                    <h3 id="inv-low-stock" class="text-2xl font-bold mt-1 text-amber-900">-</h3>
-                </div>
-                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-center">
-                    <button onclick="loadInventorySummary()" class="bg-gray-900 text-white font-medium text-xs px-4 py-2 rounded-lg hover:bg-gray-800 transition-all flex items-center space-x-2">
-                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                        <span>Sync Stock Metric Counters</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                <h4 class="font-bold text-gray-900 mb-4">Stock Query Check</h4>
-                <div class="flex space-x-2 max-w-md mb-6">
-                    <input type="text" id="inv-sku-search" placeholder="Enter exact SKU Code..." class="flex-1 text-sm border border-gray-200 rounded-lg p-2 focus:outline-blue-500">
-                    <button onclick="searchSku()" class="bg-blue-600 text-white font-medium text-xs px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">Search SKU</button>
-                </div>
-                <div id="sku-result" class="hidden bg-gray-50 border rounded-xl p-4 text-xs space-y-1"></div>
-            </div>
-        </div>
-
+      </div>
     </div>
+  </nav>
 
-    <script>
-        // CRITICAL CONFIGURATION: यहाँ अपना Google Web App URL डालें
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzKW15XfTj3emaWH8MHe_sCvHGvskr9naPk71vDuQTWZUPOebetTVaruUTGbgjOW0_/exec";
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-        // Tab Switcher Controller Logic
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('text-blue-600', 'border-blue-500', 'bg-blue-50/10');
-                btn.classList.add('text-gray-600', 'border-gray-200');
-            });
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-slate-500">आज के पिकअप</p>
+          <span class="p-2 bg-blue-50 text-blue-600 rounded-lg text-xs font-semibold"><i class="fa-solid fa-arrow-up-from-bracket"></i></span>
+        </div>
+        <p id="stat-today-pickup" class="text-2xl font-bold mt-2 text-slate-900">0</p>
+      </div>
+      
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-slate-500">आज के रिटर्न्स</p>
+          <span class="p-2 bg-rose-50 text-rose-600 rounded-lg text-xs font-semibold"><i class="fa-solid fa-rotate-left"></i></span>
+        </div>
+        <p id="stat-today-return" class="text-2xl font-bold mt-2 text-slate-900">0</p>
+      </div>
 
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-            const targetBtn = document.getElementById(`btn-${tabId}`);
-            targetBtn.classList.remove('text-gray-600', 'border-gray-200');
-            targetBtn.classList.add('text-blue-600', 'border-blue-500', 'bg-blue-50/10');
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-slate-500">इस महीने पिकअप</p>
+          <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-semibold"><i class="fa-solid fa-calendar-day"></i></span>
+        </div>
+        <p id="stat-month-pickup" class="text-2xl font-bold mt-2 text-slate-900">0</p>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-slate-500">इस महीने रिटर्न्स</p>
+          <span class="p-2 bg-purple-50 text-purple-600 rounded-lg text-xs font-semibold"><i class="fa-solid fa-boxes-packing"></i></span>
+        </div>
+        <p id="stat-month-return" class="text-2xl font-bold mt-2 text-slate-900">0</p>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs md:col-span-2">
+        <h3 class="text-lg font-semibold mb-4 text-slate-900"><i class="fa-solid fa-magnifying-glass text-slate-400 mr-2"></i>ऑर्डर या AWB सर्च करें</h3>
+        <div class="flex gap-2">
+          <input type="text" id="search-input" placeholder="AWB नंबर या ऑर्डर आईडी दर्ज करें..." class="flex-1 min-w-0 block w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+          <button onclick="handleSearch()" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 shadow-xs cursor-pointer">खोजें</button>
+        </div>
+        <div id="search-result" class="mt-4 hidden p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm space-y-2"></div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <h3 class="text-lg font-semibold mb-4 text-slate-900"><i class="fa-solid fa-arrows-rotate text-slate-400 mr-2"></i>सिंगल AWB अपडेट</h3>
+        <div class="space-y-3">
+          <input type="text" id="update-awb-input" placeholder="केवल AWB नंबर..." class="block w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+          <button onclick="handleSingleUpdate()" class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs cursor-pointer">लाइव स्टेटस अपडेट करें</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+      <h3 class="text-lg font-semibold mb-4 text-slate-900"><i class="fa-solid fa-layer-group text-slate-400 mr-2"></i>बल्क अपडेट (दिनांक के अनुसार)</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">तारीख चुनें</label>
+          <input type="date" id="bulk-date" class="block w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">टाइप</label>
+          <select id="bulk-type" class="block w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+            <option value="Pickup">Pickup</option>
+            <option value="Return">Return</option>
+          </select>
+        </div>
+        <button onclick="checkBulkCounts()" class="inline-flex justify-center items-center px-4 py-2 border border-slate-300 font-medium rounded-xl text-slate-700 bg-white hover:bg-slate-50 text-sm cursor-pointer">संख्या जांचें</button>
+        <button onclick="runBulkUpdate()" class="inline-flex justify-center items-center px-4 py-2 border border-transparent font-medium rounded-xl text-white bg-slate-900 hover:bg-slate-800 text-sm shadow-xs cursor-pointer">बल्क प्रोसेस शुरू करें</button>
+      </div>
+      <div id="bulk-result" class="mt-4 hidden p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm"></div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+      <div class="border-b border-slate-200 bg-slate-50/50 px-4">
+        <nav class="flex space-x-6" aria-label="Tabs">
+          <button onclick="loadTab('today')" id="tab-today" class="tab-btn active py-4 px-1 border-b-2 border-transparent text-sm font-medium cursor-pointer">आज के रिकॉर्ड्स</button>
+          <button onclick="loadTab('yesterday')" id="tab-yesterday" class="tab-btn py-4 px-1 border-b-2 border-transparent text-sm font-medium cursor-pointer">कल के रिकॉर्ड्स</button>
+          <button onclick="loadTab('total')" id="tab-total" class="tab-btn py-4 px-1 border-b-2 border-transparent text-sm font-medium cursor-pointer">सभी रिकॉर्ड्स (최근 100)</button>
+        </nav>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <thead class="bg-slate-50 text-slate-500 uppercase text-xs font-semibold tracking-wider">
+            <tr>
+              <th class="px-6 py-3">दिनांक</th>
+              <th class="px-6 py-3">टाइप</th>
+              <th class="px-6 py-3">AWB नंबर</th>
+              <th class="px-6 py-3">ऑर्डर आईडी</th>
+              <th class="px-6 py-3">कूरियर</th>
+              <th class="px-6 py-3">स्टेटस</th>
+            </tr>
+          </thead>
+          <tbody id="table-body" class="divide-y divide-slate-200 bg-white text-slate-700">
+            <tr>
+              <td colspan="6" class="px-6 py-10 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>डेटा लोड हो रहा है...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm"></div>
+
+  <script>
+    // ⚠️ अपने Google Apps Script Web App का URL यहाँ डालें
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwzKW15XfTj3emaWH8MHe_sCvHGvskr9naPk71vDuQTWZUPOebetTVaruUTGbgjOW0_/exec"; 
+
+    // Helper: Show Alert Toasts
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.className = `fixed bottom-5 right-5 z-50 transition-all duration-300 px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm ${isError ? 'bg-rose-600 text-white' : 'bg-slate-900 text-white'}`;
+      toast.innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i> ${message}`;
+      toast.style.transform = 'translateY(0)';
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.transform = 'translateY(20px)';
+        toast.style.opacity = '0';
+      }, 4000);
+    }
+
+    // Connect & Run Initial API Calls
+    window.addEventListener('DOMContentLoaded', () => {
+      if(WEB_APP_URL.includes("YOUR_APPS_SCRIPT_WEB_APP_URL_HERE")) {
+        showToast("कृपया पहले कोड में अपना Web App URL सेट करें!", true);
+        return;
+      }
+      checkHealth();
+      fetchDashboardCounts();
+      loadTab('today');
+    });
+
+    // API Healthcheck
+    async function checkHealth() {
+      try {
+        const response = await fetch(`${WEB_APP_URL}?action=healthCheck`);
+        const data = await response.json();
+        if(data.success) {
+          const indicator = document.getElementById('connection-status');
+          indicator.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800";
+          indicator.innerHTML = `<i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i> लाइव कनेक्टेड`;
+        }
+      } catch (err) {
+        const indicator = document.getElementById('connection-status');
+        indicator.className = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800";
+        indicator.innerHTML = `<i class="fa-solid fa-circle mr-1.5"></i> कनेक्शन एरर`;
+      }
+    }
+
+    // Fetch Analytics Counts
+    async function fetchDashboardCounts() {
+      try {
+        const res = await fetch(`${WEB_APP_URL}?action=getDashboardCounts`);
+        const data = await res.json();
+        if(data.success) {
+          document.getElementById('stat-today-pickup').innerText = data.todayPickup || 0;
+          document.getElementById('stat-today-return').innerText = data.todayReturn || 0;
+          document.getElementById('stat-month-pickup').innerText = data.monthPickup || 0;
+          document.getElementById('stat-month-return').innerText = data.monthReturn || 0;
+        }
+      } catch(e) { console.error("Error fetching stats Dashboard counts", e); }
+    }
+
+    // Handle Search Bar Request
+    async function handleSearch() {
+      const kw = document.getElementById('search-input').value.trim();
+      if(!kw) return showToast("कृपया AWB नंबर या ऑर्डर आईडी डालें", true);
+      
+      const resultDiv = document.getElementById('search-result');
+      resultDiv.classList.remove('hidden');
+      resultDiv.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>सर्च किया जा रहा है...`;
+
+      try {
+        const res = await fetch(`${WEB_APP_URL}?action=searchOrder&keyword=${encodeURIComponent(kw)}`);
+        const data = await res.json();
+        if(data.success) {
+          resultDiv.innerHTML = `
+            <div class="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+              <div><strong>दिनांक:</strong> ${data.date}</div>
+              <div><strong>टाइप:</strong> ${data.type}</div>
+              <div><strong>AWB:</strong> ${data.awb}</div>
+              <div><strong>ऑर्डर आईडी:</strong> ${data.orderId}</div>
+              <div><strong>कूरियर पार्टनर:</strong> ${data.courier || 'N/A'}</div>
+              <div><strong>वर्तमान स्टेटस:</strong> <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 font-semibold text-xs">${data.status || 'Unknown'}</span></div>
+              <div class="col-span-2"><strong>ग्राहक नाम:</strong> ${data.customer || 'N/A'} (${data.city || ''}, ${data.state || ''})</div>
+              <div class="col-span-2 text-slate-400 text-xs">अंतिम अपडेट: ${data.updatedAt || 'N/A'}</div>
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = `<p class="text-rose-600 font-medium"><i class="fa-solid fa-triangle-exclamation mr-1"></i> रिकॉर्ड नहीं मिला: ${data.message}</p>`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<p class="text-rose-600 font-medium">डेटा फ़ेच करने में समस्या आई।</p>`;
+      }
+    }
+
+    // Handle Live Status Sync For Single AWB
+    async function handleSingleUpdate() {
+      const awb = document.getElementById('update-awb-input').value.trim();
+      if(!awb) return showToast("कृपया AWB नंबर दर्ज करें", true);
+
+      showToast("कूरियर पार्टनर से लाइव स्टेटस सिंक किया जा रहा है...");
+      try {
+        const res = await fetch(`${WEB_APP_URL}?action=updateSingleAWB&awb=${encodeURIComponent(awb)}`);
+        const data = await res.json();
+        if(data.success) {
+          if(data.skipped) {
+            showToast(`स्किप किया गया: स्टेटस पहले से ही लॉक है (${data.reason})`, true);
+          } else {
+            showToast("सफलतापूर्वक शीट और स्टेटस अपडेट कर दिया गया है!");
+            fetchDashboardCounts();
+          }
+        } else {
+          showToast(`अपडेट फ़ेल: ${data.message}`, true);
+        }
+      } catch (err) { showToast("सर्वर रेस्पॉन्स एरर", true); }
+    }
+
+    // Format HTML Input Date to dd/mm/yyyy
+    function parseInputDate(dateStr) {
+      if(!dateStr) return "";
+      const [year, month, day] = dateStr.split('-');
+      return `${day}/${month}/${year}`;
+    }
+
+    // Check Bulk Entry Counts
+    async function checkBulkCounts() {
+      const rawDate = document.getElementById('bulk-date').value;
+      if(!rawDate) return showToast("कृपया तारीख चुनें", true);
+      const formattedDate = parseInputDate(rawDate);
+
+      const resDiv = document.getElementById('bulk-result');
+      resDiv.classList.remove('hidden');
+      resDiv.innerHTML = "जांच की जा रही है...";
+
+      try {
+        const res = await fetch(`${WEB_APP_URL}?action=getBulkCounts&date=${encodeURIComponent(formattedDate)}`);
+        const data = await res.json();
+        if(data.success) {
+          resDiv.innerHTML = `📅 <strong>${formattedDate}</strong> को कुल <strong>पिकअप: ${data.pickup}</strong> और <strong>रिटर्न: ${data.return}</strong> प्रविष्टियां मिलीं।`;
+        }
+      } catch(e) { resDiv.innerHTML = "डेटा प्राप्त करने में असमर्थ।"; }
+    }
+
+    // Trigger Bulk Update API
+    async function runBulkUpdate() {
+      const rawDate = document.getElementById('bulk-date').value;
+      const type = document.getElementById('bulk-type').value;
+      if(!rawDate) return showToast("कृपया तारीख का चयन करें", true);
+      const formattedDate = parseInputDate(rawDate);
+
+      if(!confirm(`क्या आप निश्चित रूप से ${formattedDate} के सभी ${type} रिकॉर्ड्स को बल्क अपडेट करना चाहते हैं? इसमें कुछ समय लग सकता है।`)) return;
+
+      const resDiv = document.getElementById('bulk-result');
+      resDiv.classList.remove('hidden');
+      resDiv.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i>बल्क अपडेट प्रगति पर है... कृपया ब्राउज़र विंडो बंद न करें।`;
+
+      try {
+        const res = await fetch(`${WEB_APP_URL}?action=bulkUpdateByDate&date=${encodeURIComponent(formattedDate)}&type=${encodeURIComponent(type)}`);
+        const data = await res.json();
+        if(data.success) {
+          resDiv.innerHTML = `🟢 <strong>बल्क अपडेट पूर्ण!</strong><br>अपडेट किए गए: ${data.updated} | स्किप किए गए (Locked): ${data.skipped} | फ़ेल: ${data.failed}`;
+          showToast("बल्क प्रोसेस सफलतापूर्वक पूरा हुआ");
+          fetchDashboardCounts();
+        }
+      } catch(e) { resDiv.innerHTML = "बल्क अपडेट प्रक्रिया में गड़बड़ हुई।"; }
+    }
+
+    // Tab switcher to dynamic tables
+    async function loadTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>रिकॉर्ड्स लोड हो रहे हैं...</td></tr>`;
+
+      let action = "getTodayRecords";
+      if(tabName === "yesterday") action = "getYesterdayRecords";
+      if(tabName === "total") action = "getRecentRecords"; // Fetches latest rows up to 100
+
+      try {
+        const res = await fetch(`${WEB_APP_URL}?action=${action}`);
+        const data = await res.json();
+        
+        let rows = data.rows || [];
+        if(!data.success || rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-slate-400">कोई रिकॉर्ड उपलब्ध नहीं है।</td></tr>`;
+          return;
         }
 
-        // Global Alert Toast helper
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = msg;
-            toast.classList.remove('hidden');
-            setTimeout(() => { toast.classList.add('hidden'); }, 4000);
-        }
+        tbody.innerHTML = rows.map(row => `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-slate-500 text-xs">${formatRowDate(row.date)}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${row.type === 'Pickup' ? 'bg-blue-50 text-blue-700' : 'bg-rose-50 text-rose-700'}">${row.type || 'N/A'}</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-900">${row.awb || 'N/A'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-slate-600">${row.orderId || 'N/A'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-slate-500">${row.courier || 'N/A'}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-800">${row.status || 'Pending'}</span>
+            </td>
+          </tr>
+        `).join('');
 
-        // Action 1: Load Dashboard Counter Totals
-        async function loadDashboardCounts() {
-            if(WEB_APP_URL.includes("YOUR_")) return;
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=getDashboardCounts`);
-                const res = await response.json();
-                if(res.success) {
-                    document.getElementById('stat-today-pickup').innerText = res.todayPickup;
-                    document.getElementById('stat-today-return').innerText = res.todayReturn;
-                    document.getElementById('stat-month-pickup').innerText = res.monthPickup;
-                    document.getElementById('stat-month-return').innerText = res.monthReturn;
-                    document.getElementById('month-lbl').innerText = res.monthName || "Current";
-                }
-            } catch (err) {
-                console.error("Dashboard calculation extraction error", err);
-            }
-        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-rose-600 font-medium">डेटा लोड करने में त्रुटि हुई।</td></tr>`;
+      }
+    }
 
-        // Action 2: Post JSON Entry Row Data Capture saveEntry
-        async function handleSaveEntry(e) {
-            e.preventDefault();
-            const type = document.getElementById('entry-type').value;
-            const awb = document.getElementById('entry-awb').value;
-            const orderId = document.getElementById('entry-orderid').value;
-
-            showToast("Posting record to Google Sheet...");
-
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // standard gas cross-origin safety bypass
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: "saveEntry",
-                        payload: { type, awb, orderId }
-                    })
-                });
-                
-                showToast("Data sent! Refreshing stats...");
-                document.getElementById('entryForm').reset();
-                setTimeout(loadDashboardCounts, 2500);
-            } catch(err) {
-                showToast("Network Error connecting execution thread");
-            }
-        }
-
-        // Action 3: Search Order Routing System Engine Interaction
-        async function executeSearch() {
-            const keyword = document.getElementById('search-keyword').value.trim();
-            if(!keyword) return showToast("Please write down an AWB identifier");
-
-            showToast(`Searching for "${keyword}"...`);
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=searchOrder&keyword=${encodeURIComponent(keyword)}`);
-                const data = await response.json();
-                
-                const card = document.getElementById('search-result-card');
-                if(data.success) {
-                    card.classList.remove('hidden');
-                    document.getElementById('res-type').innerText = data.type || "Undefined";
-                    document.getElementById('res-awb').innerText = data.awb || "-";
-                    document.getElementById('res-orderid').innerText = data.orderId || "N/A";
-                    document.getElementById('res-status').innerText = data.status || "Logged";
-                    document.getElementById('res-cust').innerText = data.customer || "N/A";
-                    document.getElementById('res-courier').innerText = data.courier || "-";
-                    document.getElementById('res-dest').innerText = data.destination || data.city || "-";
-                    document.getElementById('res-pickup').innerText = data.pickupDate || "-";
-                    document.getElementById('res-delivery').innerText = data.deliveredDate || "-";
-                    document.getElementById('res-expect').innerText = data.expectedDate || "-";
-                    document.getElementById('res-updated').innerText = `Sync: ${data.updatedAt || 'Just Now'}`;
-                } else {
-                    card.classList.add('hidden');
-                    showToast(`Error: ${data.message}`);
-                }
-            } catch(err) {
-                showToast("System failed parsing transaction payload response lookup.");
-            }
-        }
-
-        // Action 4: Force Single Status Tracker Hook Update
-        async function triggerSingleAWBUpdate() {
-            const kw = document.getElementById('search-keyword').value.trim();
-            if(!kw) return showToast("Insert valid AWB into search input block first");
-
-            showToast("Calling Live Courier API Node...");
-            try {
-                const r = await fetch(`${WEB_APP_URL}?action=updateSingleAWB&awb=${kw}`);
-                const d = await r.json();
-                if(d.success) {
-                    showToast(d.skipped ? `Skipped: Status is Locked (${d.reason})` : "Successfully updated latest status!");
-                    executeSearch();
-                } else {
-                    showToast(`Failed: ${d.message}`);
-                }
-            } catch(e) { showToast("API Communication Failure"); }
-        }
-
-        // Action 5: Fetch Logs Data Dynamic Matrix Array Build Renderer
-        async function fetchRecords(mode) {
-            let action = "getRecentRecords";
-            if (mode === "today") action = "getTodayRecords";
-            if (mode === "yesterday") action = "getYesterdayRecords";
-
-            showToast(`Fetching row index list logs [${mode}]...`);
-            try {
-                const response = await fetch(`${WEB_APP_URL}?action=${action}`);
-                const res = await response.json();
-                
-                const tbody = document.getElementById('table-body');
-                tbody.innerHTML = "";
-
-                if(res.success && res.rows && res.rows.length > 0) {
-                    res.rows.forEach(row => {
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-gray-50/50 transition-all border-b border-gray-100";
-                        tr.innerHTML = `
-                            <td class="p-4 font-semibold text-gray-400">${row.row || '-'}</td>
-                            <td class="p-4 text-xs font-medium">${row.date || '-'}</td>
-                            <td class="p-4"><span class="px-2 py-0.5 rounded text-xs font-medium ${row.type === 'Pickup' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'}">${row.type || '-'}</span></td>
-                            <td class="p-4 font-mono text-xs font-bold text-gray-900">${row.awb || '-'}</td>
-                            <td class="p-4 text-xs text-gray-500">${row.orderId || '-'}</td>
-                            <td class="p-4 text-xs">${row.courier || '-'}</td>
-                            <td class="p-4"><span class="text-xs px-2 py-1 rounded-md font-semibold bg-gray-100">${row.status || 'Pending'}</span></td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-400 text-xs">No entries match requested timeline parameter logs.</td></tr>`;
-                }
-            } catch(e) { showToast("Failed to compile logs grid compilation."); }
-        }
-
-        // Action 6: Inventory Component API Management Handlers
-        async function loadInventorySummary() {
-            showToast("Reading sheets system stock summary array blocks...");
-            try {
-                const res = await (await fetch(`${WEB_APP_URL}?action=inventorySummary`)).json();
-                const low = await (await fetch(`${WEB_APP_URL}?action=lowStock&limit=5`)).json();
-                
-                document.getElementById('inv-total-skus').innerText = res.totalSKUs || "Active";
-                document.getElementById('inv-low-stock').innerText = low.totalLowStock || "0 Items";
-            } catch(err) { showToast("Inventory metadata verification skipped."); }
-        }
-
-        async function searchSku() {
-            const sku = document.getElementById('inv-sku-search').value.trim();
-            if(!sku) return;
-            try {
-                const res = await (await fetch(`${WEB_APP_URL}?action=inventoryProduct&sku=${sku}`)).json();
-                const container = document.getElementById('sku-result');
-                container.classList.remove('hidden');
-                container.innerHTML = JSON.stringify(res, null, 2);
-            } catch(e) { showToast("SKU error profile matching execution failure."); }
-        }
-
-        // Application Lifecycles Init Bootstrapping Initialization sequence
-        window.onload = () => {
-            lucide.createIcons();
-            loadDashboardCounts();
-        };
-    </script>
+    // Format JSON Timestamp if any
+    function formatRowDate(d) {
+      if(!d) return "";
+      if(d.includes && d.includes("T")) {
+        return d.split("T")[0];
+      }
+      return d;
+    }
+  </script>
 </body>
 </html>
